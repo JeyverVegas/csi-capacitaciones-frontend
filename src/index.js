@@ -1,12 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import "react-toastify/dist/ReactToastify.css";
+import "react-toggle/style.css"
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom';
+import { ThemeContextProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
+import { FeedBackProvider } from './context/FeedBackContext';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <ThemeContextProvider>
+        <AuthProvider>
+          <FeedBackProvider>
+            <App />
+          </FeedBackProvider>
+        </AuthProvider>
+      </ThemeContextProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
