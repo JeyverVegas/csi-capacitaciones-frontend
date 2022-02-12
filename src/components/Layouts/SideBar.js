@@ -83,8 +83,8 @@ const SideBar = () => {
                 <MM className="metismenu" id="menu">
                     {MenuLinks?.map((menuLink, i) => {
                         return (
-                            menuLink?.permissions?.some?.(r => permissions?.indexOf(r) >= 0) ?
-                                <li className={`${path.includes(menuLink?.path) ? "mm-active" : ""}`} key={i}>
+                            menuLink?.permissions?.some?.(r => permissions?.indexOf(r) >= 0) || !menuLink?.permissions ?
+                                <li className={`${path.includes(menuLink?.path) && !menuLink?.children ? "mm-active" : ""}`} key={i}>
                                     <Link to={menuLink?.children?.length > 0 ? '#' : menuLink?.path} className={`${menuLink?.children?.length > 0 ? 'has-arrow' : ''} ai-icon`}>
                                         {
                                             menuLink?.icon ?

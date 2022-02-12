@@ -15,7 +15,7 @@ export const mainPermissions = {
 }
 
 const MenuLinks = [
-    createLink('DashBoard', 'flaticon-025-dashboard', '/dashboard', mainPermissions?.dashboard),
+    createLink('DashBoard', 'flaticon-025-dashboard', '/dashboard', mainPermissions?.dashboard[0]),
 
     createLink('Cargos', 'flaticon-038-gauge', '/cargos', mainPermissions?.positions, [
         createLink('Crear Cargos', '', '/cargos/crear', mainPermissions?.positions[1]),
