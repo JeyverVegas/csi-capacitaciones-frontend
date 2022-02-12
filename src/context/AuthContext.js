@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getAuth, setAuth } from "../helpers/auth";
 
-const AuthContext = createContext({ user: null, token: null, setAuthInfo: null });
+const AuthContext = createContext({ user: null, token: null, setAuthInfo: null, permissions: [] });
 
 
 const lsItem = getAuth();
@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={{
     user: authInfo.user,
     token: authInfo.token,
+    permissions: authInfo?.user?.permissions?.map((permission) => permission?.name),
     isAuthenticated: authInfo.isAuthenticated,
     setAuthInfo
   }}>

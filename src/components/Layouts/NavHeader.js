@@ -14,11 +14,11 @@ const NavHeader = () => {
             <Link to="/dashboard" className="brand-logo">
                 {background.value === "dark" || navigationHader !== "color_1" ? (
                     <Fragment>
-                        <img src={SystemInfo?.logoBlanco} style={{ maxWidth: '80%' }} alt="" srcset="" />
+                        <img src={SystemInfo?.logoBlanco} style={{ maxWidth: '80%' }} alt="" />
                     </Fragment>
                 ) : (
                     <Fragment>
-                        <img src={SystemInfo?.logo} style={{ maxWidth: '80%' }} alt="" srcset="" />
+                        <img src={SystemInfo?.logo} style={{ maxWidth: '80%' }} alt="" />
                     </Fragment>
                 )}
             </Link>
