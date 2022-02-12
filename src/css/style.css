@@ -11875,8 +11875,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
   border-radius: 1.375rem;
   z-index: 9999; }
   .sidebar-right .bg-label-pattern {
-    background: transparent;
-    background-image: url("../images/pattern/pattern5.png");
+    background: transparent;    
     background-size: 130%; }
   .sidebar-right .bootstrap-select {
     height: 3rem;
@@ -18289,8 +18288,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 
 .photo-content {
   position: relative; }
-  .photo-content .cover-photo {
-    background: url(../images/profile/cover.jpg);
+  .photo-content .cover-photo {    
     background-size: cover;
     background-position: center;
     min-height: 15.625rem;
@@ -24891,8 +24889,7 @@ table.dataTable.row-border tbody th, table.dataTable.row-border tbody td, table.
 .heart {
   width: 60px;
   height: 60px;
-  display: inline-block;
-  background: url("../images/like.png");
+  display: inline-block;  
   cursor: pointer;
   margin: -25px -15px; }
 
