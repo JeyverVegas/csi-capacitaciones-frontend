@@ -7,7 +7,7 @@ export const FeedBackProvider = ({ children }) => {
 
   const [customLoading, setLoading] = useState({ show: false, message: "" });
   const [customToast, setCustomToast] = useState({ message: '', severity: '', show: false, position: '' });
-  const [customAlert, setCustomAlert] = useState({ show: false, message: "", severity: "success" });
+  const [customAlert, setCustomAlert] = useState({ show: false, message: "", severity: "success", title: '' });
   const [customAlertDialog, setCustomAlertDialog] = useState({ show: false, message: "", severity: "success" });
 
   return <FeedBackContext.Provider value={{

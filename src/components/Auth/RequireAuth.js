@@ -17,7 +17,7 @@ const RequireAuth = ({ children, screenPermission }) => {
     if (screenPermission && !permissions?.includes?.(screenPermission)) {
         return (
             <div>
-                No tienes Permisos.
+                <h3>No tienes Permisos.</h3>
             </div>
         )
     }

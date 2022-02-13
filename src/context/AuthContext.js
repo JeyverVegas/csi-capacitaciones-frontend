@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getAuth, setAuth } from "../helpers/auth";
+import { getAuth, setAuth, deleteAuth } from "../helpers/auth";
 
 const AuthContext = createContext({ user: null, token: null, setAuthInfo: null, permissions: [] });
 
@@ -12,7 +12,11 @@ export const AuthProvider = ({ children }) => {
   const [authInfo, setAuthInfo] = useState(defaultData);
 
   useEffect(() => {
-    setAuth(JSON.stringify(authInfo));
+    if (authInfo) {
+      setAuth(JSON.stringify(authInfo));
+    } else {
+      deleteAuth();
+    }
   }, [authInfo]);
 
   return <AuthContext.Provider value={{

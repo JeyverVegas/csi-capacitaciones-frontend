@@ -60,10 +60,6 @@ const SideBar = () => {
     }, []);
 
     useEffect(() => {
-        console.log(permissions);
-    }, [permissions])
-
-    useEffect(() => {
         setPath(location?.pathname)
     }, [location?.pathname]);
 
@@ -100,7 +96,7 @@ const SideBar = () => {
                                                 {
                                                     menuLink?.children?.map?.((childrenMenu, i2) => {
                                                         return (
-                                                            permissions?.includes?.(childrenMenu?.permissions) ?
+                                                            permissions?.includes?.(childrenMenu?.permissions) && !childrenMenu.forUpdate ?
                                                                 <li key={`${i}-${i2}`}>
                                                                     <Link className={`${path === childrenMenu?.path ? "mm-active" : ""}`} to={childrenMenu?.path}>
                                                                         {childrenMenu?.title}

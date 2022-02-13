@@ -1,10 +1,17 @@
 import { Dropdown } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const UserAccountInfo = () => {
 
-    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const { user, setAuthInfo } = useAuth();
+
+    const handleLogOut = () => {
+        setAuthInfo?.(false);
+        navigate('/iniciar-sesion', { replace: true });
+    }
 
     return (
         <Dropdown as="li" className="nav-item dropdown header-profile">
@@ -27,7 +34,7 @@ const UserAccountInfo = () => {
                     </svg>
                     <span className="ms-2">Profile</span>
                 </Link>
-                <button onClick={() => { alert("hola") }} className="dropdown-item ai-icon">
+                <button onClick={handleLogOut} className="dropdown-item ai-icon">
                     <svg
                         id="icon-logout" xmlns="http://www.w3.org/2000/svg"
                         className="text-danger" width={18} height={18} viewBox="0 0 24 24"

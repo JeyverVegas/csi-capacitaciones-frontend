@@ -18,7 +18,6 @@ export const createAxios = () => {
 
   axiosInstance.interceptors.request.use(
     async (request) => {
-
       const authInfo = JSON.parse(`${getAuth()}`);
 
       if (authInfo?.token) {
