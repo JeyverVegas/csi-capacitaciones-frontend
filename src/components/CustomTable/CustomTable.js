@@ -67,6 +67,11 @@ const CustomTable = ({ title, values = [], total = 0, pages, currentPage, collum
                                                                                 <Component
                                                                                     id={value?.id}
                                                                                     updatePath={updatePath}
+                                                                                    positionName={value?.position?.name}
+                                                                                    serviceName={value?.service?.name}
+                                                                                    roleName={value?.role?.name}
+                                                                                    nameValue={value?.name}
+                                                                                    documentNumberValue={value?.documentNumber}
                                                                                     onChange={() => { onSelectValue?.(value) }}
                                                                                     onDelete={() => { onDelete?.(value) }}
                                                                                     checked={selectedValues?.includes(value?.id)}
