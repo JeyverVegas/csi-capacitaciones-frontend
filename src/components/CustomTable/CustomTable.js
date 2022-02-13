@@ -54,35 +54,42 @@ const CustomTable = ({ title, values = [], total = 0, pages, currentPage, collum
                                 </thead>
                                 <tbody>
                                     {
-                                        values?.map((value, i) => {
-                                            return (
-                                                <CustomTableBodyRow key={i}>
-                                                    {
-                                                        collumns?.map(({ Component, accessor }, i2) => {
-                                                            return (
-                                                                <CustomTableBodyCollumn key={i2}>
-                                                                    {
-                                                                        Component ?
-                                                                            <Component
-                                                                                id={value?.id}
-                                                                                updatePath={updatePath}
-                                                                                onChange={() => { onSelectValue?.(value) }}
-                                                                                onDelete={() => { onDelete?.(value) }}
-                                                                                checked={selectedValues?.includes(value?.id)}
-                                                                            />
-                                                                            :
-                                                                            accessor ?
-                                                                                value[accessor]
+                                        values?.length > 0 ?
+                                            values?.map((value, i) => {
+                                                return (
+                                                    <CustomTableBodyRow key={i}>
+                                                        {
+                                                            collumns?.map(({ Component, accessor }, i2) => {
+                                                                return (
+                                                                    <CustomTableBodyCollumn key={i2}>
+                                                                        {
+                                                                            Component ?
+                                                                                <Component
+                                                                                    id={value?.id}
+                                                                                    updatePath={updatePath}
+                                                                                    onChange={() => { onSelectValue?.(value) }}
+                                                                                    onDelete={() => { onDelete?.(value) }}
+                                                                                    checked={selectedValues?.includes(value?.id)}
+                                                                                />
                                                                                 :
-                                                                                null
-                                                                    }
-                                                                </CustomTableBodyCollumn>
-                                                            );
-                                                        })
-                                                    }
-                                                </CustomTableBodyRow>
-                                            )
-                                        })
+                                                                                accessor ?
+                                                                                    value[accessor]
+                                                                                    :
+                                                                                    null
+                                                                        }
+                                                                    </CustomTableBodyCollumn>
+                                                                );
+                                                            })
+                                                        }
+                                                    </CustomTableBodyRow>
+                                                )
+                                            })
+                                            :
+                                            <CustomTableBodyRow>
+                                                <td className="text-center" colSpan={collumns?.length}>
+                                                    <h3>No hay registros</h3>
+                                                </td>
+                                            </CustomTableBodyRow>
                                     }
                                 </tbody>
                             </table>

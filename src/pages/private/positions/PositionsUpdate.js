@@ -86,7 +86,7 @@ const PositionsUpdate = () => {
         <div>
             <div className="card">
                 <div className="card-header">
-                    <h4 className="card-title">Crear cargo</h4>
+                    <h4 className="card-title">Actualizar cargo</h4>
                 </div>
                 <div className="card-body">
                     <div className="basic-form">
