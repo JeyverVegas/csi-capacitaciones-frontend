@@ -1,5 +1,4 @@
 const ImageAndName = ({ nameValue, imgValue }) => {
-    console.log(imgValue);
     return (
         <div className="text-center d-flex align-items-center">
             <img

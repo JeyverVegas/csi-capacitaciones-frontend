@@ -1,6 +1,8 @@
 import { Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import SystemInfo from "../util/SystemInfo";
+import profile from '../images/profile.png';
 
 const UserAccountInfo = () => {
 
@@ -16,10 +18,10 @@ const UserAccountInfo = () => {
     return (
         <Dropdown as="li" className="nav-item dropdown header-profile">
             <Dropdown.Toggle variant="" as="a" className="nav-link i-false c-pointer">
-                <img src={`https://api.tubeneficiosi.com/uploads/users/1639515450584-905483204.jpg`} width={20} alt="profile-image" />
+                <img src={user?.imagePath ? `${SystemInfo?.host}${user?.imagePath}` : profile} width={20} alt="profile-image" />
                 <div className="header-info ms-3">
                     <span>{user?.name}</span>
-                    <small>Superadmin</small>
+                    <small>{user?.role?.name}</small>
                 </div>
             </Dropdown.Toggle>
             <Dropdown.Menu align="right" className="mt-3 dropdown-menu dropdown-menu-end">

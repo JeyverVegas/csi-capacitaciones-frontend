@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ImgUploadInput from "../../../components/ImgUploadInput";
+import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useDocumentNumberTypes from "../../../hooks/useDocumentNumberTypes";
@@ -10,6 +11,8 @@ import useServices from "../../../hooks/useServices";
 import SystemInfo from "../../../util/SystemInfo";
 
 const UsersUpdate = () => {
+
+    const { user: currentUser, setAuthInfo } = useAuth();
 
     const { id } = useParams();
 
@@ -117,6 +120,18 @@ const UsersUpdate = () => {
                 show: true
             });
             navigate('/usuarios');
+            if (updateData?.data?.id === currentUser?.id) {
+                const { createdAt, role, ...rest } = updateData?.data;
+                setAuthInfo((oldAuthInfo) => {
+                    return {
+                        ...oldAuthInfo,
+                        user: {
+                            ...oldAuthInfo?.user,
+                            ...rest
+                        }
+                    }
+                });
+            }
         }
     }, [updateData])
 
