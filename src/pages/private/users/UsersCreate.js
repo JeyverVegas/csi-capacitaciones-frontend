@@ -1,13 +1,25 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ImgUploadInput from "../../../components/ImgUploadInput";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
+import useDocumentNumberTypes from "../../../hooks/useDocumentNumberTypes";
+import usePositions from "../../../hooks/usePositions";
+import useRoles from "../../../hooks/useRoles";
+import useServices from "../../../hooks/useServices";
 
 const UsersCreate = () => {
 
     const navigate = useNavigate();
 
-    const { setCustomAlert } = useFeedBack();
+    const { setCustomAlert, setLoading } = useFeedBack();
+
+    const [filters, setFilters] = useState({
+        perPage: 200,
+        page: 1
+    })
+
+    const [firstLoading, setFirstLoading] = useState(true);
 
     const [data, setData] = useState({
         name: '',
@@ -20,19 +32,62 @@ const UsersCreate = () => {
         documentNumber: '',
         documentNumberTypeId: '',
         role: '',
+        serviceIds: []
     });
 
     const [{ data: createData, loading: createLoading, error: createError }, createUser] = useAxios({ url: `/users`, method: 'POST' }, { manual: true, useCache: false });
 
+    const [{ positions, error: positionsError, loading: positionsLoading }, getPositions] = usePositions({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
+
+    const [{ documentNumberTypes, error: documentNumberTypesError, loading: documentNumberTypesLoading }, getDocumentNumberTypes] = useDocumentNumberTypes({ options: { useCache: false } });
+
+    const [{ roles, error: rolesError, loading: rolesLoading }, getRoles] = useRoles({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
+
+    const [{ services, error: servicesError, loading: servicesLoading }, getServices] = useServices({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
+
+    useEffect(() => {
+        if (!documentNumberTypesLoading && !rolesLoading && !positionsLoading && !servicesLoading) {
+            setFirstLoading(false);
+        } else {
+            setFirstLoading(true)
+        }
+    }, [documentNumberTypesLoading, rolesLoading, positionsLoading, servicesLoading]);
+
+    useEffect(() => {
+        setLoading({
+            show: firstLoading,
+            message: 'Obteniendo informacion'
+        });
+    }, [firstLoading]);
+
+    const [canRemove, setCanRemove] = useState(false);
+
+    useEffect(() => {
+        if (data?.documentNumber?.length > 7 && !data?.documentNumber?.includes('-') && !canRemove) {
+            setCanRemove(true);
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    documentNumber: `${oldData?.documentNumber}-`
+                }
+            })
+        }
+
+        if (data?.documentNumber?.length < 7 && canRemove) {
+            setCanRemove(false);
+        }
+
+    }, [data?.documentNumber, canRemove])
+
     useEffect(() => {
         if (createData) {
-            window.scrollTo({ top: 0 });
             setCustomAlert({
                 title: '¡Operacion Exitosa!',
                 severity: 'success',
-                message: 'El cargo fue creado exitosamente.',
+                message: 'El usuario fue creado exitosamente.',
                 show: true
             });
+            navigate('/usuarios');
         }
     }, [createData])
 
@@ -45,29 +100,87 @@ const UsersCreate = () => {
                 show: true
             });
         }
-    }, [createError])
+
+        if (positionsError) {
+            setCustomAlert({
+                title: 'Error',
+                severity: 'danger',
+                message: 'Ha ocurrido un error al obtener los cargos.',
+                show: true
+            });
+        }
+
+        if (documentNumberTypesError) {
+            setCustomAlert({
+                title: 'Error',
+                severity: 'danger',
+                message: 'Ha ocurrido un error al obtener los tipos de documentos.',
+                show: true
+            });
+        }
+
+        if (rolesError) {
+            setCustomAlert({
+                title: 'Error',
+                severity: 'danger',
+                message: 'Ha ocurrido un error al obtener los roles.',
+                show: true
+            });
+        }
+
+        if (servicesError) {
+            setCustomAlert({
+                title: 'Error',
+                severity: 'danger',
+                message: 'Ha ocurrido un error al obtener los servicios.',
+                show: true
+            });
+        }
+    }, [createError, positionsError, documentNumberTypesError, rolesError, servicesError])
 
     const handleSubmit = (e) => {
+        let hasError = false;
         e?.preventDefault?.();
 
         if (createLoading) {
             return;
         }
+        const { image: image2, ...requireValues } = data;
+        Object.keys(requireValues).forEach((key, i) => {
+            if (!data[key]) {
+                hasError = true;
+                setCustomAlert({
+                    title: 'Error',
+                    severity: 'danger',
+                    message: <div>Hay un error en el campo <strong>{key}</strong>.</div>,
+                    show: true
+                });
+            }
+        });
 
-        if (!data?.name) {
-            setCustomAlert({
-                title: 'Error',
-                severity: 'danger',
-                message: 'El campo nombre es obligatorio.',
-                show: true
-            });
+        if (hasError) {
             return;
         }
-        createUser({ data })
+
+        const formdata = new FormData();
+        const { image, serviceIds, ...rest } = data;
+        Object.keys(rest).forEach((key, i) => {
+            formdata?.append(key, data[key]);
+        });
+
+        serviceIds?.forEach?.((serviceId, i) => {
+            formdata?.append(`serviceIds[${i}]`, serviceId);
+        });
+
+        if (image) {
+            formdata?.append('image', image, image?.name);
+        }
+
+        createUser({ data: formdata });
     }
 
     const handleChange = (e) => {
-
+        console.log(e);
         if (e.target.type === 'checkbox') {
             const value = data[e.target.name]?.includes(e.target.value);
             if (value) {
@@ -93,9 +206,40 @@ const UsersCreate = () => {
         setData((oldData) => {
             return {
                 ...oldData,
-                [e.target.name]: e.target.value
+                [e.target.name]: e.target.type === 'file' ? e.target.files[0] : e.target.value
             }
         })
+    }
+
+    const checker = (arr, target) => arr.every((value) => target?.includes(value));
+
+    const handleAllServices = () => {
+        let hash = {};
+        if (checker(services?.map(service => service?.id), data?.serviceIds)) {
+            services?.forEach((service) => {
+                hash[service?.id] = true;
+            });
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    serviceIds: data?.serviceIds?.filter((serviceId) => !hash[serviceId])
+                }
+            });
+        } else {
+            services.forEach((service) => {
+                hash[service?.id] = true;
+            });
+
+            let oldServicesIds = data?.serviceIds?.filter((serviceId) => !hash[serviceId]);
+
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    serviceIds: [...oldServicesIds, ...services?.map((service) => service?.id)]
+                }
+            });
+
+        }
     }
 
     return (
@@ -107,6 +251,9 @@ const UsersCreate = () => {
                 <div className="card-body">
                     <div className="basic-form">
                         <form onSubmit={handleSubmit}>
+                            <div className="form-group col-1 mb-3">
+                                <ImgUploadInput deleteButton description="imagen" name="image" change={handleChange} style={{ height: 80 }} />
+                            </div>
                             <div className="row mb-5">
                                 <div className="form-group mb-3 col-md-6">
                                     <label>Nombre</label>
@@ -166,17 +313,23 @@ const UsersCreate = () => {
                                 <div className="form-group mb-3 col-md-6">
                                     <label>Cargo</label>
                                     <select
-                                        defaultValue={""}
                                         className="form-control"
                                         value={data?.positionId}
                                         name="positionId"
+                                        onChange={handleChange}
                                     >
                                         <option value="" disabled>
                                             Selecciona...
                                         </option>
-                                        <option value="1">
-                                            Encargado
-                                        </option>
+                                        {
+                                            positions?.map((position, i) => {
+                                                return (
+                                                    <option value={position?.id} key={i}>
+                                                        {position?.name}
+                                                    </option>
+                                                )
+                                            })
+                                        }
                                     </select>
                                 </div>
 
@@ -184,18 +337,23 @@ const UsersCreate = () => {
                                     <label>Numero de documento</label>
                                     <div className="d-flex">
                                         <select
-                                            defaultValue={""}
                                             className="form-control w-25"
-                                            name="positionId"
-                                            value={data?.positionId}
+                                            name="documentNumberTypeId"
+                                            value={data?.documentNumberTypeId}
                                             onChange={handleChange}
                                         >
                                             <option value="">
                                                 Tipo...
                                             </option>
-                                            <option value={1}>
-                                                RUT
-                                            </option>
+                                            {
+                                                documentNumberTypes?.map?.((type, i) => {
+                                                    return (
+                                                        <option value={type?.id} key={i}>
+                                                            {type?.name}
+                                                        </option>
+                                                    )
+                                                })
+                                            }
                                         </select>
                                         <input
                                             type="text"
@@ -211,7 +369,6 @@ const UsersCreate = () => {
                                 <div className="form-group mb-3 col-md-6">
                                     <label>Rol</label>
                                     <select
-                                        defaultValue={""}
                                         className="form-control"
                                         value={data?.role}
                                         name="role"
@@ -220,10 +377,51 @@ const UsersCreate = () => {
                                         <option value="" disabled>
                                             Selecciona...
                                         </option>
-                                        <option value="1" >
-                                            Administrador
-                                        </option>
+                                        {
+                                            roles?.map((role, i) => {
+                                                return (
+                                                    <option value={role?.name} key={i} >
+                                                        {role?.name}
+                                                    </option>
+                                                )
+                                            })
+                                        }
                                     </select>
+                                </div>
+                                <div className="form-group mb-3 col-md-12">
+                                    <h6>Servicios</h6>
+                                    <p>Seleccione los servicios a los cuales tendra acceso el usuario.</p>
+                                    <div className="form-check form-check-inline">
+                                        <label className="form-check-label">
+                                            <input
+                                                type="checkbox"
+                                                className="form-check-input"
+                                                name="serviceIds"
+                                                checked={checker(services?.map(service => service.id), data?.serviceIds)}
+                                                onChange={handleAllServices}
+                                            />
+                                            Seleccionar todos
+                                        </label>
+                                    </div>
+                                    {
+                                        services?.map((service, i) => {
+                                            return (
+                                                <div className="form-check form-check-inline" key={i}>
+                                                    <label className="form-check-label">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            name="serviceIds"
+                                                            value={service?.id}
+                                                            checked={data?.serviceIds?.includes(service?.id)}
+                                                            onChange={() => { handleChange({ target: { name: 'serviceIds', value: Number(service?.id), type: 'checkbox' } }) }}
+                                                        />
+                                                        {service?.name}
+                                                    </label>
+                                                </div>
+                                            )
+                                        })
+                                    }
                                 </div>
                             </div>
                             <div className="mb-3 d-flex justify-content-end">

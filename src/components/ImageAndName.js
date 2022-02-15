@@ -1,8 +1,9 @@
 const ImageAndName = ({ nameValue, imgValue }) => {
+    console.log(imgValue);
     return (
         <div className="text-center d-flex align-items-center">
             <img
-                src={imgValue ? imgValue : `https://api.tubeneficiosi.com/uploads/users/1639515450584-905483204.jpg`}
+                src={imgValue}
                 className="rounded-lg"
                 width="36"
                 height={"36"}

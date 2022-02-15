@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import useAxios from './useAxios';
 
-const usePositions = ({ options, axiosConfig } = {}) => {
-  const [{ data, error, loading }, getPositions] = useAxios({ url: '/positions', ...axiosConfig }, options);
+const usePermissions = ({ options, axiosConfig } = {}) => {
+  const [{ data, error, loading }, getPermissions] = useAxios({ url: '/permissions', ...axiosConfig }, options);
 
-  const [positions, setPositions] = useState([]);
+  const [permissions, setPermissions] = useState([]);
 
   const [total, setTotal] = useState(0);
 
@@ -14,7 +14,7 @@ const usePositions = ({ options, axiosConfig } = {}) => {
 
   useEffect(() => {
     if (data) {
-      setPositions(data?.data);
+      setPermissions(data);
       setTotal(data?.meta?.total);
       setSize(data?.meta?.per_page);
       setNumberOfPages(data.meta?.last_page);
@@ -22,7 +22,7 @@ const usePositions = ({ options, axiosConfig } = {}) => {
 
   }, [data, loading, error]);
 
-  return [{ positions, total, numberOfPages, size, error, loading }, getPositions];
+  return [{ permissions, total, numberOfPages, size, error, loading }, getPermissions];
 };
 
-export default usePositions;
+export default usePermissions;

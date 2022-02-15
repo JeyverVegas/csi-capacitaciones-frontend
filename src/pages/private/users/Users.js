@@ -34,7 +34,7 @@ const Users = () => {
     useEffect(() => {
         setLoading?.({
             show: deleteLoading,
-            message: 'Eliminando Usuario'
+            message: 'Eliminando Usuario(s)'
         })
     }, [deleteLoading])
 
@@ -103,6 +103,18 @@ const Users = () => {
         }
     }
 
+    const handleDeleteSelected = () => {
+        deleteUser({ url: `/users/multiple`, data: { ids: selectedValues } }).then((data) => {
+            setCustomAlert({
+                title: '¡Operación Exitosa!',
+                severity: 'success',
+                message: 'Los usuarios han sido eliminados exitosamente.',
+                show: true
+            });
+            getUsers();
+        });
+    }
+
     return (
         <div>
             {
@@ -116,6 +128,7 @@ const Users = () => {
                     null
             }
             <CustomTable
+                onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
                 selectAll={selectAll}

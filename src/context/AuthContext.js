@@ -11,6 +11,10 @@ export const AuthProvider = ({ children }) => {
 
   const [authInfo, setAuthInfo] = useState(defaultData);
 
+  const getPermissionName = () => {
+    return authInfo?.user?.role?.permissionsByModule?.reduce((result, module) => [...result, ...module.permissions.map(p => p.name)], [])
+  }
+
   useEffect(() => {
     if (authInfo) {
       setAuth(JSON.stringify(authInfo));
@@ -22,7 +26,7 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={{
     user: authInfo.user,
     token: authInfo.token,
-    permissions: authInfo?.user?.permissions?.map((permission) => permission?.name),
+    permissions: getPermissionName(),
     isAuthenticated: authInfo.isAuthenticated,
     setAuthInfo
   }}>

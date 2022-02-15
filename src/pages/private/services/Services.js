@@ -33,7 +33,7 @@ const Services = () => {
     useEffect(() => {
         setLoading?.({
             show: deleteLoading,
-            message: 'Eliminando Servicio'
+            message: 'Eliminando Servicio(s)'
         })
     }, [deleteLoading])
 
@@ -70,7 +70,7 @@ const Services = () => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
-                message: 'El servicio ha sido eliminado exitosamente.',
+                message: 'Los servicios han sido eliminados exitosamente.',
                 show: true
             });
             getServices();
@@ -102,6 +102,18 @@ const Services = () => {
         }
     }
 
+    const handleDeleteSelected = () => {
+        deleteService({ url: `/services/multiple`, data: { ids: selectedValues } }).then((data) => {
+            setCustomAlert({
+                title: '¡Operación Exitosa!',
+                severity: 'success',
+                message: 'Los servicios han sido eliminados exitosamente.',
+                show: true
+            });
+            getServices();
+        });
+    }
+
     return (
         <div>
             {
@@ -115,6 +127,7 @@ const Services = () => {
                     null
             }
             <CustomTable
+                onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
                 selectAll={selectAll}

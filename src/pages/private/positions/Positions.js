@@ -33,7 +33,7 @@ const Positions = () => {
     useEffect(() => {
         setLoading?.({
             show: deleteLoading,
-            message: 'Eliminando Cargo'
+            message: 'Eliminando Cargo(s)'
         })
     }, [deleteLoading])
 
@@ -102,6 +102,18 @@ const Positions = () => {
         }
     }
 
+    const handleDeleteSelected = () => {
+        deletePosition({ url: `/positions/multiple`, data: { ids: selectedValues } }).then((data) => {
+            setCustomAlert({
+                title: '¡Operación Exitosa!',
+                severity: 'success',
+                message: 'Los cargos han sido eliminados exitosamente.',
+                show: true
+            });
+            getPositions();
+        });
+    }
+
     return (
         <div>
             {
@@ -115,6 +127,7 @@ const Positions = () => {
                     null
             }
             <CustomTable
+                onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
                 selectAll={selectAll}

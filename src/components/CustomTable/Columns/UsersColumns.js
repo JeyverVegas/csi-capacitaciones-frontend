@@ -2,6 +2,7 @@ import ActionDropdown from "../../ActionDropdown";
 import DocumentNumber from "../../DocumentNumber";
 import ImageAndName from "../../ImageAndName";
 import TableCheck from "../TableCheck";
+import { format } from "date-fns";
 
 const UsersColumns = [
     {
@@ -30,16 +31,12 @@ const UsersColumns = [
         Component: ({ positionName }) => `${positionName ? positionName : ''}`
     },
     {
-        Label: () => 'Servicio',
-        Component: ({ serviceName }) => `${serviceName ? serviceName : ''}`
-    },
-    {
         Label: () => 'Rol',
         Component: ({ roleName }) => `${roleName ? roleName : ''}`
     },
     {
         Label: () => 'Fecha de Creación',
-        accessor: 'created_at'
+        Component: ({ date }) => format(new Date(date), 'dd/MM/yyyy')
     },
     {
         Label: () => 'Acciones',

@@ -24,6 +24,7 @@ const createLink = (
 
 export const mainPermissions = {
     dashboard: ['view-dashboard'],
+    permissions: ['view-permissions'],
     positions: ['view-positions', 'create-positions', 'update-positions', 'delete-positions'],
     services: ['view-services', 'create-services', 'update-services', 'delete-services'],
     users: ['view-users', 'create-users', 'update-users', 'delete-users'],
@@ -51,10 +52,10 @@ const MenuLinks = [
         createLink('Actualizar Roles', true, <RolesUpdate />, '', '/roles/:id', mainPermissions?.roles[2]),
     ]),
 
-    createLink('Usuarios', null, null, 'flaticon-381-user-9', '/users', mainPermissions?.users, [
+    createLink('Usuarios', null, null, 'flaticon-381-user-9', '/usuarios', mainPermissions?.users, [
         createLink('Crear Usuario', null, <UsersCreate />, '', '/usuarios/crear', mainPermissions?.users[1]),
-        createLink('Listar Usuarios', null, <Users />, '', '/users', mainPermissions?.users[0]),
-        createLink('Actualizar Usuarios', true, <UsersUpdate />, '', '/users/:id', mainPermissions?.users[2]),
+        createLink('Listar Usuarios', null, <Users />, '', '/usuarios', mainPermissions?.users[0]),
+        createLink('Actualizar Usuarios', true, <UsersUpdate />, '', '/usuarios/:id', mainPermissions?.users[2]),
     ])
 ];
 

@@ -1,8 +1,9 @@
 import * as axios from "axios";
+import SystemInfo from "../util/SystemInfo";
 import { getAuth } from "./auth";
 
 
-const host = process.env.REACT_APP_API_URL;
+const host = SystemInfo?.api;
 
 export const createAxios = () => {
 

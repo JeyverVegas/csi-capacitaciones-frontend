@@ -1,5 +1,6 @@
 import ActionDropdown from "../../ActionDropdown";
 import TableCheck from "../TableCheck";
+import { format } from "date-fns";
 
 const ServicesColumns = [
     {
@@ -17,7 +18,7 @@ const ServicesColumns = [
     },
     {
         Label: () => 'Fecha de Creación',
-        accessor: 'created_at'
+        Component: ({ date }) => format(new Date(date), 'dd/MM/yyyy')
     },
     {
         Label: () => 'Acciones',

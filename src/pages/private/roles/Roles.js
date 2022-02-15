@@ -33,7 +33,7 @@ const Roles = () => {
     useEffect(() => {
         setLoading?.({
             show: deleteLoading,
-            message: 'Eliminando rol'
+            message: 'Eliminando Registro(s)'
         })
     }, [deleteLoading])
 
@@ -51,7 +51,7 @@ const Roles = () => {
             setCustomAlert({
                 title: 'error',
                 severity: 'danger',
-                message: 'Ha ocurrido un error al obtener los cargos.',
+                message: 'Ha ocurrido un error al obtener los roles.',
                 show: true
             });
         }
@@ -102,6 +102,18 @@ const Roles = () => {
         }
     }
 
+    const handleDeleteSelected = () => {
+        deleteRole({ url: `/roles/multiple`, data: { ids: selectedValues } }).then((data) => {
+            setCustomAlert({
+                title: '¡Operación Exitosa!',
+                severity: 'success',
+                message: 'Los roles han sido eliminados exitosamente.',
+                show: true
+            });
+            getRoles();
+        });
+    }
+
     return (
         <div>
             {
@@ -115,6 +127,7 @@ const Roles = () => {
                     null
             }
             <CustomTable
+                onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
                 selectAll={selectAll}

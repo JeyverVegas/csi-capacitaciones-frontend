@@ -1,10 +1,32 @@
 import { Dropdown } from "react-bootstrap";
+import { useFeedBack } from "../../context/FeedBackContext";
+import SystemInfo from "../../util/SystemInfo";
 import ActionDropdown from "../ActionDropdown";
 import CustomTableBodyCollumn from "./CustomTableBodyCollumn";
 import CustomTableBodyRow from "./CustomTableBodyRow";
 import CustomTableHeadColumn from "./CustomTableHeadColumn";
+import swal from "sweetalert";
 
-const CustomTable = ({ title, values = [], total = 0, pages, currentPage, collumns, updatePath, selectedValues, onDelete, onSelectAll, selectAll, onSelectValue, changePage }) => {
+const CustomTable = ({ title, values = [], total = 0, pages, onDeleteSelected, currentPage, collumns, updatePath, selectedValues, onDelete, onSelectAll, selectAll, onSelectValue, changePage }) => {
+
+    const { setCustomAlertDialog } = useFeedBack();
+
+    const handleDeleteSelected = () => {
+        swal({
+            title: "¿Estas Seguro?",
+            text: "¿Quieres eliminar todos los registros seleccionados?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                onDeleteSelected?.();
+            } else {
+
+            }
+        })
+    }
+
     return (
         <div className="col-12">
             <div className="card">
@@ -14,7 +36,7 @@ const CustomTable = ({ title, values = [], total = 0, pages, currentPage, collum
                         <h5>Acciones Globales:</h5>
                         {
                             selectedValues?.length > 0 ?
-                                <ActionDropdown withOutUpdate />
+                                <ActionDropdown withOutUpdate onDelete={handleDeleteSelected} />
                                 :
                                 <span>debe seleccionar al menos un registro</span>
                         }
@@ -71,6 +93,8 @@ const CustomTable = ({ title, values = [], total = 0, pages, currentPage, collum
                                                                                     serviceName={value?.service?.name}
                                                                                     roleName={value?.role?.name}
                                                                                     nameValue={value?.name}
+                                                                                    date={value?.createdAt}
+                                                                                    imgValue={`${SystemInfo?.host}${value?.imagePath}`}
                                                                                     documentNumberValue={value?.documentNumber}
                                                                                     onChange={() => { onSelectValue?.(value) }}
                                                                                     onDelete={() => { onDelete?.(value) }}
