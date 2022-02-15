@@ -10,6 +10,14 @@ export const FeedBackProvider = ({ children }) => {
   const [customAlert, setCustomAlert] = useState({ show: false, message: "", severity: "success", title: '' });
   const [customAlertDialog, setCustomAlertDialog] = useState({ show: false, message: "", severity: "success" });
 
+  useEffect(() => {
+    if (customAlert?.show) {
+      setTimeout(() => {
+        setCustomAlert({ show: false, message: "", severity: "success", title: '' });
+      }, [5000])
+    }
+  }, [customAlert])
+
   return <FeedBackContext.Provider value={{
     customLoading,
     setLoading,
