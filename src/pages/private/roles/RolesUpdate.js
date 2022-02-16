@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
-import { mainPermissions } from "../../../util/MenuLinks";
+import usePermissions from "../../../hooks/usePermissions";
 
 const RolesUpdate = () => {
 
@@ -17,9 +17,17 @@ const RolesUpdate = () => {
         permissions: []
     });
 
+    const [filters, setFilters] = useState({
+        page: 1,
+        perPage: 200,
+        grouped: true
+    });
+
     const [{ data: roleData, loading: roleLoading, error: roleError }, getRole] = useAxios({ url: `/roles/${id}` }, { useCache: false });
 
     const [{ data: updateData, loading: updateLoading, error: updateError }, updateRole] = useAxios({ url: `/roles/${id}`, method: 'PUT' }, { manual: true, useCache: false });
+
+    const [{ permissions, error: permissionsError, loading: permissionsLoading }, getPermissions] = usePermissions({ params: { ...filters } }, { useCache: false });
 
     useEffect(() => {
         if (roleData) {
@@ -27,12 +35,16 @@ const RolesUpdate = () => {
                 return {
                     ...oldData,
                     name: roleData?.data?.name,
-                    permissions: roleData?.data?.permissions?.map((permission) => permission?.name)
+                    permissions: roleData?.data?.permissionsByModule?.reduce?.((result, module) => [...result, ...module.permissions.map(p => p.name)], [])
                 }
             })
             console.log(roleData);
         }
     }, [roleData])
+
+    useEffect(() => {
+        getPermissions({ params: { ...filters } })
+    }, [filters])
 
     useEffect(() => {
         setLoading({
@@ -71,7 +83,16 @@ const RolesUpdate = () => {
                 show: true
             });
         }
-    }, [updateError, roleError]);
+
+        if (permissionsError) {
+            setCustomAlert({
+                title: 'Error',
+                severity: 'danger',
+                message: 'Ha ocurrido un error al obtener los permisos.',
+                show: true
+            });
+        }
+    }, [updateError, roleError, permissionsError]);
 
     const handleSubmit = (e) => {
         e?.preventDefault?.();
@@ -141,7 +162,7 @@ const RolesUpdate = () => {
                 hash[value] = true;
             });
 
-            let oldPermissions = data?.permissions?.filter((permission) => !hash[permission]);
+            let oldPermissions = data?.permissions?.filter?.((permission) => !hash[permission]);
 
             setData((oldData) => {
                 return {
@@ -183,45 +204,50 @@ const RolesUpdate = () => {
                             <h3 className="mb-5">Permisos</h3>
                             <div className="mb-3 row">
                                 {
-                                    Object?.entries(mainPermissions).map((permission, i) => {
-                                        return (
-                                            <div className="col-md-3 text-capitalize form-group" key={i}>
-                                                <div className="form-check mb-2">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="form-check-input"
-                                                        name="permissions"
-                                                        id={`permission-all-${i}`}
-                                                        checked={checker(permission[1], data?.permissions)}
-                                                        onChange={() => { handlePermissionAll(permission[1]) }}
-                                                    />
-                                                    <label className="form-check-label" htmlFor={`permission-all-${i}`}>
-                                                        <h5>{permission[0]}</h5>
-                                                    </label>
+                                    permissionsLoading ?
+                                        <div>
+                                            <h5>Obteniendo permisos...</h5>
+                                        </div>
+                                        :
+                                        permissions?.map?.((module, i) => {
+                                            return (
+                                                <div className="col-md-3 text-capitalize form-group" key={i}>
+                                                    <div className="form-check mb-2">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            name="permissions"
+                                                            id={`permission-all-${i}`}
+                                                            checked={checker(module?.permissions?.map?.(permission => permission?.name), data?.permissions)}
+                                                            onChange={() => { handlePermissionAll(module?.permissions?.map?.(permission => permission?.name)) }}
+                                                        />
+                                                        <label className="form-check-label" htmlFor={`permission-all-${i}`}>
+                                                            <h5>{module?.name}</h5>
+                                                        </label>
+                                                    </div>
+                                                    {
+                                                        module?.permissions?.map((permission, i2) => {
+                                                            return (
+                                                                <div className="form-check mb-2" key={i2}>
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        className="form-check-input"
+                                                                        name="permissions"
+                                                                        id={`permission-${i}-${i2}`}
+                                                                        value={permission?.name}
+                                                                        onChange={handleChange}
+                                                                        checked={data?.permissions?.includes(permission?.name)}
+                                                                    />
+                                                                    <label className="form-check-label" htmlFor={`permission-${i}-${i2}`}>
+                                                                        {permission?.displayText}
+                                                                    </label>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
                                                 </div>
-                                                {
-                                                    permission[1]?.map((permissionChildren, i2) => {
-                                                        return (
-                                                            <div className="form-check mb-2" key={i2}>
-                                                                <input
-                                                                    type="checkbox"
-                                                                    className="form-check-input"
-                                                                    name="permissions"
-                                                                    id={`permission-${i}-${i2}`}
-                                                                    value={permissionChildren}
-                                                                    onChange={handleChange}
-                                                                    checked={data?.permissions?.includes(permissionChildren)}
-                                                                />
-                                                                <label className="form-check-label" htmlFor={`permission-${i}-${i2}`}>
-                                                                    {permissionChildren}
-                                                                </label>
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                        )
-                                    })
+                                            )
+                                        })
                                 }
                             </div>
                             <div className="mb-3 d-flex justify-content-end">
