@@ -7,7 +7,9 @@ const SystemInfo = {
     description: "Sistema para el manejo de los pedidos.",
     logo: logo,
     logoBlanco: logoBlanco,
-    logoShort: logoShort
+    logoShort: logoShort,
+    host: 'http://csipedidos.test/',
+    api: 'http://csipedidos.test/api'
 }
 
 export default SystemInfo;

@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import PositionsColumns from "../../../components/CustomTable/Columns/PositionsColumns";
-import UsersColumns from "../../../components/CustomTable/Columns/UsersColumns";
+import RolesColumns from "../../../components/CustomTable/Columns/RolesColumns";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
-import useUsers from "../../../hooks/useUsers";
+import useRoles from "../../../hooks/useRoles";
 import { mainPermissions } from "../../../util/MenuLinks";
 
-const Users = () => {
+const Roles = () => {
 
     const { permissions } = useAuth();
 
@@ -23,18 +22,18 @@ const Users = () => {
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [{ users, total, numberOfPages, size, error: usersError, loading }, getUsers] = useUsers({ params: { ...filters } }, { useCache: false });
+    const [{ roles, total, numberOfPages, size, error: rolesError, loading }, getRoles] = useRoles({ params: { ...filters } }, { useCache: false });
 
-    const [{ error: deleteError, loading: deleteLoading }, deleteUser] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
+    const [{ error: deleteError, loading: deleteLoading }, deleteRole] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
     useEffect(() => {
-        getUsers();
+        getRoles();
     }, [])
 
     useEffect(() => {
         setLoading?.({
             show: deleteLoading,
-            message: 'Eliminando Usuario(s)'
+            message: 'Eliminando Registro(s)'
         })
     }, [deleteLoading])
 
@@ -48,33 +47,33 @@ const Users = () => {
             });
         }
 
-        if (usersError) {
+        if (rolesError) {
             setCustomAlert({
                 title: 'error',
                 severity: 'danger',
-                message: 'Ha ocurrido un error al obtener los usuarios.',
+                message: 'Ha ocurrido un error al obtener los roles.',
                 show: true
             });
         }
-    }, [deleteError, usersError])
+    }, [deleteError, rolesError])
 
     useEffect(() => {
         if (selectAll) {
-            setSelectedValues(users?.map?.((value) => value?.id))
+            setSelectedValues(roles?.map?.((value) => value?.id))
         } else {
             setSelectedValues([])
         }
     }, [selectAll])
 
     const handleDelete = (value) => {
-        deleteUser({ url: `/users/${value?.id}` }).then((data) => {
+        deleteRole({ url: `/roles/${value?.id}` }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
-                message: 'El usuario ha sido eliminado exitosamente.',
+                message: 'El rol ha sido eliminado exitosamente.',
                 show: true
             });
-            getUsers();
+            getRoles();
         })
     }
 
@@ -104,24 +103,24 @@ const Users = () => {
     }
 
     const handleDeleteSelected = () => {
-        deleteUser({ url: `/users/multiple`, data: { ids: selectedValues } }).then((data) => {
+        deleteRole({ url: `/roles/multiple`, data: { ids: selectedValues } }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
-                message: 'Los usuarios han sido eliminados exitosamente.',
+                message: 'Los roles han sido eliminados exitosamente.',
                 show: true
             });
-            getUsers();
+            getRoles();
         });
     }
 
     return (
         <div>
             {
-                permissions?.includes?.(mainPermissions?.users[1]) ?
+                permissions?.includes?.(mainPermissions?.roles[1]) ?
                     <div className="my-4 justify-content-end d-flex">
-                        <Link to={"/usuarios/crear"} className="btn btn-primary">
-                            Crear usuario
+                        <Link to={"/roles/crear"} className="btn btn-primary">
+                            Crear rol
                         </Link>
                     </div>
                     :
@@ -132,18 +131,18 @@ const Users = () => {
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
                 selectAll={selectAll}
-                title={'Usuarios'}
-                updatePath={"/usuarios"}
+                title={'Roles'}
+                updatePath={"/roles"}
                 onDelete={handleDelete}
                 selectedValues={selectedValues}
                 pages={numberOfPages}
                 total={total}
-                values={users}
+                values={roles}
                 currentPage={filters.page}
-                collumns={UsersColumns}
+                collumns={RolesColumns}
                 changePage={handlePageChange}
             />
         </div>
     )
 }
-export default Users;
+export default Roles;

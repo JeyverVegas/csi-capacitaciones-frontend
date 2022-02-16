@@ -34,7 +34,7 @@ const Login = () => {
     useEffect(() => {
         if (loginData) {
             console.log(loginData);
-            setAuthInfo({ user: loginData?.data, toke: loginData?.token });
+            setAuthInfo({ user: loginData?.data, token: loginData?.token });
             navigate('/dashboard', { replace: true });
         }
     }, [loginData])

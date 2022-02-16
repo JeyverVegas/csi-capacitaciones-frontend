@@ -8,7 +8,9 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 /// Link
 import { Link, useLocation } from "react-router-dom";
 import useScrollPosition from "use-scroll-position";
+import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import MenuLinks from "../../util/MenuLinks";
 
 class MM extends Component {
     componentDidMount() {
@@ -30,9 +32,11 @@ class MM extends Component {
 
 const SideBar = () => {
 
-    const { pathname } = useLocation();
+    const location = useLocation();
 
     const { iconHover, sidebarposition, headerposition, sidebarLayout } = useTheme();
+
+    const { permissions } = useAuth();
 
     const scrollPosition = useScrollPosition();
 
@@ -56,8 +60,8 @@ const SideBar = () => {
     }, []);
 
     useEffect(() => {
-        setPath(pathname)
-    }, [pathname]);
+        setPath(location?.pathname)
+    }, [location?.pathname]);
 
 
     return (
@@ -73,73 +77,52 @@ const SideBar = () => {
         >
             <PerfectScrollbar className="deznav-scroll">
                 <MM className="metismenu" id="menu">
-                    <li className={`${path.includes('/dashboard') ? "mm-active" : ""}`}>
-                        <Link to="/dashboard" className="ai-icon" >
-                            <i className="flaticon-025-dashboard"></i>
-                            <span className="nav-text">Dashboard</span>
-                        </Link>
-                    </li>
-                    <li className={`${path.includes('/cargos') ? "mm-active" : ""}`}>
-                        <Link className="has-arrow ai-icon" to="/#">
-                            <i className="flaticon-038-gauge"></i>
-                            <span className="nav-text">Cargos</span>
-                        </Link>
-                        <ul>
-                            <li>
-                                <Link className={`${path === "cargos" ? "mm-active" : ""}`} to="/cargos">
-                                    Listar cargos
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className={`${path.includes('/cargos/crear') ? "mm-active" : ""}`} to="/cargos/crear">
-                                    Crear Cargo
-                                </Link>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <Link className="has-arrow ai-icon" to="/#">
-                            <i className="flaticon-052-inside"></i>
-                            <span className="nav-text">Servicios</span>
-                        </Link>
-                        <ul>
-                            <li>
-                                <Link className={`${path === "servicios" ? "mm-active" : ""}`} to="/servicios">
-                                    Listar servicios
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className={`${path.includes('/servicios/crear') ? "mm-active" : ""}`} to="/servicios/crear">
-                                    Crear Servicios
-                                </Link>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <Link className="has-arrow ai-icon" to="/#">
-                            <i className="flaticon-381-user-9"></i>
-                            <span className="nav-text">Usuarios</span>
-                        </Link>
-                        <ul>
-                            <li>
-                                <Link className={`${path === "/usuarios" ? "mm-active" : ""}`} to="/usuarios">
-                                    Listar usuarios
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className={`${path.includes('/usuarios/crear') ? "mm-active" : ""}`} to="/usuarios/crear">
-                                    Crear Usuario
-                                </Link>
-                            </li>
-                        </ul>
-                    </li>
+                    {MenuLinks?.map((menuLink, i) => {
+                        return (
+                            menuLink?.permissions?.some?.(r => permissions?.indexOf(r) >= 0) || !menuLink?.permissions || permissions?.includes(menuLink?.permissions) ?
+                                <li className={`${path.includes(menuLink?.path) && !menuLink?.children ? "mm-active" : ""}`} key={i}>
+                                    <Link to={menuLink?.children?.length > 0 ? '#' : menuLink?.path} className={`${menuLink?.children?.length > 0 ? 'has-arrow' : ''} ai-icon`}>
+                                        {
+                                            menuLink?.icon ?
+                                                <i className={menuLink?.icon}></i>
+                                                :
+                                                null
+                                        }
+                                        <span className="nav-text">{menuLink?.title}</span>
+                                    </Link>
+                                    {
+                                        menuLink?.children?.length > 0 ?
+                                            <ul>
+                                                {
+                                                    menuLink?.children?.map?.((childrenMenu, i2) => {
+                                                        return (
+                                                            permissions?.includes?.(childrenMenu?.permissions) && !childrenMenu.forUpdate ?
+                                                                <li key={`${i}-${i2}`}>
+                                                                    <Link className={`${path === childrenMenu?.path ? "mm-active" : ""}`} to={childrenMenu?.path}>
+                                                                        {childrenMenu?.title}
+                                                                    </Link>
+                                                                </li>
+                                                                :
+                                                                null
+                                                        )
+                                                    })
+                                                }
+                                            </ul>
+                                            :
+                                            null
+                                    }
+                                </li>
+                                :
+                                null
+                        )
+                    })}
                 </MM>
                 <div className="copyright">
                     <p><strong>CSI PEDIDOS</strong> © 2022 All Rights Reserved</p>
                     <p className="fs-12">Realizado con <span className="heart"></span> por J.V. & A.N.</p>
                 </div>
             </PerfectScrollbar>
-        </div>
+        </div >
     );
 };
 

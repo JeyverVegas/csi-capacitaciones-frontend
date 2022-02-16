@@ -1,18 +1,27 @@
 import { Dropdown } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import SystemInfo from "../util/SystemInfo";
+import profile from '../images/profile.png';
 
 const UserAccountInfo = () => {
 
-    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const { user, setAuthInfo } = useAuth();
+
+    const handleLogOut = () => {
+        setAuthInfo?.(false);
+        navigate('/iniciar-sesion', { replace: true });
+    }
 
     return (
         <Dropdown as="li" className="nav-item dropdown header-profile">
             <Dropdown.Toggle variant="" as="a" className="nav-link i-false c-pointer">
-                <img src={`https://api.tubeneficiosi.com/uploads/users/1639515450584-905483204.jpg`} width={20} alt="profile-image" />
+                <img src={user?.imagePath ? `${SystemInfo?.host}${user?.imagePath}` : profile} width={20} alt="profile-image" />
                 <div className="header-info ms-3">
                     <span>{user?.name}</span>
-                    <small>Superadmin</small>
+                    <small>{user?.role?.name}</small>
                 </div>
             </Dropdown.Toggle>
             <Dropdown.Menu align="right" className="mt-3 dropdown-menu dropdown-menu-end">
@@ -27,7 +36,7 @@ const UserAccountInfo = () => {
                     </svg>
                     <span className="ms-2">Profile</span>
                 </Link>
-                <button onClick={() => { alert("hola") }} className="dropdown-item ai-icon">
+                <button onClick={handleLogOut} className="dropdown-item ai-icon">
                     <svg
                         id="icon-logout" xmlns="http://www.w3.org/2000/svg"
                         className="text-danger" width={18} height={18} viewBox="0 0 24 24"

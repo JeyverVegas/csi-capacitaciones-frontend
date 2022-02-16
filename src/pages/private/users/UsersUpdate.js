@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ImgUploadInput from "../../../components/ImgUploadInput";
+import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useDocumentNumberTypes from "../../../hooks/useDocumentNumberTypes";
 import usePositions from "../../../hooks/usePositions";
 import useRoles from "../../../hooks/useRoles";
 import useServices from "../../../hooks/useServices";
+import SystemInfo from "../../../util/SystemInfo";
 
-const UsersCreate = () => {
+const UsersUpdate = () => {
+
+    const { user: currentUser, setAuthInfo } = useAuth();
+
+    const { id } = useParams();
 
     const navigate = useNavigate();
 
@@ -32,10 +38,15 @@ const UsersCreate = () => {
         documentNumber: '',
         documentNumberTypeId: '',
         role: '',
-        serviceIds: []
+        serviceIds: [],
+        _method: 'PUT'
     });
 
-    const [{ data: createData, loading: createLoading, error: createError }, createUser] = useAxios({ url: `/users`, method: 'POST' }, { manual: true, useCache: false });
+    const [imagePreview, setImagePreview] = useState('');
+
+    const [{ data: user, error: userError, loading: userLoading }, getUser] = useAxios({ url: `/users/${id}` }, { useCache: false });
+
+    const [{ data: updateData, loading: updateLoading, error: updateError }, updateUser] = useAxios({ url: `/users/${id}`, method: 'POST' }, { manual: true, useCache: false });
 
     const [{ positions, error: positionsError, loading: positionsLoading }, getPositions] = usePositions({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
 
@@ -46,12 +57,33 @@ const UsersCreate = () => {
     const [{ services, error: servicesError, loading: servicesLoading }, getServices] = useServices({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
 
     useEffect(() => {
-        if (!documentNumberTypesLoading && !rolesLoading && !positionsLoading && !servicesLoading) {
+        console.log(data);
+    }, [data])
+
+    useEffect(() => {
+        if (user) {
+            const { createdAt, documentNumberType, id, imagePath, position, role, services, ...rest } = user?.data;
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    ...rest,
+                    role: role?.name,
+                    serviceIds: services?.map(service => service?.id)
+                }
+            });
+
+            setImagePreview(`${SystemInfo?.host}${imagePath}`);
+            console.log(user);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (!documentNumberTypesLoading && !rolesLoading && !positionsLoading && !servicesLoading && !userLoading) {
             setFirstLoading(false);
         } else {
             setFirstLoading(true)
         }
-    }, [documentNumberTypesLoading, rolesLoading, positionsLoading, servicesLoading]);
+    }, [documentNumberTypesLoading, rolesLoading, positionsLoading, servicesLoading, userLoading]);
 
     useEffect(() => {
         setLoading({
@@ -80,7 +112,7 @@ const UsersCreate = () => {
     }, [data?.documentNumber, canRemove])
 
     useEffect(() => {
-        if (createData) {
+        if (updateData) {
             setCustomAlert({
                 title: '¡Operacion Exitosa!',
                 severity: 'success',
@@ -88,11 +120,23 @@ const UsersCreate = () => {
                 show: true
             });
             navigate('/usuarios');
+            if (updateData?.data?.id === currentUser?.id) {
+                const { createdAt, role, ...rest } = updateData?.data;
+                setAuthInfo((oldAuthInfo) => {
+                    return {
+                        ...oldAuthInfo,
+                        user: {
+                            ...oldAuthInfo?.user,
+                            ...rest
+                        }
+                    }
+                });
+            }
         }
-    }, [createData])
+    }, [updateData])
 
     useEffect(() => {
-        if (createError) {
+        if (updateError) {
             setCustomAlert({
                 title: 'Error',
                 severity: 'danger',
@@ -136,16 +180,25 @@ const UsersCreate = () => {
                 show: true
             });
         }
-    }, [createError, positionsError, documentNumberTypesError, rolesError, servicesError])
+
+        if (userError) {
+            setCustomAlert({
+                title: 'Error',
+                severity: 'danger',
+                message: 'Ha ocurrido un error al obtener los datos del usuario.',
+                show: true
+            });
+        }
+    }, [updateError, positionsError, documentNumberTypesError, rolesError, servicesError, userError])
 
     const handleSubmit = (e) => {
         let hasError = false;
         e?.preventDefault?.();
 
-        if (createLoading) {
+        if (updateLoading) {
             return;
         }
-        const { image: image2, ...requireValues } = data;
+        const { image: image2, password: password2, ...requireValues } = data;
         Object.keys(requireValues).forEach((key, i) => {
             if (!data[key]) {
                 hasError = true;
@@ -163,7 +216,7 @@ const UsersCreate = () => {
         }
 
         const formdata = new FormData();
-        const { image, serviceIds, ...rest } = data;
+        const { image, serviceIds, password, ...rest } = data;
         Object.keys(rest).forEach((key, i) => {
             formdata?.append(key, data[key]);
         });
@@ -172,11 +225,15 @@ const UsersCreate = () => {
             formdata?.append(`serviceIds[${i}]`, serviceId);
         });
 
+        if (password) {
+            formdata?.append(`password`, password);
+        }
+
         if (image) {
             formdata?.append('image', image, image?.name);
         }
 
-        createUser({ data: formdata });
+        updateUser({ data: formdata });
     }
 
     const handleChange = (e) => {
@@ -252,7 +309,7 @@ const UsersCreate = () => {
                     <div className="basic-form">
                         <form onSubmit={handleSubmit}>
                             <div className="form-group col-1 mb-3">
-                                <ImgUploadInput deleteButton description="imagen" name="image" change={handleChange} style={{ height: 80 }} />
+                                <ImgUploadInput previewImage={imagePreview} deleteButton description="imagen" name="image" change={handleChange} style={{ height: 80 }} />
                             </div>
                             <div className="row mb-5">
                                 <div className="form-group mb-3 col-md-6">
@@ -428,12 +485,12 @@ const UsersCreate = () => {
                                 <Link to={`#`} onClick={() => { navigate(-1) }} className="btn btn-danger mx-2">
                                     Cancelar
                                 </Link>
-                                <button disabled={createLoading} type="submit" className="btn btn-primary mx-2">
+                                <button disabled={updateLoading} type="submit" className="btn btn-primary mx-2">
                                     {
-                                        createLoading ?
+                                        updateLoading ?
                                             'Cargando'
                                             :
-                                            'Crear'
+                                            'Actualizar'
                                     }
                                 </button>
                             </div>
@@ -444,4 +501,4 @@ const UsersCreate = () => {
         </div>
     )
 }
-export default UsersCreate;
+export default UsersUpdate;

@@ -1,33 +1,50 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 
-const PositionsCreate = () => {
+const ServicesUpdate = () => {
+
+    const { id } = useParams();
 
     const navigate = useNavigate();
 
-    const { setCustomAlert } = useFeedBack();
+    const { setCustomAlert, setLoading } = useFeedBack();
 
     const [name, setName] = useState('');
 
-    const [{ data: createData, loading: createLoading, error: createError }, createPosition] = useAxios({ url: `/positions`, method: 'POST' }, { manual: true, useCache: false });
+    const [{ data: serviceData, error: serviceError, loading: serviceLoading }, getService] = useAxios({ url: `/services/${id}` }, { useCache: false });
+
+    const [{ data: updateData, loading: updateLoading, error: updateError }, updateService] = useAxios({ url: `/services/${id}`, method: 'PUT' }, { manual: true, useCache: false });
 
     useEffect(() => {
-        if (createData) {
+        if (serviceData) {
+            setName(serviceData?.data?.name);
+            console.log(serviceData);
+        }
+    }, [serviceData])
+
+    useEffect(() => {
+        setLoading({
+            show: serviceLoading,
+            message: 'Obteniendo información'
+        })
+    }, [serviceLoading])
+
+    useEffect(() => {
+        if (updateData) {
             window.scrollTo({ top: 0 });
             setCustomAlert({
                 title: '¡Operacion Exitosa!',
                 severity: 'success',
-                message: 'El cargo fue creado exitosamente.',
+                message: 'El servicio fue actualizado exitosamente.',
                 show: true
             });
-            setName('');
         }
-    }, [createData])
+    }, [updateData])
 
     useEffect(() => {
-        if (createError) {
+        if (updateError) {
             setCustomAlert({
                 title: 'Error',
                 severity: 'danger',
@@ -35,12 +52,21 @@ const PositionsCreate = () => {
                 show: true
             });
         }
-    }, [createError])
+
+        if (serviceError) {
+            setCustomAlert({
+                title: 'Error',
+                severity: 'danger',
+                message: 'Ha ocurrido un error al obtener el registro.',
+                show: true
+            });
+        }
+    }, [updateError, serviceError])
 
     const handleSubmit = (e) => {
         e?.preventDefault?.();
 
-        if (createLoading) {
+        if (updateLoading) {
             return;
         }
 
@@ -53,14 +79,14 @@ const PositionsCreate = () => {
             });
             return;
         }
-        createPosition({ data: { name } })
+        updateService({ data: { name } })
     }
 
     return (
         <div>
             <div className="card">
                 <div className="card-header">
-                    <h4 className="card-title">Crear cargo</h4>
+                    <h4 className="card-title">Actualizar Servicio</h4>
                 </div>
                 <div className="card-body">
                     <div className="basic-form">
@@ -82,9 +108,9 @@ const PositionsCreate = () => {
                                 <Link to={`#`} onClick={() => { navigate(-1) }} className="btn btn-danger mx-2">
                                     Cancelar
                                 </Link>
-                                <button disabled={createLoading} type="submit" className="btn btn-primary mx-2">
+                                <button disabled={updateLoading} type="submit" className="btn btn-primary mx-2">
                                     {
-                                        createLoading ?
+                                        updateLoading ?
                                             'Cargando'
                                             :
                                             'Crear'
@@ -98,4 +124,4 @@ const PositionsCreate = () => {
         </div>
     )
 }
-export default PositionsCreate;
+export default ServicesUpdate;

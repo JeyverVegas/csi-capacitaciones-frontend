@@ -7,8 +7,16 @@ export const FeedBackProvider = ({ children }) => {
 
   const [customLoading, setLoading] = useState({ show: false, message: "" });
   const [customToast, setCustomToast] = useState({ message: '', severity: '', show: false, position: '' });
-  const [customAlert, setCustomAlert] = useState({ show: false, message: "", severity: "success" });
+  const [customAlert, setCustomAlert] = useState({ show: false, message: "", severity: "success", title: '' });
   const [customAlertDialog, setCustomAlertDialog] = useState({ show: false, message: "", severity: "success" });
+
+  useEffect(() => {
+    if (customAlert?.show) {
+      setTimeout(() => {
+        setCustomAlert({ show: false, message: "", severity: "success", title: '' });
+      }, [5000])
+    }
+  }, [customAlert])
 
   return <FeedBackContext.Provider value={{
     customLoading,
