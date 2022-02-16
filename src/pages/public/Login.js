@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SystemInfo from "../../util/SystemInfo";
 import loginbg from "../../images/pic1.png";
 import useAxios from "../../hooks/useAxios";
@@ -9,7 +9,6 @@ import { useAuth } from "../../context/AuthContext";
 const Login = () => {
 
     const navigate = useNavigate();
-    const location = useLocation();
 
     const { setLoading, setCustomToast } = useFeedBack();
 
@@ -27,7 +26,9 @@ const Login = () => {
 
     useEffect(() => {
         if (loginError) {
-            console.log(loginError);
+            Object.keys(loginError?.response?.data?.errors).forEach((errorKey) => {
+                setCustomToast({ message: `${errorKey}: ${loginError?.response?.data?.errors[errorKey][0]}`, severity: 'danger', show: true, position: 'top-right' });
+            })
         }
     }, [loginError])
 

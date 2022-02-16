@@ -94,7 +94,7 @@ const CustomTable = ({ title, values = [], total = 0, pages, onDeleteSelected, c
                                                                                     roleName={value?.role?.name}
                                                                                     nameValue={value?.name}
                                                                                     date={value?.createdAt}
-                                                                                    imgValue={`${SystemInfo?.host}${value?.imagePath}`}
+                                                                                    imgValue={`${value?.imagePath}`}
                                                                                     documentNumberValue={value?.documentNumber}
                                                                                     onChange={() => { onSelectValue?.(value) }}
                                                                                     onDelete={() => { onDelete?.(value) }}
