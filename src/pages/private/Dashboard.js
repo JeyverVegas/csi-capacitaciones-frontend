@@ -7,11 +7,8 @@ import { mainPermissions } from "../../util/MenuLinks";
 const Dashboard = () => {
 
     return (
-        <div style={{ background: 'red' }}>
-            <button onClick={() => {
-            }}>
-                mostrar toast
-            </button>
+        <div>
+
         </div>
     )
 }

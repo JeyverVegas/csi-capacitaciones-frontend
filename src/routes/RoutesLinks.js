@@ -42,6 +42,7 @@ const RoutesLinks = () => {
                     })
                 }
             </Route>
+            <Route path='*' element={<div>No extiste esta ruta.</div>} />
         </Routes>
     )
 }
