@@ -252,7 +252,7 @@ const UsersCreate = () => {
                     <div className="basic-form">
                         <form onSubmit={handleSubmit}>
                             <div className="form-group col-1 mb-3">
-                                <ImgUploadInput deleteButton description="imagen" name="image" change={handleChange} style={{ height: 80 }} />
+                                <ImgUploadInput description="imagen" name="image" change={handleChange} style={{ height: 80 }} />
                             </div>
                             <div className="row mb-5">
                                 <div className="form-group mb-3 col-md-6">

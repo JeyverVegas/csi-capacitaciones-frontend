@@ -1,7 +1,16 @@
+import Categories from "../pages/private/categories/Categories";
+import CategoriesCreate from "../pages/private/categories/CategoriesCreate";
+import CategoriesUpdate from "../pages/private/categories/CategoriesUpdate";
 import Dashboard from "../pages/private/Dashboard";
 import Positions from "../pages/private/positions/Positions";
 import PositionsCreate from "../pages/private/positions/PositionsCreate";
 import PositionsUpdate from "../pages/private/positions/PositionsUpdate";
+import Products from "../pages/private/products/Products";
+import ProductsCreate from "../pages/private/products/ProductsCreate";
+import ProductsUpdate from "../pages/private/products/ProductsUpdate";
+import Providers from "../pages/private/providers/Providers";
+import ProvidersCreate from "../pages/private/providers/ProvidersCreate";
+import ProvidersUpdate from "../pages/private/providers/ProvidersUpdate";
 import Roles from "../pages/private/roles/Roles";
 import RolesCreate from "../pages/private/roles/RolesCreate";
 import RolesUpdate from "../pages/private/roles/RolesUpdate";
@@ -29,6 +38,9 @@ export const mainPermissions = {
     services: ['view-services', 'create-services', 'update-services', 'delete-services'],
     users: ['view-users', 'create-users', 'update-users', 'delete-users'],
     roles: ['view-roles', 'create-roles', 'update-roles', 'delete-roles'],
+    providers: ['view-users', 'create-users', 'update-users', 'delete-users'],
+    products: ['view-users', 'create-users', 'update-users', 'delete-users', 'view-users', 'create-users'],
+    categories: ['view-categories', 'create-categories', 'update-categories', 'delete-categories']
 }
 
 const MenuLinks = [
@@ -40,10 +52,25 @@ const MenuLinks = [
         createLink('Actualizar Cargos', true, <PositionsUpdate />, '', '/cargos/:id', mainPermissions?.positions[2]),
     ]),
 
-    createLink('Servicios', null, null, 'flaticon-052-inside', '/servicios', mainPermissions?.services, [
+    createLink('Servicios', null, null, 'flaticon-381-settings-7', '/servicios', mainPermissions?.services, [
         createLink('Crear Servicio', null, <ServicesCreate />, '', '/servicios/crear', mainPermissions?.services[1]),
         createLink('Listar Servicios', null, <Services />, '', '/servicios', mainPermissions?.services[0]),
         createLink('Actualizar Servicios', true, <ServicesUpdate />, '', '/servicios/:id', mainPermissions?.services[2]),
+    ]),
+
+    createLink('Proveedores', null, null, 'flaticon-052-inside', '/proveedores', mainPermissions?.providers, [
+        createLink('Crear Proveedor', null, <ProvidersCreate />, '', '/proveedores/crear', mainPermissions?.providers[1]),
+        createLink('Listar Proveedores', null, <Providers />, '', '/proveedores', mainPermissions?.providers[0]),
+        createLink('Actualizar Proveedores', true, <ProvidersUpdate />, '', '/proveedores/:id', mainPermissions?.providers[2]),
+    ]),
+
+    createLink('Productos', null, null, 'flaticon-381-tab', '/productos', mainPermissions?.products, [
+        createLink('Crear Producto', null, <ProductsCreate />, '', '/productos/crear', mainPermissions?.products[1]),
+        createLink('Listar Productos', null, <Products />, '', '/productos', mainPermissions?.products[0]),
+        createLink('Crear Categoria', null, <CategoriesCreate />, '', '/categorias/crear', mainPermissions?.products[5]),
+        createLink('Categorias', null, <Categories />, '', '/categorias', mainPermissions?.products[4]),
+        createLink('Actualizar Productos', true, <ProductsUpdate />, '', '/productos/:id', mainPermissions?.products[2]),
+        createLink('Actualizar Categoria', true, <CategoriesUpdate />, '', '/categorias/:id', mainPermissions?.categories[2]),
     ]),
 
     createLink('Roles', null, null, 'flaticon-381-user-9', '/roles', mainPermissions?.roles, [
