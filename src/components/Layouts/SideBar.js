@@ -84,7 +84,7 @@ const SideBar = () => {
                                     <Link to={menuLink?.children?.length > 0 ? '#' : menuLink?.path} className={`${menuLink?.children?.length > 0 ? 'has-arrow' : ''} ai-icon`}>
                                         {
                                             menuLink?.icon ?
-                                                <i className={menuLink?.icon}></i>
+                                                <i className={`${menuLink?.icon}`}></i>
                                                 :
                                                 null
                                         }
