@@ -4,9 +4,9 @@ const Footer = () => {
         <div className="footer">
             <div className="copyright">
                 <p>
-                    Copyright © Designed &amp; Developed by{" "}
-                    <a href="http://dexignzone.com/" target="_blank" rel="noreferrer">
-                        DexignZone
+                © Todos los Derechos Reservados. {" "}
+                    <a href="https://www.csiltda.cl/" target="_blank" rel="noreferrer">
+                    www.csiltda.cl
                     </a>{" "}
                     {d.getFullYear()}
                 </p>

@@ -118,8 +118,8 @@ const SideBar = () => {
                     })}
                 </MM>
                 <div className="copyright">
-                    <p><strong>CSI PEDIDOS</strong> © 2022 All Rights Reserved</p>
-                    <p className="fs-12">Realizado con <span className="heart"></span> por J.V. & A.N.</p>
+                    <p><strong>CSI SPM 2.0</strong> © Sistema de Pedidos Web 2022</p>
+                    <p className="fs-12"><span className="heart"></span></p>
                 </div>
             </PerfectScrollbar>
         </div >
