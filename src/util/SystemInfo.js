@@ -8,7 +8,7 @@ const SystemInfo = {
     logo: logo,
     logoBlanco: logoBlanco,
     logoShort: logoShort,
-    host: 'http://csipedidos.test/',
+    host: 'http://csipedidos.test',
     api: 'http://csipedidos.test/api'
 }
 

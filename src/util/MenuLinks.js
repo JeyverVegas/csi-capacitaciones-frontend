@@ -46,7 +46,7 @@ export const mainPermissions = {
 const MenuLinks = [
     createLink('DashBoard', null, <Dashboard />, 'flaticon-025-dashboard', '/dashboard', mainPermissions?.dashboard[0]),
 
-    createLink('Cargos', null, null, 'flaticon-038-gauge', '/cargos', mainPermissions?.positions, [
+    createLink('Cargos', null, null, 'flaticon-381-id-card-2', '/cargos', mainPermissions?.positions, [
         createLink('Crear Cargos', null, <PositionsCreate />, '', '/cargos/crear', mainPermissions?.positions[1]),
         createLink('Listar Cargos', null, <Positions />, '', '/cargos', mainPermissions?.positions[0]),
         createLink('Actualizar Cargos', true, <PositionsUpdate />, '', '/cargos/:id', mainPermissions?.positions[2]),
@@ -57,6 +57,9 @@ const MenuLinks = [
         createLink('Listar Servicios', null, <Services />, '', '/servicios', mainPermissions?.services[0]),
         createLink('Actualizar Servicios', true, <ServicesUpdate />, '', '/servicios/:id', mainPermissions?.services[2]),
     ]),
+
+
+    
 
     createLink('Proveedores', null, null, 'flaticon-052-inside', '/proveedores', mainPermissions?.providers, [
         createLink('Crear Proveedor', null, <ProvidersCreate />, '', '/proveedores/crear', mainPermissions?.providers[1]),
@@ -73,7 +76,8 @@ const MenuLinks = [
         createLink('Actualizar Categoria', true, <CategoriesUpdate />, '', '/categorias/:id', mainPermissions?.categories[2]),
     ]),
 
-    createLink('Roles', null, null, 'flaticon-381-user-9', '/roles', mainPermissions?.roles, [
+    createLink('Roles', null, null, 'flaticon-381-user-8', '/roles', mainPermissions?.roles, [
+
         createLink('Crear Rol', null, <RolesCreate />, '', '/roles/crear', mainPermissions?.roles[1]),
         createLink('Listar Roles', null, <Roles />, '', '/roles', mainPermissions?.roles[0]),
         createLink('Actualizar Roles', true, <RolesUpdate />, '', '/roles/:id', mainPermissions?.roles[2]),
