@@ -19,7 +19,7 @@ const CategoriesUpdate = () => {
 
     const [data, setData] = useState({
         name: '',
-        parentCategoryId: ''
+        parentId: ''
     });
 
     const [firstLoading, setFirstLoading] = useState(true);
@@ -32,7 +32,13 @@ const CategoriesUpdate = () => {
 
     useEffect(() => {
         if (category) {
-
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    name: category.data.name,
+                    parentId: category.data.parentId
+                }
+            })
         }
     }, [category])
 
@@ -145,8 +151,8 @@ const CategoriesUpdate = () => {
                                     <label>Categoria padre</label>
                                     <select
                                         className="form-control"
-                                        name="parentCategoryId"
-                                        value={data?.parentCategoryId}
+                                        name="parentId"
+                                        value={data?.parentId}
                                         onChange={handleChange}
                                     >
                                         <option value="">

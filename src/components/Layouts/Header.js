@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import Toggle from "react-toggle";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -16,12 +16,20 @@ const Header = ({ onNote }) => {
 
     const location = useLocation();
 
+    const [searchParams] = useSearchParams();
+
     const [darkMode, setDarkMode] = useState(false);
+
+    const [nameForUpdate, setNameForUpdate] = useState('');
 
     useEffect(() => {
         const dark = localStorage.getItem('CSI-PEDIDOS-DARKMODE') === 'true' ? true : false;
         setDarkMode(dark);
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        setNameForUpdate(searchParams?.get('name'));
+    }, [searchParams])
 
     useEffect(() => {
         if (darkMode) {
@@ -40,7 +48,12 @@ const Header = ({ onNote }) => {
                     <div className="collapse navbar-collapse justify-content-between">
                         <div className="header-left">
                             <div className="dashboard_bar" style={{ textTransform: "capitalize" }}>
-                                {location?.pathname?.split?.('/')?.filter?.((value) => { if (value) return value; }).join(' - ')}
+                                {
+                                    nameForUpdate ?
+                                        `${location?.pathname?.split?.('/')?.filter?.((value) => { if (value) return value; })[0]} - ${nameForUpdate.length > 16 ? `${nameForUpdate.slice(0, 16)}...` : nameForUpdate}`
+                                        :
+                                        location?.pathname?.split?.('/')?.filter?.((value) => { if (value) return value; }).join(' - ')
+                                }
                             </div>
                         </div>
                         <ul className="navbar-nav header-right main-notification" style={{ alignItems: "center" }}>

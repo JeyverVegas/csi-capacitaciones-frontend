@@ -52,7 +52,7 @@ const Categories = () => {
             setCustomAlert({
                 title: 'error',
                 severity: 'danger',
-                message: 'Ha ocurrido un error al obtener los proveedores.',
+                message: 'Ha ocurrido un error al obtener las categorias.',
                 show: true
             });
         }
@@ -120,7 +120,7 @@ const Categories = () => {
             {
                 permissions?.includes?.(mainPermissions?.categories[1]) ?
                     <div className="my-4 justify-content-end d-flex">
-                        <Link to={"/categories/crear"} className="btn btn-primary">
+                        <Link to={"/categorias/crear"} className="btn btn-primary">
                             Crear categoria
                         </Link>
                     </div>
