@@ -18,7 +18,7 @@ const CategoriesCreate = () => {
     const [data, setData] = useState({
         name: '',
         parentId: '',
-        description: ''
+        description: ''        
     });
 
     const [{ data: createData, loading: createLoading, error: createError }, createCategory] = useAxios({ url: `/categories`, method: 'POST' }, { manual: true, useCache: false });
@@ -40,6 +40,7 @@ const CategoriesCreate = () => {
                 message: 'La categoria fue creada exitosamente.',
                 show: true
             });
+            navigate('/categorias');
         }
     }, [createData])
 

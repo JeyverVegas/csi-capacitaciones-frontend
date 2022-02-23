@@ -56,7 +56,7 @@ const Categories = () => {
             setCustomAlert({
                 title: 'error',
                 severity: 'danger',
-                message: 'Ha ocurrido un error al obtener los proveedores.',
+                message: 'Ha ocurrido un error al obtener las categorias.',
                 show: true
             });
         }

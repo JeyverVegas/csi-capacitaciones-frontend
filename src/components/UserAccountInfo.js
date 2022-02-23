@@ -20,7 +20,7 @@ const UserAccountInfo = () => {
             <Dropdown.Toggle variant="" as="a" className="nav-link i-false c-pointer">
                 <img src={user?.imagePath !== '/storage/' ? `${SystemInfo?.host}${user?.imagePath}` : profile} width={20} alt="profile-image" />
                 <div className="header-info ms-3">
-                    <span>{user?.name}</span>
+                    <span>{user?.name.length > 16 ? `${user?.name.slice(0, 16)}...` : user?.name}</span>
                     <small>{user?.role?.name}</small>
                 </div>
             </Dropdown.Toggle>
