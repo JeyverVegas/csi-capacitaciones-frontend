@@ -19,7 +19,8 @@ const CategoriesUpdate = () => {
 
     const [data, setData] = useState({
         name: '',
-        parentCategoryId: ''
+        description: '',
+        parentId: ''
     });
 
     const [firstLoading, setFirstLoading] = useState(true);
@@ -32,7 +33,15 @@ const CategoriesUpdate = () => {
 
     useEffect(() => {
         if (category) {
-
+            console.log(category?.data);            
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    name: category?.data?.name,
+                    description: category?.data?.description,
+                    parentId: category?.data?.parentCategory ? category?.data?.parentCategory?.id : ''
+                }
+            })
         }
     }, [category])
 
@@ -145,8 +154,8 @@ const CategoriesUpdate = () => {
                                     <label>Categoria padre</label>
                                     <select
                                         className="form-control"
-                                        name="parentCategoryId"
-                                        value={data?.parentCategoryId}
+                                        name="parentId"
+                                        value={data?.parentId}
                                         onChange={handleChange}
                                     >
                                         <option value="">
@@ -162,6 +171,17 @@ const CategoriesUpdate = () => {
                                             })
                                         }
                                     </select>
+                                </div>
+                                <div className="form-group mb-3 col-md-12">
+                                    <label>Descripcion</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Descripcion"
+                                        name="description"
+                                        value={data?.description}
+                                        onChange={handleChange}
+                                    />
                                 </div>
                             </div>
                             <div className="mb-3 d-flex justify-content-end">

@@ -17,7 +17,8 @@ const CategoriesCreate = () => {
 
     const [data, setData] = useState({
         name: '',
-        parentCategoryId: ''
+        parentId: '',
+        description: ''
     });
 
     const [{ data: createData, loading: createLoading, error: createError }, createCategory] = useAxios({ url: `/categories`, method: 'POST' }, { manual: true, useCache: false });
@@ -119,8 +120,8 @@ const CategoriesCreate = () => {
                                     <label>Categoria padre</label>
                                     <select
                                         className="form-control"
-                                        name="parentCategoryId"
-                                        value={data?.parentCategoryId}
+                                        name="parentId"
+                                        value={data?.parentId}
                                         onChange={handleChange}
                                     >
                                         <option value="">
@@ -136,6 +137,17 @@ const CategoriesCreate = () => {
                                             })
                                         }
                                     </select>
+                                </div>
+                                <div className="form-group mb-3 col-md-12">
+                                    <label>Descripcion</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Descripción"
+                                        name="description"
+                                        value={data?.description}
+                                        onChange={handleChange}
+                                    />
                                 </div>
                             </div>
                             <div className="mb-3 d-flex justify-content-end">

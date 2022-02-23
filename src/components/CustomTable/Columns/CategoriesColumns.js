@@ -16,7 +16,11 @@ const CategoriesColumns = [
     },
     {
         Label: () => 'Nombre',
-        Component: ImageAndName
+        accessor:  'name'
+    },
+    {
+        Label: () => 'Categoria padre',
+        Component: ({parentCategory}) =>   parentCategory ? parentCategory?.name : 'No tiene.' 
     },
     {
         Label: () => 'Fecha de Creación',

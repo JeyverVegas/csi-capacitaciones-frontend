@@ -88,6 +88,7 @@ const CustomTable = ({ title, values = [], total = 0, pages, onDeleteSelected, c
                                                                             Component ?
                                                                                 <Component
                                                                                     id={value?.id}
+                                                                                    parentCategory={value?.parentCategory}
                                                                                     updatePath={updatePath}
                                                                                     positionName={value?.position?.name}
                                                                                     serviceName={value?.service?.name}

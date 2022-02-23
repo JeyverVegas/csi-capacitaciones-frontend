@@ -33,12 +33,18 @@ export const createAxios = () => {
     (error) => Promise.reject(error)
   );
 
-  /* axiosInstance.interceptors.response.use(response, (error) => {
-    if (error.config && error.response?.status === 401) {
-      return deleteAuth();
-    }
-    return Promise.reject(error);
-  }); */
+  axiosInstance?.interceptors?.response?.use?.(handleResponse, handleResponseError);
 
   return axiosInstance;
+}
+
+const handleResponse = (response) => {
+  console.log('Axios Respuesta', response);
+  return response;
+}
+
+const handleResponseError = (error) => {
+  console.log('Axios Error',  Object.keys(error));
+  console.log('Axios Error',  error?.response);
+  return Promise.reject(error);
 }

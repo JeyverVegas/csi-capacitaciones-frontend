@@ -28,6 +28,10 @@ const Categories = () => {
     const [{ error: deleteError, loading: deleteLoading }, deleteCategories] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
     useEffect(() => {
+        console.log(categories);
+    }, [categories])
+
+    useEffect(() => {
         getCategories();
     }, [])
 
@@ -120,7 +124,7 @@ const Categories = () => {
             {
                 permissions?.includes?.(mainPermissions?.categories[1]) ?
                     <div className="my-4 justify-content-end d-flex">
-                        <Link to={"/categories/crear"} className="btn btn-primary">
+                        <Link to={"/categorias/crear"} className="btn btn-primary">
                             Crear categoria
                         </Link>
                     </div>
