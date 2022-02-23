@@ -43,7 +43,7 @@ const SideBar = () => {
     const [path, setPath] = useState('');
 
     useEffect(() => {
-        var btn = document.querySelector(".nav-control");
+        var btn = document.querySelector(".nav-control");        
         var aaa = document.querySelector("#main-wrapper");
         function toggleFunc() {
             return aaa.classList.toggle("menu-toggle");

@@ -39,12 +39,12 @@ export const createAxios = () => {
 }
 
 const handleResponse = (response) => {
-  console.log('Axios Respuesta', response);
+  //console.log('Axios Respuesta', response);
   return response;
 }
 
 const handleResponseError = (error) => {
-  console.log('Axios Error',  Object.keys(error));
-  console.log('Axios Error',  error?.response);
+  //console.log('Axios Error',  Object.keys(error));
+  //console.log('Axios Error',  error?.response);
   return Promise.reject(error);
 }

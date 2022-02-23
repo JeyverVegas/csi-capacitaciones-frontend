@@ -143,8 +143,12 @@ export const ThemeContextProvider = (props) => {
     body.setAttribute("data-header-position", name.value);
   };
 
+  const customMenuToggle = (open) => {    
+    setMenuToggle(open);
+  }
+
   const openMenuToggle = () => {
-    sideBarStyle.value === "overly"
+    sideBarStyle.value === "overlay"
       ? setMenuToggle(true)
       : setMenuToggle(false);
   };
@@ -272,6 +276,7 @@ export const ThemeContextProvider = (props) => {
         iconHover,
         menuToggle,
         openMenuToggle,
+        customMenuToggle,
         changeBackground,
         background,
         containerPosition_,

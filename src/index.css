@@ -60,3 +60,34 @@ code {
     -webkit-transform: scale(1);
   }
 }
+
+.custom-select-option {
+  padding: 1px;
+  transition: all .3s;
+}
+
+.custom-select-option-light:hover {
+  background: rgba(255, 255, 255, .3);
+}
+
+.custom-select-option-light{
+  color: white;
+}
+
+.custom-select-option-dark:hover {
+  background: rgba(0, 0, 0, .1);  
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollbar-light::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, .3);
+  border-radius: 10px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, .3);
+  border-radius: 10px;
+}

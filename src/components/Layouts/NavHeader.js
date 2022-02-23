@@ -5,9 +5,8 @@ import { useTheme } from "../../context/ThemeContext";
 import SystemInfo from "../../util/SystemInfo";
 
 
-const NavHeader = () => {
-    const [toggle, setToggle] = useState(false);
-    const { navigationHader, openMenuToggle, background } = useTheme();
+const NavHeader = () => {    
+    const { navigationHader, openMenuToggle, menuToggle, background } = useTheme();
 
     return (
         <div className="nav-header">
@@ -25,12 +24,11 @@ const NavHeader = () => {
 
             <div
                 className="nav-control"
-                onClick={() => {
-                    setToggle(!toggle);
+                onClick={() => {                    
                     openMenuToggle();
                 }}
             >
-                <div className={`hamburger ${toggle ? "is-active" : ""}`}>
+                <div className={`hamburger ${menuToggle ? "is-active" : ""}`}>                    
                     <span className="line"></span>
                     <span className="line"></span>
                     <span className="line"></span>
