@@ -1,6 +1,4 @@
-import { Dropdown } from "react-bootstrap";
 import { useFeedBack } from "../../context/FeedBackContext";
-import SystemInfo from "../../util/SystemInfo";
 import ActionDropdown from "../ActionDropdown";
 import CustomTableBodyCollumn from "./CustomTableBodyCollumn";
 import CustomTableBodyRow from "./CustomTableBodyRow";
@@ -88,7 +86,6 @@ const CustomTable = ({ title, values = [], total = 0, pages, onDeleteSelected, c
                                                                             Component ?
                                                                                 <Component
                                                                                     id={value?.id}
-                                                                                    parentCategory={value?.parentCategory}
                                                                                     updatePath={updatePath}
                                                                                     positionName={value?.position?.name}
                                                                                     serviceName={value?.service?.name}
@@ -97,6 +94,7 @@ const CustomTable = ({ title, values = [], total = 0, pages, onDeleteSelected, c
                                                                                     date={value?.createdAt}
                                                                                     imgValue={`${value?.imagePath}`}
                                                                                     parentCategory={value?.parentCategory}
+                                                                                    categoryName={value?.category?.name}
                                                                                     documentNumberValue={value?.documentNumber}
                                                                                     onChange={() => { onSelectValue?.(value) }}
                                                                                     onDelete={() => { onDelete?.(value) }}
@@ -141,6 +139,7 @@ const CustomTable = ({ title, values = [], total = 0, pages, onDeleteSelected, c
                                         }
                                     >
                                         <i className="fa fa-angle-double-left" aria-hidden="true"></i>
+                                        Anterior
                                     </button>
                                     <span>
                                         {Array.from(Array(pages).keys()).map((number, i) => (
@@ -155,13 +154,14 @@ const CustomTable = ({ title, values = [], total = 0, pages, onDeleteSelected, c
                                         ))}
                                     </span>
                                     <button
-                                        className="paginate_button next"
+                                        className="paginate_button next disabled"
                                         to="/table-datatable-basic"
                                         onClick={() =>
                                             currentPage < pages &&
                                             changePage?.(currentPage + 1)
                                         }
                                     >
+                                        Siguiente
                                         <i className="fa fa-angle-double-right" aria-hidden="true"></i>
                                     </button>
                                 </div>

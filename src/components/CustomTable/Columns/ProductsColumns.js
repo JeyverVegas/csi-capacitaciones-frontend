@@ -1,8 +1,7 @@
 import ActionDropdown from "../../ActionDropdown";
-import DocumentNumber from "../../DocumentNumber";
-import ImageAndName from "../../ImageAndName";
 import TableCheck from "../TableCheck";
 import { format } from "date-fns";
+import ImageAndName from "../../ImageAndName";
 
 const ProductsColumns = [
     {
@@ -20,7 +19,7 @@ const ProductsColumns = [
     },
     {
         Label: () => 'Categoria',
-        accessor: 'category'
+        Component: ({ categoryName }) => categoryName
     },
     {
         Label: () => 'Fecha de Creación',

@@ -91,3 +91,11 @@ code {
   background: rgba(0, 0, 0, .3);
   border-radius: 10px;
 }
+
+.custom-bg-dark {
+  background: #171622;
+}
+
+.custom-bg-light {
+  background: white;
+}

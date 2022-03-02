@@ -9,6 +9,7 @@ import UserAccountInfo from "../UserAccountInfo";
 
 import sun from "../../images/sun.png";
 import moon from "../../images/moon.png";
+import SystemInfo from "../../util/SystemInfo";
 
 const Header = ({ onNote }) => {
 
@@ -26,6 +27,14 @@ const Header = ({ onNote }) => {
         const dark = localStorage.getItem('CSI-PEDIDOS-DARKMODE') === 'true' ? true : false;
         setDarkMode(dark);
     }, []);
+
+    useEffect(() => {
+        if (nameForUpdate) {
+            document.title = `${SystemInfo?.name} - ${nameForUpdate}`;
+        } else {
+            document.title = SystemInfo?.name;
+        }
+    }, [nameForUpdate])
 
     useEffect(() => {
         setNameForUpdate(searchParams?.get('name'));

@@ -2,7 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import "react-toastify/dist/ReactToastify.css";
-import "react-toggle/style.css"
+import "react-toggle/style.css";
+
+import 'swiper/css/bundle';
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';

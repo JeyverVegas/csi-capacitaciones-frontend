@@ -33,7 +33,7 @@ const CategoriesUpdate = () => {
 
     useEffect(() => {
         if (category) {
-            console.log(category?.data);            
+            console.log(category?.data);
             setData((oldData) => {
                 return {
                     ...oldData,
@@ -68,6 +68,8 @@ const CategoriesUpdate = () => {
                 message: 'La categoria fue actualizada exitosamente.',
                 show: true
             });
+
+            navigate('/categories');
         }
     }, [updateData]);
 

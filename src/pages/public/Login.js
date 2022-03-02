@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import SystemInfo from "../../util/SystemInfo";
 import loginbg from "../../images/pic1.png";
 import useAxios from "../../hooks/useAxios";
@@ -8,29 +8,30 @@ import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
 
+    const [searchParams] = useSearchParams();
+
     const navigate = useNavigate();
 
     const { setLoading, setCustomToast } = useFeedBack();
 
     const { setAuthInfo } = useAuth();
 
-    const [credentials, setCredentials] = useState({ email: '', password: '', name: 'Jeyver' });
+    const [credentials, setCredentials] = useState({ email: '', password: '' });
 
     const [rememberMe, setRememberMe] = useState(false);
 
-    const [{ data: loginData, error: loginError, loading: loadingLogin }, login] = useAxios({ url: '/auth/login', method: 'post' }, { manual: true, useCache: false });
+    const [{ data: loginData, loading: loadingLogin }, login] = useAxios({ url: '/auth/login', method: 'post' }, { manual: true, useCache: false });
+
+    useEffect(() => {
+        if (searchParams?.get('message')) {
+            const message = searchParams?.get('message');
+            setCustomToast({ message, severity: 'danger', show: true, position: 'top-right' });
+        }
+    }, [searchParams])
 
     useEffect(() => {
         setLoading({ message: 'Iniciando sesión', show: loadingLogin });
-    }, [loadingLogin])
-
-    useEffect(() => {
-        if (loginError) {
-            Object.keys(loginError?.response?.data?.errors).forEach((errorKey) => {
-                setCustomToast({ message: `${errorKey}: ${loginError?.response?.data?.errors[errorKey][0]}`, severity: 'danger', show: true, position: 'top-right' });
-            })
-        }
-    }, [loginError])
+    }, [loadingLogin]);
 
     useEffect(() => {
         if (loginData) {

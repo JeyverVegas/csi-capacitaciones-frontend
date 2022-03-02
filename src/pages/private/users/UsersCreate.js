@@ -35,7 +35,7 @@ const UsersCreate = () => {
         serviceIds: []
     });
 
-    const [{ data: createData, loading: createLoading, error: createError }, createUser] = useAxios({ url: `/users`, method: 'POST' }, { manual: true, useCache: false });
+    const [{ data: createData, loading: createLoading }, createUser] = useAxios({ url: `/users`, method: 'POST' }, { manual: true, useCache: false });
 
     const [{ positions, error: positionsError, loading: positionsLoading }, getPositions] = usePositions({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
 
@@ -92,15 +92,6 @@ const UsersCreate = () => {
     }, [createData])
 
     useEffect(() => {
-        if (createError) {
-            setCustomAlert({
-                title: 'Error',
-                severity: 'danger',
-                message: 'Ha ocurrido un error.',
-                show: true
-            });
-        }
-
         if (positionsError) {
             setCustomAlert({
                 title: 'Error',
@@ -136,7 +127,7 @@ const UsersCreate = () => {
                 show: true
             });
         }
-    }, [createError, positionsError, documentNumberTypesError, rolesError, servicesError])
+    }, [positionsError, documentNumberTypesError, rolesError, servicesError])
 
     const handleSubmit = (e) => {
         let hasError = false;
@@ -146,6 +137,7 @@ const UsersCreate = () => {
             return;
         }
         const { image: image2, ...requireValues } = data;
+
         Object.keys(requireValues).forEach((key, i) => {
             if (!data[key]) {
                 hasError = true;
@@ -180,7 +172,6 @@ const UsersCreate = () => {
     }
 
     const handleChange = (e) => {
-        console.log(e);
         if (e.target.type === 'checkbox') {
             const value = data[e.target.name]?.includes(e.target.value);
             if (value) {
