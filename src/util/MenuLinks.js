@@ -2,6 +2,9 @@ import Categories from "../pages/private/categories/Categories";
 import CategoriesCreate from "../pages/private/categories/CategoriesCreate";
 import CategoriesUpdate from "../pages/private/categories/CategoriesUpdate";
 import Dashboard from "../pages/private/Dashboard";
+import Features from "../pages/private/features/Features";
+import FeaturesCreate from "../pages/private/features/FeaturesCreate";
+import FeaturesUpdate from "../pages/private/features/FeaturesUpdate";
 import Positions from "../pages/private/positions/Positions";
 import PositionsCreate from "../pages/private/positions/PositionsCreate";
 import PositionsUpdate from "../pages/private/positions/PositionsUpdate";
@@ -40,7 +43,9 @@ export const mainPermissions = {
     roles: ['view-roles', 'create-roles', 'update-roles', 'delete-roles'],
     providers: ['view-users', 'create-users', 'update-users', 'delete-users'],
     products: ['view-users', 'create-users', 'update-users', 'delete-users', 'view-users', 'create-users'],
-    categories: ['view-categories', 'create-categories', 'update-categories', 'delete-categories']
+    categories: ['view-categories', 'create-categories', 'update-categories', 'delete-categories'],
+    features: ['view-product-features', 'create-product-features', 'update-product-features', 'delete-product-features'],
+    productFeaturesOptions: ['view-product-feature-options', 'create-product-feature-options', 'update-product-feature-options', 'delete-product-feature-options']
 }
 
 const MenuLinks = [
@@ -58,9 +63,6 @@ const MenuLinks = [
         createLink('Actualizar Servicios', true, <ServicesUpdate />, '', '/servicios/:id', mainPermissions?.services[2]),
     ]),
 
-
-    
-
     createLink('Proveedores', null, null, 'flaticon-052-inside', '/proveedores', mainPermissions?.providers, [
         createLink('Crear Proveedor', null, <ProvidersCreate />, '', '/proveedores/crear', mainPermissions?.providers[1]),
         createLink('Listar Proveedores', null, <Providers />, '', '/proveedores', mainPermissions?.providers[0]),
@@ -74,6 +76,12 @@ const MenuLinks = [
         createLink('Categorias', null, <Categories />, '', '/categorias', mainPermissions?.products[4]),
         createLink('Actualizar Productos', true, <ProductsUpdate />, '', '/productos/:id', mainPermissions?.products[2]),
         createLink('Actualizar Categoria', true, <CategoriesUpdate />, '', '/categorias/:id', mainPermissions?.categories[2]),
+    ]),
+
+    createLink('Caracteristicas', null, null, 'flaticon-381-tab', '/caracteristicas', mainPermissions?.features, [
+        createLink('Crear Caracteristica', null, <FeaturesCreate />, '', '/caracteristicas/crear', mainPermissions?.features[1]),
+        createLink('Listar Caracteristicas', null, <Features />, '', '/caracteristicas', mainPermissions?.features[0]),
+        createLink('Actualizar Caracteristicas', true, <FeaturesUpdate />, '', '/caracteristicas/:id', mainPermissions?.features[2]),
     ]),
 
     createLink('Roles', null, null, 'flaticon-381-user-8', '/roles', mainPermissions?.roles, [

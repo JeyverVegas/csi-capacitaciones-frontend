@@ -66,6 +66,10 @@ const handleResponseError = (error) => {
       handleUnAuthorizeUser(data);
     }
 
+    if (status === 404) {
+      toast.error(`Error 404: La ruta no existe en el servidor.`, defaultOpts)
+    }
+
     if (status === 500) {
       toast.error(`Ha ocurrido un error en el servidor.`, defaultOpts);
     }
@@ -87,6 +91,6 @@ const handleValidationErrors = (errorData) => {
 const handleUnAuthorizeUser = (data) => {
   if (data?.message === 'Unauthenticated.') {
     deleteAuth();
-    window.location.pathname = '/iniciar-sesion?message=El usuario no esta autenticado.';
+    window.location.pathname = '/iniciar-sesion';
   }
 }

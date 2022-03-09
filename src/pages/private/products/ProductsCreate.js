@@ -30,10 +30,6 @@ const ProductsCreate = () => {
 
     const [swiper, setSwiper] = useState(null);
 
-    const [isEnd, setIsEnd] = useState(false);
-
-    const [isStart, setIsStart] = useState(false);
-
     const [categoriesFilters, setCategoriesFilters] = useState({
         name: '',
         page: 1
@@ -59,8 +55,6 @@ const ProductsCreate = () => {
     const [{ categories, loading: loadingCategories }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
 
     const [{ data: createData, loading: createLoading }, createProduct] = useAxios({ url: `/products`, method: 'POST' }, { manual: true, useCache: false });
-
-    const [activeIndex, setActiveIndex] = useState(0);
 
     useEffect(() => {
         setLoading?.({
@@ -200,191 +194,119 @@ const ProductsCreate = () => {
         });
     }
 
-    const handleSlideChange = (swiperz) => {
-        setActiveIndex(swiperz.activeIndex);
-    }
-
     return (
-        <div className="position-relative" style={{ padding: '0 50px' }}>
-            {
-                data?.id &&
-                <button onClick={() => { swiper?.slidePrev() }} className="btn btn-primary" style={{
-                    position: 'absolute',
-                    left: 0,
-                    zIndex: 1,
-                    top: '45%'
-                }}>
-                    <i className="fas fa-chevron-left"></i>
-                </button>
-            }
-            <Swiper
-                autoHeight
-                modules={[Pagination]}
-                pagination={{
-                    dynamicBullets: true,
-                }}
-                slidesPerView={1}
-                onSlideChange={handleSlideChange}
-                onSwiper={(swiper) => {
-                    setSwiper(swiper);
-                }}
-            >
-                <SwiperSlide>
-                    <div className="card" style={{ width: '100%' }}>
-                        <div className="card-body">
-                            <div className="basic-form">
-                                <form onSubmit={handleSubmit}>
-                                    <div className="row mb-5">
-                                        <div className="form-group mb-3 col-md-8">
-                                            <div className="mb-4">
-                                                <label>
-                                                    <h5>
-                                                        Nombre del Producto
-                                                    </h5>
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Nombre"
-                                                    name="name"
-                                                    autoFocus
-                                                    value={data?.name}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className="mb-4">
-                                                <label>
-                                                    Referencia
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Referencia"
-                                                    name="reference"
-                                                    value={data?.reference}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className="mb-4">
-                                                <label>
-                                                    Proveedor
-                                                </label>
-                                                <CustomSelect
-                                                    options={providers}
-                                                    optionLabel="name"
-                                                    inputPlaceholder="Escribe el nombre..."
-                                                    isLoading={loading}
-                                                    onSelectValue={handleProvider}
-                                                    handleInputChange={(e) => { setFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
-                                                    inputValue={filters?.name}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label>
-                                                    Categoria
-                                                </label>
-                                                <CustomSelect
-                                                    options={categories}
-                                                    optionLabel="name"
-                                                    inputPlaceholder="Escribe el nombre..."
-                                                    isLoading={loadingCategories}
-                                                    onSelectValue={handleCategory}
-                                                    handleInputChange={(e) => { setCategoriesFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
-                                                    inputValue={categoriesFilters?.name}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="form-group mb-3 col-md-4">
-                                            <label>
-                                                <h5>
-                                                    Imagen Base del Producto
-                                                </h5>
-                                            </label>
-                                            <ImgUploadInput
-                                                style={{ width: '65%' }}
-                                                description="imagen del producto"
-                                                name="image"
-                                                change={handleChange}
-                                            />
-                                            <div className="text-center mt-4">
-                                                <label className={clsx(['btn mx-1'], {
-                                                    "btn-primary": !data?.dataSheet,
-                                                    "btn-success": data?.dataSheet,
-                                                })} htmlFor="datasheet-input">
-                                                    Ficha tecnica
-                                                </label>
-                                                <input type="file" hidden name="dataSheet" onChange={handleChange} id="datasheet-input" />
-                                                <label className={clsx(['btn mx-1'], {
-                                                    "btn-primary": !data?.certificate,
-                                                    "btn-success": data?.certificate,
-                                                })} htmlFor="certificate-input">
-                                                    Certificado
-                                                </label>
-                                                <input type="file" hidden name="certificate" onChange={handleChange} id="certificate-input" />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-12">
-                                            <label>
-                                                Descripción
-                                            </label>
-                                            <textarea name="description" onChange={handleChange} className="form-control" style={{ height: 120 }} rows={8}></textarea>
-                                        </div>
-                                    </div>
-                                    <div className="mb-3 d-flex justify-content-end">
-                                        <Link to={`#`} onClick={() => { navigate(-1) }} className="btn btn-danger mx-2">
-                                            Volver
-                                        </Link>
-                                        <button type="submit" className="btn btn-primary mx-2">
-                                            Crear
-                                        </button>
-                                    </div>
-                                </form>
+        <div className="card" style={{ width: '100%' }}>
+            <div className="card-body">
+                <div className="basic-form">
+                    <form onSubmit={handleSubmit}>
+                        <div className="row mb-5">
+                            <div className="form-group mb-3 col-md-8">
+                                <div className="mb-4">
+                                    <label>
+                                        <h5>
+                                            Nombre del Producto
+                                        </h5>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Nombre"
+                                        name="name"
+                                        autoFocus
+                                        value={data?.name}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label>
+                                        Referencia
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Referencia"
+                                        name="reference"
+                                        value={data?.reference}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label>
+                                        Proveedor
+                                    </label>
+                                    <CustomSelect
+                                        options={providers}
+                                        optionLabel="name"
+                                        inputPlaceholder="Escribe el nombre..."
+                                        isLoading={loading}
+                                        onSelectValue={handleProvider}
+                                        handleInputChange={(e) => { setFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
+                                        inputValue={filters?.name}
+                                    />
+                                </div>
+                                <div>
+                                    <label>
+                                        Categoria
+                                    </label>
+                                    <CustomSelect
+                                        options={categories}
+                                        optionLabel="name"
+                                        inputPlaceholder="Escribe el nombre..."
+                                        isLoading={loadingCategories}
+                                        onSelectValue={handleCategory}
+                                        handleInputChange={(e) => { setCategoriesFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
+                                        inputValue={categoriesFilters?.name}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group mb-3 col-md-4">
+                                <label>
+                                    <h5>
+                                        Imagen Base del Producto
+                                    </h5>
+                                </label>
+                                <ImgUploadInput
+                                    style={{ width: '65%' }}
+                                    description="imagen del producto"
+                                    name="image"
+                                    change={handleChange}
+                                />
+                                <div className="text-center mt-4">
+                                    <label className={clsx(['btn mx-1'], {
+                                        "btn-primary": !data?.dataSheet,
+                                        "btn-success": data?.dataSheet,
+                                    })} htmlFor="datasheet-input">
+                                        Ficha tecnica
+                                    </label>
+                                    <input type="file" hidden name="dataSheet" onChange={handleChange} id="datasheet-input" />
+                                    <label className={clsx(['btn mx-1'], {
+                                        "btn-primary": !data?.certificate,
+                                        "btn-success": data?.certificate,
+                                    })} htmlFor="certificate-input">
+                                        Certificado
+                                    </label>
+                                    <input type="file" hidden name="certificate" onChange={handleChange} id="certificate-input" />
+                                </div>
+                            </div>
+                            <div className="col-md-12">
+                                <label>
+                                    Descripción
+                                </label>
+                                <textarea name="description" onChange={handleChange} className="form-control" style={{ height: 120 }} rows={8}></textarea>
                             </div>
                         </div>
-                    </div>
-                </SwiperSlide>
-                {
-                    productVersions?.map((productVersion, i) => {
-                        return (
-                            <SwiperSlide key={i}>
-                                <ProductVersionForm productVersion={productVersion} productId={data?.id} />
-                            </SwiperSlide>
-                        )
-                    })
-                }
-            </Swiper>
-            {
-                data?.id &&
-                <button
-                    onClick={() => {
-                        productVersions?.length === 0 ?
-                            handleAddVersion()
-                            :
-                            activeIndex === productVersions.length ?
-                                handleAddVersion()
-                                :
-                                swiper?.slideNext()
-                    }}
-                    title="Añadir Nueva Version"
-                    className="btn btn-primary"
-                    style={{
-                        position: 'absolute',
-                        right: 0,
-                        zIndex: 1,
-                        top: '45%'
-                    }}>
-                    {
-                        productVersions?.length === 0 ?
-                            <i className="flaticon-066-plus"></i>
-                            :
-                            activeIndex === productVersions.length ?
-                                <i className="flaticon-066-plus"></i>
-                                :
-                                <i className="fas fa-chevron-right"></i>
-                    }
-                </button>
-            }
-        </div >
+                        <div className="mb-3 d-flex justify-content-end">
+                            <Link to={`#`} onClick={() => { navigate(-1) }} className="btn btn-danger mx-2">
+                                Volver
+                            </Link>
+                            <button type="submit" className="btn btn-primary mx-2">
+                                Crear
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     )
 }
 export default ProductsCreate;

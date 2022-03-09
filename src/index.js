@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import "react-toastify/dist/ReactToastify.css";
 import "react-toggle/style.css";
+import 'animate.css';
 
 import 'swiper/css/bundle';
 
