@@ -7,12 +7,14 @@ import { useTheme } from "../../../context/ThemeContext";
 import useCategories from "../../../hooks/useCategories";
 import useProviders from "../../../hooks/useProviders";
 import clsx from "clsx";
-import ProductVersionForm from "../../../components/Forms/ProductVersionsForm";
+import ProductVersionForm from "../../../components/Forms/ProductVersionsContainer";
 import swal from "sweetalert";
 import useAxios from "../../../hooks/useAxios";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import SystemInfo from "../../../util/SystemInfo";
 import update from 'immutability-helper';
+import useServices from "../../../hooks/useServices";
+import ProductVersionsContainer from "../../../components/Forms/ProductVersionsContainer";
 
 
 
@@ -26,6 +28,11 @@ const ProductsUpdate = () => {
     const navigate = useNavigate();
 
     const { openMenuToggle, customMenuToggle, sideBarStyle } = useTheme();
+
+    const [servicesFilters, setServicesFilters] = useState({
+        perPage: 200,
+        page: 1
+    })
 
     const [filters, setFilters] = useState({
         name: '',
@@ -46,6 +53,9 @@ const ProductsUpdate = () => {
         dataSheet: '',
         certificate: '',
         description: '',
+        serviceIds: [],
+        code: '',
+        price: 0,
         _method: 'PUT'
     });
 
@@ -56,6 +66,8 @@ const ProductsUpdate = () => {
     const [{ providers, total, numberOfPages, size, error, loading }, getProviders] = useProviders({ options: { manual: true, useCache: false } });
 
     const [{ categories, loading: loadingCategories }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
+
+    const [{ services, error: servicesError, loading: servicesLoading }, getServices] = useServices({ axiosConfig: { params: { ...servicesFilters } }, options: { useCache: false } });
 
     const [{ data: product, loading: productLoading }, getProduct] = useAxios({ url: `/products/${id}` }, { useCache: false });
 
@@ -193,6 +205,27 @@ const ProductsUpdate = () => {
     }
 
     const handleChange = (e) => {
+        if (e.target.type === 'checkbox') {
+            const value = data[e.target.name]?.includes(e.target.value);
+            if (value) {
+                const newValues = data[e.target.name]?.filter(n => n !== e.target.value);
+                setData((oldData) => {
+                    return {
+                        ...oldData,
+                        [e.target.name]: newValues
+                    }
+                });
+            } else {
+                setData((oldData) => {
+                    return {
+                        ...oldData,
+                        [e.target.name]: [...data[e.target.name], e.target.value]
+                    }
+                });
+            }
+            return;
+        }
+
         setData((oldData) => {
             return {
                 ...oldData,
@@ -201,47 +234,36 @@ const ProductsUpdate = () => {
         })
     }
 
-    const handleAddVersion = () => {
-        swal({
-            title: "¿Estas Seguro?",
-            text: "¿Quieres agregar una nueva versión de este producto?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willAdded) => {
-            if (willAdded) {
-                setProductVersions((oldVersions) => {
-                    return [{ name: '', code: '', image: null, features: [], price: '' }, ...oldVersions];
-                });
-            }
-        });
-    }
+    const handleAllServices = () => {
+        let hash = {};
+        if (checker(services?.map(service => service?.id), data?.serviceIds)) {
+            services?.forEach((service) => {
+                hash[service?.id] = true;
+            });
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    serviceIds: data?.serviceIds?.filter((serviceId) => !hash[serviceId])
+                }
+            });
+        } else {
+            services.forEach((service) => {
+                hash[service?.id] = true;
+            });
 
-    const handleDeleteVersion = (productVersion, index) => {
-        swal({
-            title: "¿Estas Seguro?",
-            text: "¿Deseas eliminar esta version?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((wantDelete) => {
-            if (wantDelete) {
-                hadleWantDelete(productVersion, index);
-            }
-        });
+            let oldServicesIds = data?.serviceIds?.filter((serviceId) => !hash[serviceId]);
 
-    }
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    serviceIds: [...oldServicesIds, ...services?.map((service) => service?.id)]
+                }
+            });
 
-    const hadleWantDelete = (productVersion, index) => {
-        if (!productVersion?.id) {
-            setProductVersions(productVersions.filter((product, i) => i !== index));
         }
     }
 
-    const handleVersionChange = (event, index) => {
-        const newCollection = update(productVersions, { [index]: { [event?.target?.name]: { $set: event.target.type === 'file' ? event.target.files[0] : event.target.value } } });
-        setProductVersions(newCollection);
-    }
+    const checker = (arr, target) => arr.every((value) => target?.includes(value));
 
     return (
         <div className="card" style={{ width: '100%' }}>
@@ -263,6 +285,19 @@ const ProductsUpdate = () => {
                                         name="name"
                                         autoFocus
                                         value={data?.name}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label>
+                                        Codigo
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Codigo"
+                                        name="code"
+                                        value={data?.code}
                                         onChange={handleChange}
                                     />
                                 </div>
@@ -291,20 +326,6 @@ const ProductsUpdate = () => {
                                         onSelectValue={handleProvider}
                                         handleInputChange={(e) => { setFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
                                         inputValue={filters?.name}
-                                    />
-                                </div>
-                                <div>
-                                    <label>
-                                        Categoria
-                                    </label>
-                                    <CustomSelect
-                                        options={categories}
-                                        optionLabel="name"
-                                        inputPlaceholder="Escribe el nombre..."
-                                        isLoading={loadingCategories}
-                                        onSelectValue={handleCategory}
-                                        handleInputChange={(e) => { setCategoriesFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
-                                        inputValue={categoriesFilters?.name}
                                     />
                                 </div>
                             </div>
@@ -338,11 +359,77 @@ const ProductsUpdate = () => {
                                     <input type="file" hidden name="certificate" onChange={handleChange} id="certificate-input" />
                                 </div>
                             </div>
-                            <div className="col-md-12">
+                            <div className="col-md-6">
+                                <div>
+                                    <label>
+                                        Categoria
+                                    </label>
+                                    <CustomSelect
+                                        options={categories}
+                                        optionLabel="name"
+                                        inputPlaceholder="Escribe el nombre..."
+                                        isLoading={loadingCategories}
+                                        onSelectValue={handleCategory}
+                                        handleInputChange={(e) => { setCategoriesFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
+                                        inputValue={categoriesFilters?.name}
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div>
+                                    <label>
+                                        Precio
+                                    </label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        placeholder="Precio del producto"
+                                        name="price"
+                                        value={data?.price}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-md-12 mt-4">
                                 <label>
                                     Descripción
                                 </label>
                                 <textarea name="description" onChange={handleChange} value={data?.description} className="form-control" style={{ height: 120 }} rows={8}></textarea>
+                            </div>
+                            <div className="form-group mb-3 col-md-12 mt-4">
+                                <h6>Servicios</h6>
+                                <p>Seleccione los servicios a los cuales Pertenece el producto.</p>
+                                <div className="form-check form-check-inline">
+                                    <label className="form-check-label">
+                                        <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            name="serviceIds"
+                                            checked={checker(services?.map(service => service.id), data?.serviceIds)}
+                                            onChange={handleAllServices}
+                                        />
+                                        Seleccionar todos
+                                    </label>
+                                </div>
+                                {
+                                    services?.map((service, i) => {
+                                        return (
+                                            <div className="form-check form-check-inline" key={i}>
+                                                <label className="form-check-label">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="form-check-input"
+                                                        name="serviceIds"
+                                                        value={service?.id}
+                                                        checked={data?.serviceIds?.includes(service?.id)}
+                                                        onChange={() => { handleChange({ target: { name: 'serviceIds', value: Number(service?.id), type: 'checkbox' } }) }}
+                                                    />
+                                                    {service?.name}
+                                                </label>
+                                            </div>
+                                        )
+                                    })
+                                }
                             </div>
                         </div>
 
@@ -355,28 +442,10 @@ const ProductsUpdate = () => {
                             </button>
                         </div>
                     </form>
-                    <div className="col-md-12 my-4 border-top py-4">
-                        <h3>Versiones del producto</h3>
-                        <div className="d-flex justify-content-end">
-                            <button type="button" className="btn btn-primary mx-2" onClick={handleAddVersion}>
-                                Nueva Version
-                            </button>
-                        </div>
-                    </div>
-                    {
-                        productVersions?.map((productVersion, i) => {
-                            return (
-                                <ProductVersionForm
-                                    onDelete={handleDeleteVersion}
-                                    productId={id}
-                                    productVersion={productVersion}
-                                    onChange={handleVersionChange}
-                                    key={i}
-                                    index={i}
-                                />
-                            )
-                        })
-                    }
+                    <ProductVersionsContainer
+                        initialVersions={product?.data?.productVersions}
+                        productId={id}
+                    />
                 </div>
             </div>
         </div>

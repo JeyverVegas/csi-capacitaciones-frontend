@@ -1,8 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination } from 'swiper';
 
 import CustomSelect from "../../../components/CustomSelect";
 import ImgUploadInput from "../../../components/ImgUploadInput";
@@ -10,10 +7,9 @@ import { useTheme } from "../../../context/ThemeContext";
 import useCategories from "../../../hooks/useCategories";
 import useProviders from "../../../hooks/useProviders";
 import clsx from "clsx";
-import ProductVersionForm from "../../../components/Forms/ProductVersionsForm";
-import swal from "sweetalert";
 import useAxios from "../../../hooks/useAxios";
 import { useFeedBack } from "../../../context/FeedBackContext";
+import useServices from "../../../hooks/useServices";
 
 
 
@@ -23,12 +19,16 @@ const ProductsCreate = () => {
     const { setLoading, setCustomAlert } = useFeedBack();
 
     const navigate = useNavigate();
+
     const [filters, setFilters] = useState({
         name: '',
         page: 1
     });
 
-    const [swiper, setSwiper] = useState(null);
+    const [servicesFilters, setServicesFilters] = useState({
+        perPage: 200,
+        page: 1
+    })
 
     const [categoriesFilters, setCategoriesFilters] = useState({
         name: '',
@@ -43,10 +43,11 @@ const ProductsCreate = () => {
         categoryId: '',
         dataSheet: '',
         certificate: '',
-        description: ''
+        description: '',
+        code: '',
+        price: 0,
+        serviceIds: []
     });
-
-    const [productVersions, setProductVersions] = useState([]);
 
     const { openMenuToggle, customMenuToggle, sideBarStyle } = useTheme();
 
@@ -56,10 +57,12 @@ const ProductsCreate = () => {
 
     const [{ data: createData, loading: createLoading }, createProduct] = useAxios({ url: `/products`, method: 'POST' }, { manual: true, useCache: false });
 
+    const [{ services, error: servicesError, loading: servicesLoading }, getServices] = useServices({ axiosConfig: { params: { ...servicesFilters } }, options: { useCache: false } });
+
     useEffect(() => {
         setLoading?.({
             show: createLoading,
-            message: `${data?.id ? 'Actualizando' : 'Creando'} Producto`
+            message: `Creando Producto`
         });
     }, [createLoading])
 
@@ -77,18 +80,12 @@ const ProductsCreate = () => {
             setCustomAlert({
                 title: '¡Operacion Exitosa!',
                 severity: 'success',
-                message: `El producto fue ${data?.id ? 'actualizado' : 'creado'} exitosamente.`,
+                message: `El producto fue creado exitosamente.`,
                 show: true
             });
-            console.log(createData);
+            navigate?.(`/productos/${createData?.data?.id}?name=${createData?.data?.name}`)
         }
     }, [createData])
-
-    useEffect(() => {
-        if (productVersions?.length > 0) {
-            swiper?.slideTo(productVersions?.length);
-        }
-    }, [productVersions])
 
     useEffect(() => {
         getProviders({
@@ -121,17 +118,19 @@ const ProductsCreate = () => {
                     if (key === 'image' || key === 'dataSheet' || key === 'certificate') {
                         formData.append(key, data[key], data[key].name);
                     } else {
-                        formData.append(key, data[key]);
+                        if (key === 'serviceIds') {
+                            data[key].forEach((id, i) => {
+                                formData.append(`${key}[${i}]`, id);
+                            })
+                        } else {
+                            formData.append(key, data[key]);
+                        }
                     }
                 }
             }
         })
-        if (data?.id) {
-            formData?.append('_method', 'PUT');
-            createProduct({ data: formData, url: `/products/${data?.id}`, method: 'POST' });
-        } else {
-            createProduct({ data: formData });
-        }
+
+        createProduct({ data: formData });
     }
 
     const handleProvider = (provider) => {
@@ -168,6 +167,28 @@ const ProductsCreate = () => {
     }
 
     const handleChange = (e) => {
+
+        if (e.target.type === 'checkbox') {
+            const value = data[e.target.name]?.includes(e.target.value);
+            if (value) {
+                const newValues = data[e.target.name]?.filter(n => n !== e.target.value);
+                setData((oldData) => {
+                    return {
+                        ...oldData,
+                        [e.target.name]: newValues
+                    }
+                });
+            } else {
+                setData((oldData) => {
+                    return {
+                        ...oldData,
+                        [e.target.name]: [...data[e.target.name], e.target.value]
+                    }
+                });
+            }
+            return;
+        }
+
         setData((oldData) => {
             return {
                 ...oldData,
@@ -176,23 +197,36 @@ const ProductsCreate = () => {
         })
     }
 
-    const handleAddVersion = () => {
-        swal({
-            title: "¿Estas Seguro?",
-            text: "¿Quieres agregar una nueva version de este producto?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willAdded) => {
-            if (willAdded) {
-                setProductVersions((oldVersions) => {
-                    return [...oldVersions, { name: '', code: '', image: null, features: [] }];
-                });
-            } else {
+    const handleAllServices = () => {
+        let hash = {};
+        if (checker(services?.map(service => service?.id), data?.serviceIds)) {
+            services?.forEach((service) => {
+                hash[service?.id] = true;
+            });
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    serviceIds: data?.serviceIds?.filter((serviceId) => !hash[serviceId])
+                }
+            });
+        } else {
+            services.forEach((service) => {
+                hash[service?.id] = true;
+            });
 
-            }
-        });
+            let oldServicesIds = data?.serviceIds?.filter((serviceId) => !hash[serviceId]);
+
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    serviceIds: [...oldServicesIds, ...services?.map((service) => service?.id)]
+                }
+            });
+
+        }
     }
+
+    const checker = (arr, target) => arr.every((value) => target?.includes(value));
 
     return (
         <div className="card" style={{ width: '100%' }}>
@@ -214,6 +248,19 @@ const ProductsCreate = () => {
                                         name="name"
                                         autoFocus
                                         value={data?.name}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label>
+                                        Codigo
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Codigo"
+                                        name="code"
+                                        value={data?.code}
                                         onChange={handleChange}
                                     />
                                 </div>
@@ -242,20 +289,6 @@ const ProductsCreate = () => {
                                         onSelectValue={handleProvider}
                                         handleInputChange={(e) => { setFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
                                         inputValue={filters?.name}
-                                    />
-                                </div>
-                                <div>
-                                    <label>
-                                        Categoria
-                                    </label>
-                                    <CustomSelect
-                                        options={categories}
-                                        optionLabel="name"
-                                        inputPlaceholder="Escribe el nombre..."
-                                        isLoading={loadingCategories}
-                                        onSelectValue={handleCategory}
-                                        handleInputChange={(e) => { setCategoriesFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
-                                        inputValue={categoriesFilters?.name}
                                     />
                                 </div>
                             </div>
@@ -288,11 +321,77 @@ const ProductsCreate = () => {
                                     <input type="file" hidden name="certificate" onChange={handleChange} id="certificate-input" />
                                 </div>
                             </div>
+                            <div className="col-md-6">
+                                <div>
+                                    <label>
+                                        Categoria
+                                    </label>
+                                    <CustomSelect
+                                        options={categories}
+                                        optionLabel="name"
+                                        inputPlaceholder="Escribe el nombre..."
+                                        isLoading={loadingCategories}
+                                        onSelectValue={handleCategory}
+                                        handleInputChange={(e) => { setCategoriesFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
+                                        inputValue={categoriesFilters?.name}
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div>
+                                    <label>
+                                        Precio
+                                    </label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        placeholder="Precio del producto"
+                                        name="price"
+                                        value={data?.price}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
                             <div className="col-md-12">
                                 <label>
                                     Descripción
                                 </label>
                                 <textarea name="description" onChange={handleChange} className="form-control" style={{ height: 120 }} rows={8}></textarea>
+                            </div>
+                            <div className="form-group mb-3 col-md-12 mt-4">
+                                <h6>Servicios</h6>
+                                <p>Seleccione los servicios a los cuales Pertenece el producto.</p>
+                                <div className="form-check form-check-inline">
+                                    <label className="form-check-label">
+                                        <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            name="serviceIds"
+                                            checked={checker(services?.map(service => service.id), data?.serviceIds)}
+                                            onChange={handleAllServices}
+                                        />
+                                        Seleccionar todos
+                                    </label>
+                                </div>
+                                {
+                                    services?.map((service, i) => {
+                                        return (
+                                            <div className="form-check form-check-inline" key={i}>
+                                                <label className="form-check-label">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="form-check-input"
+                                                        name="serviceIds"
+                                                        value={service?.id}
+                                                        checked={data?.serviceIds?.includes(service?.id)}
+                                                        onChange={() => { handleChange({ target: { name: 'serviceIds', value: Number(service?.id), type: 'checkbox' } }) }}
+                                                    />
+                                                    {service?.name}
+                                                </label>
+                                            </div>
+                                        )
+                                    })
+                                }
                             </div>
                         </div>
                         <div className="mb-3 d-flex justify-content-end">

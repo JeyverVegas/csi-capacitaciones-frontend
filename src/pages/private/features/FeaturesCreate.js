@@ -30,7 +30,7 @@ const FeaturesCreate = () => {
                 message: `La caracteristica fue creada exitosamente.`,
                 show: true
             });
-            navigate?.(`/caracteristicas/${createData?.data?.id}`);
+            navigate?.(`/caracteristicas/${createData?.data?.id}?name=${createData?.data?.name}`);
         }
     }, [createData]);
 

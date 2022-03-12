@@ -19,6 +19,10 @@ const FeaturesColumns = [
         accessor: 'name'
     },
     {
+        Label: () => 'Valores',
+        Component: ({ optionsCount }) => optionsCount
+    },
+    {
         Label: () => 'Fecha de Creación',
         Component: ({ date }) => format(new Date(date), 'dd/MM/yyyy')
     },

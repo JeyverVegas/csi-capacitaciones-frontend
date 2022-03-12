@@ -99,6 +99,7 @@ const CustomTable = ({ title, values = [], total = 0, pages, onDeleteSelected, c
                                                                                     onChange={() => { onSelectValue?.(value) }}
                                                                                     onDelete={() => { onDelete?.(value) }}
                                                                                     checked={selectedValues?.includes(value?.id)}
+                                                                                    optionsCount={value?.options?.length}
                                                                                 />
                                                                                 :
                                                                                 accessor ?
