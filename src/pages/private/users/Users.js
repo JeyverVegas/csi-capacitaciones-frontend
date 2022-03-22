@@ -132,6 +132,7 @@ const Users = () => {
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
                 selectAll={selectAll}
+                loading={loading}
                 title={'Usuarios'}
                 updatePath={"/usuarios"}
                 onDelete={handleDelete}

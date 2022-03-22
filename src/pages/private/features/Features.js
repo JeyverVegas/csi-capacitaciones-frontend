@@ -131,6 +131,7 @@ const Features = () => {
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
                 selectAll={selectAll}
+                loading={featuresLoading}
                 title={'Caracteristicas'}
                 updatePath={"/caracteristicas"}
                 onDelete={handleDelete}

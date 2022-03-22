@@ -22,7 +22,7 @@ const Providers = () => {
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [{ providers, total, numberOfPages, error: providersError }, getProviders] = useProviders({ params: { ...filters } }, { useCache: false });
+    const [{ providers, total, numberOfPages, error: providersError, loading }, getProviders] = useProviders({ params: { ...filters } }, { useCache: false });
 
     const [{ error: deleteError, loading: deleteLoading }, deleteProvider] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
@@ -130,6 +130,7 @@ const Providers = () => {
                 onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
+                loading={loading}
                 selectAll={selectAll}
                 title={'Proveedores'}
                 updatePath={"/proveedores"}

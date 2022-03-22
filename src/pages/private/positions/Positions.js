@@ -130,6 +130,7 @@ const Positions = () => {
                 onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
+                loading={loading}
                 selectAll={selectAll}
                 title={'Cargos'}
                 updatePath={"/cargos"}

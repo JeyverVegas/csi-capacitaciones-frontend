@@ -26,7 +26,7 @@ const ProductVersionsContainer = ({ initialVersions, productId }) => {
         }).then((willAdded) => {
             if (willAdded) {
                 setProductVersions((oldVersions) => {
-                    return [{ name: '', code: '', image: null, features: [], price: 0 }, ...oldVersions];
+                    return [...oldVersions, false];
                 });
             }
         });

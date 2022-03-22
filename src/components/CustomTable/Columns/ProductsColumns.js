@@ -22,6 +22,10 @@ const ProductsColumns = [
         Component: ({ categoryName }) => categoryName
     },
     {
+        Label: () => 'Proveedor',
+        Component: ({ provider }) => provider?.name
+    },
+    {
         Label: () => 'Fecha de Creación',
         Component: ({ date }) => format(new Date(date), 'dd/MM/yyyy')
     },

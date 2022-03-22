@@ -22,7 +22,7 @@ const Products = () => {
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [{ products, total, numberOfPages, error: productsError }, getProducts] = useProducts({ params: { ...filters } }, { useCache: false });
+    const [{ products, total, numberOfPages, error: productsError, loading }, getProducts] = useProducts({ params: { ...filters } }, { useCache: false });
 
     const [{ error: deleteError, loading: deleteLoading }, deleteProducts] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
@@ -116,20 +116,24 @@ const Products = () => {
 
     return (
         <div>
-            {
-                permissions?.includes?.(mainPermissions?.products[1]) ?
-                    <div className="my-4 justify-content-end d-flex">
+
+
+            <div className="my-4 justify-content-end d-flex">
+                {
+                    permissions?.includes?.(mainPermissions?.products[1]) ?
                         <Link to={"/productos/crear"} className="btn btn-primary">
                             Crear producto
                         </Link>
-                    </div>
-                    :
-                    null
-            }
+                        :
+                        null
+                }
+
+            </div>
             <CustomTable
                 onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
+                loading={loading}
                 selectAll={selectAll}
                 title={'Productos'}
                 updatePath={"/productos"}

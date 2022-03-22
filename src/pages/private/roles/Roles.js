@@ -131,6 +131,7 @@ const Roles = () => {
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
                 selectAll={selectAll}
+                loading={loading}
                 title={'Roles'}
                 updatePath={"/roles"}
                 onDelete={handleDelete}

@@ -130,6 +130,7 @@ const Services = () => {
                 onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
+                loading={loading}
                 selectAll={selectAll}
                 title={'Servicios'}
                 updatePath={"/servicios"}

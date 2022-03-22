@@ -99,3 +99,16 @@ code {
 .custom-bg-light {
   background: white;
 }
+
+.bg-custom-multiselect{
+  background: transparent !important;
+}
+
+.bg-custom-multiselect > .dropdown-container{
+  background: transparent !important;
+}
+
+
+.bg-custom-multiselect > .dropdown-container > .dropdown-heading{
+  background: transparent !important;
+}

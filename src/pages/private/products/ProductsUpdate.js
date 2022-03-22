@@ -266,7 +266,7 @@ const ProductsUpdate = () => {
     const checker = (arr, target) => arr.every((value) => target?.includes(value));
 
     return (
-        <div className="card" style={{ width: '100%' }}>
+        <div className="card" style={{ width: '100%', marginBottom: 200 }}>
             <div className="card-body">
                 <div className="basic-form">
                     <form onSubmit={handleSubmit}>

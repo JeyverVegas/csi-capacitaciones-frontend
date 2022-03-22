@@ -13,12 +13,6 @@ const CustomSelect = ({ styles, options, selectedValue, handleInputChange, input
 
     const [dots, setDots] = useState("");
 
-
-
-    useEffect(() => {
-        console.log(background);
-    }, [background])
-
     useEffect(() => {
         document.addEventListener('click', (e) => {
             setShowOptions(handleClickOut(e));
