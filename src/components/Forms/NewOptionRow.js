@@ -7,7 +7,7 @@ import useAxios from "../../hooks/useAxios";
 import alertEmojis from "../../util/AlertsEmojis";
 import { mainPermissions } from "../../util/MenuLinks";
 
-const NewOptionRow = ({ defaultDataOption, featureId, onDelete, index }) => {
+const NewOptionRow = ({ defaultDataOption, featureId, onDelete, index, executeSave, onSaveAll }) => {
 
     const { permissions } = useAuth();
 
@@ -26,6 +26,12 @@ const NewOptionRow = ({ defaultDataOption, featureId, onDelete, index }) => {
     const [{ data: deleteData, loading: deleteLoading }, deleteOption] = useAxios({ url: `/product-feature-option/${data?.id}`, method: 'DELETE' }, { manual: true, useCache: false });
 
     const [{ data: saveData, loading: saveLoading }, saveOption] = useAxios({}, { manual: true, useCache: false });
+
+    useEffect(() => {
+        if (executeSave) {
+            onSaveAll?.(data);
+        }
+    }, [executeSave])
 
     useEffect(() => {
         if (deleteData !== undefined) {

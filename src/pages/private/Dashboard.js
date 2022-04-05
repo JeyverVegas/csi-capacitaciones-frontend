@@ -14,7 +14,7 @@ const Dashboard = () => {
 
     return (
         <div>
-            <div>
+            {/* <div>
                 {dezThemeSet.map((theme, i) => {
                     return (
                         <button className="btn btn-primary" onClick={() => { setDemoTheme(i, 'ltr') }}>
@@ -22,7 +22,7 @@ const Dashboard = () => {
                         </button>
                     )
                 })}
-            </div>
+            </div> */}
         </div>
     )
 }
