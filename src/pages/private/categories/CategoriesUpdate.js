@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import CustomSelect from "../../../components/CustomSelect";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useCategories from "../../../hooks/useCategories";
@@ -14,7 +15,8 @@ const CategoriesUpdate = () => {
 
     const [filters, setFilters] = useState({
         perPage: 200,
-        page: 1
+        page: 1,
+        name: ''
     });
 
     const [data, setData] = useState({
@@ -29,11 +31,17 @@ const CategoriesUpdate = () => {
 
     const [{ data: updateData, loading: updateLoading, error: updateError }, updateCategory] = useAxios({ url: `/categories/${id}`, method: 'PUT' }, { manual: true, useCache: false });
 
-    const [{ categories, error: categoriesError, loading: categoriesLoading }, getCategories] = useCategories({ options: { useCache: false } });
+    const [{ categories, error: categoriesError, loading: categoriesLoading }, getCategories] = useCategories({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
 
     useEffect(() => {
         if (category) {
             console.log(category?.data);
+            setFilters((oldFilters) => {
+                return {
+                    ...oldFilters,
+                    name: category?.data?.parentCategory?.name
+                }
+            })
             setData((oldData) => {
                 return {
                     ...oldData,
@@ -69,7 +77,7 @@ const CategoriesUpdate = () => {
                 show: true
             });
 
-            navigate('/categories');
+            navigate('/categorias');
         }
     }, [updateData]);
 
@@ -131,6 +139,21 @@ const CategoriesUpdate = () => {
         })
     }
 
+    const handleCategory = (category) => {
+        setData((oldData) => {
+            return {
+                ...oldData,
+                parentId: category?.id
+            }
+        });
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                name: category?.name
+            }
+        });
+    }
+
     return (
         <div>
             <div className="card">
@@ -154,25 +177,18 @@ const CategoriesUpdate = () => {
                                 </div>
                                 <div className="form-group mb-3 col-md-6">
                                     <label>Categoria padre</label>
-                                    <select
-                                        className="form-control"
-                                        name="parentId"
-                                        value={data?.parentId}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="">
-                                            Seleccione...
-                                        </option>
-                                        {
-                                            categories?.map?.((category, i) => {
-                                                return (
-                                                    <option value={category?.id} key={i}>
-                                                        {category?.name}
-                                                    </option>
-                                                )
-                                            })
-                                        }
-                                    </select>
+                                    {
+
+                                    }
+                                    <CustomSelect
+                                        options={categories}
+                                        optionLabel="name"
+                                        inputPlaceholder="Escribe el nombre..."
+                                        isLoading={categoriesLoading}
+                                        onSelectValue={handleCategory}
+                                        handleInputChange={(e) => { setFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
+                                        inputValue={filters?.name}
+                                    />
                                 </div>
                                 <div className="form-group mb-3 col-md-12">
                                     <label>Descripcion</label>

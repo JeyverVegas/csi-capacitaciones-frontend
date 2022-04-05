@@ -32,7 +32,8 @@ const ProductsCreate = () => {
 
     const [categoriesFilters, setCategoriesFilters] = useState({
         name: '',
-        page: 1
+        page: 1,
+        perPage: 200
     });
 
     const [data, setData] = useState({
@@ -352,7 +353,7 @@ const ProductsCreate = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="col-md-12">
+                            <div className="col-md-12 mt-3">
                                 <label>
                                     Descripción
                                 </label>

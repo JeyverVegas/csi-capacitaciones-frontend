@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import CustomSelect from "../../../components/CustomSelect";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useCategories from "../../../hooks/useCategories";
@@ -12,25 +13,19 @@ const CategoriesCreate = () => {
 
     const [filters, setFilters] = useState({
         perPage: 200,
-        page: 1
+        page: 1,
+        name: ''
     });
 
     const [data, setData] = useState({
         name: '',
         parentId: '',
-        description: ''        
+        description: ''
     });
 
     const [{ data: createData, loading: createLoading, error: createError }, createCategory] = useAxios({ url: `/categories`, method: 'POST' }, { manual: true, useCache: false });
 
-    const [{ categories, error: categoriesError, loading: categoriesLoading }, getCategories] = useCategories({ options: { useCache: false } });
-
-    useEffect(() => {
-        setLoading({
-            show: categoriesLoading,
-            message: 'Obteniendo informacion'
-        });
-    }, [categoriesLoading]);
+    const [{ categories, error: categoriesError, loading: categoriesLoading }, getCategories] = useCategories({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
 
     useEffect(() => {
         if (createData) {
@@ -96,6 +91,21 @@ const CategoriesCreate = () => {
         })
     }
 
+    const handleCategory = (category) => {
+        setData((oldData) => {
+            return {
+                ...oldData,
+                parentId: category?.id
+            }
+        });
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                name: category?.name
+            }
+        });
+    }
+
     return (
         <div>
             <div className="card">
@@ -119,25 +129,18 @@ const CategoriesCreate = () => {
                                 </div>
                                 <div className="form-group mb-3 col-md-6">
                                     <label>Categoria padre</label>
-                                    <select
-                                        className="form-control"
-                                        name="parentId"
-                                        value={data?.parentId}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="">
-                                            Seleccione...
-                                        </option>
-                                        {
-                                            categories?.map?.((category, i) => {
-                                                return (
-                                                    <option value={category?.id} key={i}>
-                                                        {category?.name}
-                                                    </option>
-                                                )
-                                            })
-                                        }
-                                    </select>
+                                    {
+
+                                    }
+                                    <CustomSelect
+                                        options={categories}
+                                        optionLabel="name"
+                                        inputPlaceholder="Escribe el nombre..."
+                                        isLoading={categoriesLoading}
+                                        onSelectValue={handleCategory}
+                                        handleInputChange={(e) => { setFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
+                                        inputValue={filters?.name}
+                                    />
                                 </div>
                                 <div className="form-group mb-3 col-md-12">
                                     <label>Descripcion</label>

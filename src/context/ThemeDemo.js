@@ -28,7 +28,7 @@ export const dezThemeSet = [
 		primary: "color_2",
 		direction: direction
 	},
-	 { /* Demo Theme 2 */
+	{ /* Demo Theme 2 */
 		typography: "poppins",
 		version: "light",
 		layout: "vertical",
@@ -58,7 +58,7 @@ export const dezThemeSet = [
 		direction: direction
 	},
 	{
-		/* Demo Theme 4 */	
+		/* Demo Theme 4 */
 		typography: "poppins",
 		version: "light",
 		layout: "vertical",
@@ -71,7 +71,7 @@ export const dezThemeSet = [
 		containerLayout: "wide",
 		primary: "color_9",
 		direction: direction
-		
+
 	},
 	{
 		/* Demo Theme 5 */
@@ -103,6 +103,5 @@ export const dezThemeSet = [
 		primary: "color_5",
 		direction: direction
 	}, */
-	
+
 ];
-	

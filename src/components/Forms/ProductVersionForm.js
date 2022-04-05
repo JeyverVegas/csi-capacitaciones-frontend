@@ -157,9 +157,13 @@ const ProductVersionForm = ({ defaultProductVersion, productId, index, onDelete 
             return;
         }
 
-        const { id, createdAt, ...rest } = data;
+        const { id, createdAt, productFeatureSelectedOptions, features, ...rest } = data;
 
         const formData = new FormData();
+
+        if (data?.id) {
+            formData?.append('_method', 'put');
+        }
 
         Object?.keys(rest).forEach((key, i) => {
             if (rest[key]) {
@@ -171,7 +175,7 @@ const ProductVersionForm = ({ defaultProductVersion, productId, index, onDelete 
             }
         });
 
-        saveProductVersion({ url: `/product-versions${data?.id ? `/${data?.id}` : ''}`, method: data?.id ? 'PUT' : 'POST', data: formData });
+        saveProductVersion({ url: `/product-versions${data?.id ? `/${data?.id}` : ''}`, method: 'POST', data: formData });
     }
 
     return (

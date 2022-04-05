@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (authInfo) {
       setAuth(JSON.stringify(authInfo));
+
     } else {
       deleteAuth();
     }

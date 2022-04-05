@@ -157,7 +157,9 @@ const ProductsUpdate = () => {
 
         const formData = new FormData();
 
-        Object.keys(data).forEach((key, i) => {
+        const { productVersions, serviceIds, ...rest } = data;
+        console.log(rest);
+        Object.keys(rest).forEach((key, i) => {
             if (key !== 'id') {
                 if (data[key]) {
                     if (key === 'image' || key === 'dataSheet' || key === 'certificate') {
@@ -167,6 +169,10 @@ const ProductsUpdate = () => {
                     }
                 }
             }
+        });
+
+        serviceIds?.forEach((serviceId, key) => {
+            formData.append(`serviceIds[${key}]`, serviceId);
         });
 
         updateProduct({ data: formData });

@@ -143,7 +143,7 @@ export const ThemeContextProvider = (props) => {
     body.setAttribute("data-header-position", name.value);
   };
 
-  const customMenuToggle = (open) => {    
+  const customMenuToggle = (open) => {
     setMenuToggle(open);
   }
 

@@ -23,7 +23,7 @@ const Categories = () => {
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [{ categories, total, numberOfPages, error: categoriesError, loading }, getCategories] = useCategories({ params: { ...filters } }, { useCache: false });
+    const [{ categories, total, numberOfPages, error: categoriesError, loading }, getCategories] = useCategories({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
 
     const [{ error: deleteError, loading: deleteLoading }, deleteCategories] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
@@ -32,8 +32,8 @@ const Categories = () => {
     }, [categories])
 
     useEffect(() => {
-        getCategories();
-    }, [])
+
+    }, [filters])
 
     useEffect(() => {
         setLoading?.({
