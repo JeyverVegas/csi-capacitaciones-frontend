@@ -1,7 +1,7 @@
 import { Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
-const ActionDropdown = ({ id, updatePath, onDelete, withOutUpdate, nameValue }) => {
+const ActionDropdown = ({ id, updatePath, onDelete, withOutUpdate, nameValue, roleDisplayText }) => {
 
     let navigate = useNavigate();
 
@@ -10,7 +10,7 @@ const ActionDropdown = ({ id, updatePath, onDelete, withOutUpdate, nameValue }) 
     }
 
     const handleUpdate = () => {
-        navigate(`${updatePath}/${id}?name=${nameValue}`);
+        navigate(`${updatePath}/${id}?name=${roleDisplayText || nameValue}`);
     }
 
     return (

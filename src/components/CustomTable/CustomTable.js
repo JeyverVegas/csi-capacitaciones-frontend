@@ -112,7 +112,7 @@ const CustomTable = ({
                                                                                         updatePath={updatePath}
                                                                                         positionName={value?.position?.name}
                                                                                         serviceName={value?.service?.name}
-                                                                                        roleName={value?.role?.name}
+                                                                                        roleName={value?.role?.displayText}
                                                                                         nameValue={value?.name}
                                                                                         date={value?.createdAt}
                                                                                         imgValue={`${value?.imagePath}`}
@@ -120,6 +120,7 @@ const CustomTable = ({
                                                                                         provider={value?.provider}
                                                                                         categoryName={value?.category?.name}
                                                                                         documentNumberValue={value?.documentNumber}
+                                                                                        roleDisplayText={value?.displayText}
                                                                                         onChange={() => { onSelectValue?.(value) }}
                                                                                         onDelete={() => { onDelete?.(value) }}
                                                                                         checked={selectedValues?.includes(value?.id)}

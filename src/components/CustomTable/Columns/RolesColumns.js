@@ -14,7 +14,7 @@ const RolesColumns = [
     },
     {
         Label: () => 'Nombre',
-        accessor: 'name'
+        accessor: 'displayText'
     },
     {
         Label: () => 'Fecha de Creación',

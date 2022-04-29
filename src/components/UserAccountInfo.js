@@ -21,7 +21,7 @@ const UserAccountInfo = () => {
                 <img src={user?.imagePath !== '/storage/' ? `${SystemInfo?.host}${user?.imagePath}` : profile} width={20} alt="profile-image" />
                 <div className="header-info ms-3">
                     <span>{user?.name.length > 16 ? `${user?.name.slice(0, 16)}...` : user?.name}</span>
-                    <small>{user?.role?.name}</small>
+                    <small>{user?.role?.displayText}</small>
                 </div>
             </Dropdown.Toggle>
             <Dropdown.Menu align="right" className="mt-3 dropdown-menu dropdown-menu-end">

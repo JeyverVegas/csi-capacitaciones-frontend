@@ -35,17 +35,17 @@ const createLink = (
 ) => ({ title, forUpdate, component, icon, path, permissions, children });
 
 export const mainPermissions = {
-    dashboard: ['view-dashboard'],
-    permissions: ['view-permissions'],
-    positions: ['view-positions', 'create-positions', 'update-positions', 'delete-positions'],
-    services: ['view-services', 'create-services', 'update-services', 'delete-services'],
-    users: ['view-users', 'create-users', 'update-users', 'delete-users'],
-    roles: ['view-roles', 'create-roles', 'update-roles', 'delete-roles'],
-    providers: ['view-users', 'create-users', 'update-users', 'delete-users'],
-    products: ['view-users', 'create-users', 'update-users', 'delete-users', 'view-users', 'create-users'],
-    categories: ['view-categories', 'create-categories', 'update-categories', 'delete-categories'],
-    features: ['view-product-features', 'create-product-features', 'update-product-features', 'delete-product-features'],
-    productFeaturesOptions: ['view-product-feature-options', 'create-product-feature-options', 'update-product-feature-options', 'delete-product-feature-options']
+    dashboard: ['sys-001-view-dashboard'],
+    permissions: ['sys-001-view-permissions'],
+    positions: ['sys-001-view-positions', 'sys-001-create-positions', 'sys-001-update-positions', 'sys-001-delete-positions'],
+    services: ['sys-001-view-services', 'sys-001-create-services', 'sys-001-update-services', 'sys-001-delete-services'],
+    users: ['sys-001-view-users', 'sys-001-create-users', 'sys-001-update-users', 'sys-001-delete-users'],
+    roles: ['sys-001-view-roles', 'sys-001-create-roles', 'sys-001-update-roles', 'sys-001-delete-roles'],
+    providers: ['sys-001-view-users', 'sys-001-create-users', 'sys-001-update-users', 'sys-001-delete-users'],
+    products: ['sys-001-view-users', 'sys-001-create-users', 'sys-001-update-users', 'sys-001-delete-users', 'sys-001-view-users', 'sys-001-create-users'],
+    categories: ['sys-001-view-categories', 'sys-001-create-categories', 'sys-001-update-categories', 'sys-001-delete-categories'],
+    features: ['sys-001-view-product-features', 'sys-001-create-product-features', 'sys-001-update-product-features', 'sys-001-delete-product-features'],
+    productFeaturesOptions: ['sys-001-view-product-feature-options', 'sys-001-create-product-feature-options', 'sys-001-update-product-feature-options', 'sys-001-delete-product-feature-options']
 }
 
 const MenuLinks = [

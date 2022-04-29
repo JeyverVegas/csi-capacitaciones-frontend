@@ -372,7 +372,7 @@ const UsersCreate = () => {
                                             roles?.map((role, i) => {
                                                 return (
                                                     <option value={role?.name} key={i} >
-                                                        {role?.name}
+                                                        {role?.displayText}
                                                     </option>
                                                 )
                                             })

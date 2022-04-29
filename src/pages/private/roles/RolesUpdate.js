@@ -34,11 +34,10 @@ const RolesUpdate = () => {
             setData((oldData) => {
                 return {
                     ...oldData,
-                    name: roleData?.data?.name,
+                    name: roleData?.data?.displayText,
                     permissions: roleData?.data?.permissionsByModule?.reduce?.((result, module) => [...result, ...module.permissions.map(p => p.name)], [])
                 }
             })
-            console.log(roleData);
         }
     }, [roleData])
 
