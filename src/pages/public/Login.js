@@ -21,25 +21,34 @@ const Login = () => {
     const [rememberMe, setRememberMe] = useState(false);
 
     const [{ data: loginData, loading: loadingLogin }, login] = useAxios({ url: '/auth/login', method: 'post' }, { manual: true, useCache: false });
+    const [{ data: loginWithTokenData, loading: loadingLoginWithToken }, loginWithToken] = useAxios({ url: '/auth/login/from-token', method: 'post' }, { manual: true, useCache: false });
 
     useEffect(() => {
         if (searchParams?.get('message')) {
             const message = searchParams?.get('message');
             setCustomToast({ message, severity: 'danger', show: true, position: 'top-right' });
         }
+
+        const token = searchParams.get('token');
+        if (token) {
+            loginWithToken({ data: { token } });
+        }
     }, [searchParams])
 
     useEffect(() => {
-        setLoading({ message: 'Iniciando sesión', show: loadingLogin });
-    }, [loadingLogin]);
+        setLoading({ message: 'Iniciando sesión', show: loadingLogin || loadingLoginWithToken });
+    }, [loadingLogin, loadingLoginWithToken]);
 
     useEffect(() => {
         if (loginData) {
-            console.log(loginData);
             setAuthInfo({ user: loginData?.data, token: loginData?.token });
             navigate('/dashboard', { replace: true });
         }
-    }, [loginData])
+        if (loginWithTokenData) {
+            setAuthInfo({ user: loginWithTokenData.data, token: loginWithTokenData.token });
+            navigate('/dashboard', { replace: true });
+        }
+    }, [loginData, loginWithTokenData])
 
     const handleChange = (e) => {
         setCredentials((oldCredentials) => {
