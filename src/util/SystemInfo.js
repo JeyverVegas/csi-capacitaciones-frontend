@@ -9,7 +9,8 @@ const SystemInfo = {
     logoBlanco: logoBlanco,
     logoShort: logoShort,
     host: 'http://pedidos.test',
-    api: 'http://pedidos.test/api'
+    api: 'http://pedidos.test/api',
+    systemCode: 'sys-002',
 }
 
 export default SystemInfo;

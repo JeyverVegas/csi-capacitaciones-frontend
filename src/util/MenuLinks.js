@@ -23,6 +23,7 @@ import ServicesUpdate from "../pages/private/services/ServicesUpdate";
 import Users from "../pages/private/users/Users";
 import UsersCreate from "../pages/private/users/UsersCreate";
 import UsersUpdate from "../pages/private/users/UsersUpdate";
+import SystemInfo from "./SystemInfo";
 
 const createLink = (
     title,
@@ -34,18 +35,20 @@ const createLink = (
     children
 ) => ({ title, forUpdate, component, icon, path, permissions, children });
 
+const {systemCode} = SystemInfo;
+
 export const mainPermissions = {
-    dashboard: ['sys-001-view-dashboard'],
-    permissions: ['sys-001-view-permissions'],
-    positions: ['sys-001-view-positions', 'sys-001-create-positions', 'sys-001-update-positions', 'sys-001-delete-positions'],
-    services: ['sys-001-view-services', 'sys-001-create-services', 'sys-001-update-services', 'sys-001-delete-services'],
-    users: ['sys-001-view-users', 'sys-001-create-users', 'sys-001-update-users', 'sys-001-delete-users'],
-    roles: ['sys-001-view-roles', 'sys-001-create-roles', 'sys-001-update-roles', 'sys-001-delete-roles'],
-    providers: ['sys-001-view-users', 'sys-001-create-users', 'sys-001-update-users', 'sys-001-delete-users'],
-    products: ['sys-001-view-users', 'sys-001-create-users', 'sys-001-update-users', 'sys-001-delete-users', 'sys-001-view-users', 'sys-001-create-users'],
-    categories: ['sys-001-view-categories', 'sys-001-create-categories', 'sys-001-update-categories', 'sys-001-delete-categories'],
-    features: ['sys-001-view-product-features', 'sys-001-create-product-features', 'sys-001-update-product-features', 'sys-001-delete-product-features'],
-    productFeaturesOptions: ['sys-001-view-product-feature-options', 'sys-001-create-product-feature-options', 'sys-001-update-product-feature-options', 'sys-001-delete-product-feature-options']
+    dashboard: [`${systemCode}-view-dashboard`],
+    permissions: [`${systemCode}-view-permissions`],
+    positions: [`${systemCode}-view-positions`, `${systemCode}-create-positions`, `${systemCode}-update-positions`, `${systemCode}-delete-positions`],
+    services: [`${systemCode}-view-services`, `${systemCode}-create-services`, `${systemCode}-update-services`, `${systemCode}-delete-services`],
+    users: [`${systemCode}-view-users`, `${systemCode}-create-users`, `${systemCode}-update-users`, `${systemCode}-delete-users`],
+    roles: [`${systemCode}-view-roles`, `${systemCode}-create-roles`, `${systemCode}-update-roles`, `${systemCode}-delete-roles`],
+    providers: [`${systemCode}-view-users`, `${systemCode}-create-users`, `${systemCode}-update-users`, `${systemCode}-delete-users`],
+    products: [`${systemCode}-view-users`, `${systemCode}-create-users`, `${systemCode}-update-users`, `${systemCode}-delete-users`, `${systemCode}-view-users`, `${systemCode}-create-users`],
+    categories: [`${systemCode}-view-categories`, `${systemCode}-create-categories`, `${systemCode}-update-categories`, `${systemCode}-delete-categories`],
+    features: [`${systemCode}-view-product-features`, `${systemCode}-create-product-features`, `${systemCode}-update-product-features`, `${systemCode}-delete-product-features`],
+    productFeaturesOptions: [`${systemCode}-view-product-feature-options`, `${systemCode}-create-product-feature-options`, `${systemCode}-update-product-feature-options`, `${systemCode}-delete-product-feature-options`]
 }
 
 const MenuLinks = [
