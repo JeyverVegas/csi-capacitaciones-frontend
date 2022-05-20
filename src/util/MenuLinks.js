@@ -5,47 +5,34 @@ import Dashboard from "../pages/private/Dashboard";
 import Features from "../pages/private/features/Features";
 import FeaturesCreate from "../pages/private/features/FeaturesCreate";
 import FeaturesUpdate from "../pages/private/features/FeaturesUpdate";
-import Positions from "../pages/private/positions/Positions";
-import PositionsCreate from "../pages/private/positions/PositionsCreate";
-import PositionsUpdate from "../pages/private/positions/PositionsUpdate";
+import Orders from "../pages/private/orders/Orders";
+import OrdersCreate from "../pages/private/orders/OrdersCreate";
+import OrdersUpdate from "../pages/private/orders/OrdersUpdate";
 import Products from "../pages/private/products/Products";
 import ProductsCreate from "../pages/private/products/ProductsCreate";
 import ProductsUpdate from "../pages/private/products/ProductsUpdate";
 import Providers from "../pages/private/providers/Providers";
 import ProvidersCreate from "../pages/private/providers/ProvidersCreate";
 import ProvidersUpdate from "../pages/private/providers/ProvidersUpdate";
-import Roles from "../pages/private/roles/Roles";
-import RolesCreate from "../pages/private/roles/RolesCreate";
-import RolesUpdate from "../pages/private/roles/RolesUpdate";
-import Services from "../pages/private/services/Services";
-import ServicesCreate from "../pages/private/services/ServicesCreate";
-import ServicesUpdate from "../pages/private/services/ServicesUpdate";
-import Users from "../pages/private/users/Users";
-import UsersCreate from "../pages/private/users/UsersCreate";
-import UsersUpdate from "../pages/private/users/UsersUpdate";
 import SystemInfo from "./SystemInfo";
 
 const createLink = (
     title,
-    forUpdate,
+    hidden,
     component,
     icon,
     path,
     permissions,
     children
-) => ({ title, forUpdate, component, icon, path, permissions, children });
+) => ({ title, hidden, component, icon, path, permissions, children });
 
-const {systemCode} = SystemInfo;
+const { systemCode } = SystemInfo;
 
 export const mainPermissions = {
     dashboard: [`${systemCode}-view-dashboard`],
-    permissions: [`${systemCode}-view-permissions`],
-    positions: [`${systemCode}-view-positions`, `${systemCode}-create-positions`, `${systemCode}-update-positions`, `${systemCode}-delete-positions`],
-    services: [`${systemCode}-view-services`, `${systemCode}-create-services`, `${systemCode}-update-services`, `${systemCode}-delete-services`],
-    users: [`${systemCode}-view-users`, `${systemCode}-create-users`, `${systemCode}-update-users`, `${systemCode}-delete-users`],
-    roles: [`${systemCode}-view-roles`, `${systemCode}-create-roles`, `${systemCode}-update-roles`, `${systemCode}-delete-roles`],
-    providers: [`${systemCode}-view-users`, `${systemCode}-create-users`, `${systemCode}-update-users`, `${systemCode}-delete-users`],
-    products: [`${systemCode}-view-users`, `${systemCode}-create-users`, `${systemCode}-update-users`, `${systemCode}-delete-users`, `${systemCode}-view-users`, `${systemCode}-create-users`],
+    providers: [`${systemCode}-view-providers`, `${systemCode}-create-providers`, `${systemCode}-update-providers`, `${systemCode}-delete-providers`],
+    orders: [`${systemCode}-view-orders`, `${systemCode}-create-orders`, `${systemCode}-update-orders`, `${systemCode}-delete-orders`],
+    products: [`${systemCode}-view-products`, `${systemCode}-create-products`, `${systemCode}-update-products`, `${systemCode}-delete-products`],
     categories: [`${systemCode}-view-categories`, `${systemCode}-create-categories`, `${systemCode}-update-categories`, `${systemCode}-delete-categories`],
     features: [`${systemCode}-view-product-features`, `${systemCode}-create-product-features`, `${systemCode}-update-product-features`, `${systemCode}-delete-product-features`],
     productFeaturesOptions: [`${systemCode}-view-product-feature-options`, `${systemCode}-create-product-feature-options`, `${systemCode}-update-product-feature-options`, `${systemCode}-delete-product-feature-options`]
@@ -54,16 +41,10 @@ export const mainPermissions = {
 const MenuLinks = [
     createLink('DashBoard', null, <Dashboard />, 'flaticon-025-dashboard', '/dashboard', mainPermissions?.dashboard[0]),
 
-    createLink('Cargos', null, null, 'flaticon-381-id-card-2', '/cargos', mainPermissions?.positions, [
-        createLink('Crear Cargos', null, <PositionsCreate />, '', '/cargos/crear', mainPermissions?.positions[1]),
-        createLink('Listar Cargos', null, <Positions />, '', '/cargos', mainPermissions?.positions[0]),
-        createLink('Actualizar Cargos', true, <PositionsUpdate />, '', '/cargos/:id', mainPermissions?.positions[2]),
-    ]),
-
-    createLink('Servicios', null, null, 'flaticon-381-settings-7', '/servicios', mainPermissions?.services, [
-        createLink('Crear Servicio', null, <ServicesCreate />, '', '/servicios/crear', mainPermissions?.services[1]),
-        createLink('Listar Servicios', null, <Services />, '', '/servicios', mainPermissions?.services[0]),
-        createLink('Actualizar Servicios', true, <ServicesUpdate />, '', '/servicios/:id', mainPermissions?.services[2]),
+    createLink('Pedidos', null, null, 'flaticon-381-list', '/pedidos', mainPermissions?.products, [
+        createLink('Crear Pedido', null, <OrdersCreate />, '', '/pedidos/crear', mainPermissions?.products[1]),
+        createLink('Listar Pedidos', null, <Orders />, '', '/pedidos', mainPermissions?.products[0]),
+        createLink('Actualizar Pedido', true, <OrdersUpdate />, '', '/pedidos/:id', mainPermissions?.products[2]),
     ]),
 
     createLink('Proveedores', null, null, 'flaticon-052-inside', '/proveedores', mainPermissions?.providers, [
@@ -75,9 +56,9 @@ const MenuLinks = [
     createLink('Productos', null, null, 'flaticon-381-tab', '/productos', mainPermissions?.products, [
         createLink('Crear Producto', null, <ProductsCreate />, '', '/productos/crear', mainPermissions?.products[1]),
         createLink('Listar Productos', null, <Products />, '', '/productos', mainPermissions?.products[0]),
-        createLink('Crear Categoria', null, <CategoriesCreate />, '', '/categorias/crear', mainPermissions?.products[5]),
-        createLink('Categorias', null, <Categories />, '', '/categorias', mainPermissions?.products[4]),
         createLink('Actualizar Productos', true, <ProductsUpdate />, '', '/productos/:id', mainPermissions?.products[2]),
+        createLink('Crear Categoria', null, <CategoriesCreate />, '', '/categorias/crear', mainPermissions?.categories[1]),
+        createLink('Categorias', null, <Categories />, '', '/categorias', mainPermissions?.categories[0]),
         createLink('Actualizar Categoria', true, <CategoriesUpdate />, '', '/categorias/:id', mainPermissions?.categories[2]),
     ]),
 
@@ -85,19 +66,6 @@ const MenuLinks = [
         createLink('Crear Caracteristica', null, <FeaturesCreate />, '', '/caracteristicas/crear', mainPermissions?.features[1]),
         createLink('Listar Caracteristicas', null, <Features />, '', '/caracteristicas', mainPermissions?.features[0]),
         createLink('Actualizar Caracteristicas', true, <FeaturesUpdate />, '', '/caracteristicas/:id', mainPermissions?.features[2]),
-    ]),
-
-    createLink('Roles', null, null, 'flaticon-381-user-8', '/roles', mainPermissions?.roles, [
-
-        createLink('Crear Rol', null, <RolesCreate />, '', '/roles/crear', mainPermissions?.roles[1]),
-        createLink('Listar Roles', null, <Roles />, '', '/roles', mainPermissions?.roles[0]),
-        createLink('Actualizar Roles', true, <RolesUpdate />, '', '/roles/:id', mainPermissions?.roles[2]),
-    ]),
-
-    createLink('Usuarios', null, null, 'flaticon-381-user-9', '/usuarios', mainPermissions?.users, [
-        createLink('Crear Usuario', null, <UsersCreate />, '', '/usuarios/crear', mainPermissions?.users[1]),
-        createLink('Listar Usuarios', null, <Users />, '', '/usuarios', mainPermissions?.users[0]),
-        createLink('Actualizar Usuarios', true, <UsersUpdate />, '', '/usuarios/:id', mainPermissions?.users[2]),
     ])
 ];
 

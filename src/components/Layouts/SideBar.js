@@ -43,7 +43,7 @@ const SideBar = () => {
     const [path, setPath] = useState('');
 
     useEffect(() => {
-        var btn = document.querySelector(".nav-control");        
+        var btn = document.querySelector(".nav-control");
         var aaa = document.querySelector("#main-wrapper");
         function toggleFunc() {
             return aaa.classList.toggle("menu-toggle");
@@ -96,7 +96,7 @@ const SideBar = () => {
                                                 {
                                                     menuLink?.children?.map?.((childrenMenu, i2) => {
                                                         return (
-                                                            permissions?.includes?.(childrenMenu?.permissions) && !childrenMenu.forUpdate ?
+                                                            permissions?.includes?.(childrenMenu?.permissions) && !childrenMenu.hidden ?
                                                                 <li key={`${i}-${i2}`}>
                                                                     <Link className={`${path === childrenMenu?.path ? "mm-active" : ""}`} to={childrenMenu?.path}>
                                                                         {childrenMenu?.title}

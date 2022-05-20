@@ -2,6 +2,7 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const RequireAuth = ({ children, screenPermission }) => {
+
     const { user, permissions } = useAuth();
 
     let location = useLocation();

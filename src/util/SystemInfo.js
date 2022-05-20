@@ -9,7 +9,7 @@ const SystemInfo = {
     logoBlanco: logoBlanco,
     logoShort: logoShort,
     host: 'http://pedidos.test',
-    api: 'http://pedidos.test/api',
+    api: process.env.REACT_APP_API_URL,
     systemCode: 'sys-002',
 }
 

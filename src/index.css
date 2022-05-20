@@ -1,114 +1,122 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+        monospace;
 }
 
 /*FOR SPINNER*/
 .spinner {
-  width: 40px;
-  height: 40px;
-  position: relative;
-  margin: 0px auto;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    margin: 0px auto;
 }
 
 .double-bounce1,
 .double-bounce2 {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  opacity: 0.6;
-  position: absolute;
-  top: 0;
-  left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
 
-  -webkit-animation: sk-bounce 2s infinite ease-in-out;
-  animation: sk-bounce 2s infinite ease-in-out;
+    -webkit-animation: sk-bounce 2s infinite ease-in-out;
+    animation: sk-bounce 2s infinite ease-in-out;
 }
 
 .double-bounce2 {
-  -webkit-animation-delay: -1s;
-  animation-delay: -1s;
+    -webkit-animation-delay: -1s;
+    animation-delay: -1s;
 }
 
 @-webkit-keyframes sk-bounce {
-  0%,
-  100% {
-    -webkit-transform: scale(0);
-  }
-  50% {
-    -webkit-transform: scale(1);
-  }
+
+    0%,
+    100% {
+        -webkit-transform: scale(0);
+    }
+
+    50% {
+        -webkit-transform: scale(1);
+    }
 }
 
 @keyframes sk-bounce {
-  0%,
-  100% {
-    transform: scale(0);
-    -webkit-transform: scale(0);
-  }
-  50% {
-    transform: scale(1);
-    -webkit-transform: scale(1);
-  }
+
+    0%,
+    100% {
+        transform: scale(0);
+        -webkit-transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1);
+        -webkit-transform: scale(1);
+    }
 }
 
 .custom-select-option {
-  padding: 1px;
-  transition: all .3s;
+    padding: 1px;
+    transition: all .3s;
 }
 
 .custom-select-option-light:hover {
-  background: rgba(255, 255, 255, .3);
+    background: rgba(255, 255, 255, .3);
 }
 
-.custom-select-option-light{
-  color: white;
+.custom-select-option-light {
+    color: white;
 }
 
 .custom-select-option-dark:hover {
-  background: rgba(0, 0, 0, .1);  
+    background: rgba(0, 0, 0, .1);
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
+    width: 5px;
 }
 
 .scrollbar-light::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, .3);
-  border-radius: 10px;
+    background: rgba(255, 255, 255, .3);
+    border-radius: 10px;
 }
 
 .scrollbar-dark::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, .3);
-  border-radius: 10px;
+    background: rgba(0, 0, 0, .3);
+    border-radius: 10px;
 }
 
 .custom-bg-dark {
-  background: #171622;
+    background: #171622;
 }
 
 .custom-bg-light {
-  background: white;
+    background: white;
 }
 
-.bg-custom-multiselect{
-  background: transparent !important;
+.bg-custom-multiselect {
+    background: transparent !important;
 }
 
-.bg-custom-multiselect > .dropdown-container{
-  background: transparent !important;
+.bg-custom-multiselect>.dropdown-container {
+    background: transparent !important;
 }
 
 
-.bg-custom-multiselect > .dropdown-container > .dropdown-heading{
-  background: transparent !important;
+.bg-custom-multiselect>.dropdown-container>.dropdown-heading {
+    background: transparent !important;
+}
+
+.order-tr>td {
+    max-width: 200px;
 }

@@ -66,6 +66,10 @@ const handleResponseError = (error) => {
       handleUnAuthorizeUser(data);
     }
 
+    if (status === 403) {
+      toast.error(`No tienes permisos para este recurso.`, defaultOpts)
+    }
+
     if (status === 404) {
       toast.error(`Error 404: La ruta no existe en el servidor.`, defaultOpts)
     }

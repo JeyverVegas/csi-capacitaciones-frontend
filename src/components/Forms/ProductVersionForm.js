@@ -73,7 +73,6 @@ const ProductVersionForm = ({ defaultProductVersion, productId, index, onDelete 
 
     useEffect(() => {
         if (defaultProductVersion) {
-            console.log(defaultProductVersion);
             if (defaultProductVersion?.productFeatureSelectedOptions?.length > 0) {
                 var features = [];
                 var featuresGrouped = _.groupBy(defaultProductVersion?.productFeatureSelectedOptions, 'productFeatureId');
