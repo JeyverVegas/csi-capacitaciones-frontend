@@ -4,9 +4,7 @@ import './index.css';
 import "react-toastify/dist/ReactToastify.css";
 import "react-toggle/style.css";
 import 'animate.css';
-
 import 'swiper/css/bundle';
-
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';

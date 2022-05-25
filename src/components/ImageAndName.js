@@ -4,12 +4,12 @@ const ImageAndName = ({ nameValue, imgValue }) => {
     let haveImage = false;
     if (imgValue !== '/storage/') haveImage = true;
     return (
-        <div className="text-center d-flex align-items-center">
+        <div style={{ justifyContent: 'center', display: 'flex', alignItems: 'center', textAlign: 'center' }}>
             {
                 haveImage ?
                     <img
                         src={`${SystemInfo?.host}${imgValue}`}
-                        className="rounded-lg"
+                        style={{ borderRadius: '100%' }}
                         width="36"
                         height={"36"}
                         alt="profile-image"
@@ -17,7 +17,7 @@ const ImageAndName = ({ nameValue, imgValue }) => {
                     :
                     null
             }
-            <span className="w-space-no mx-1">{nameValue ? nameValue : ''}</span>
+            <span style={{ margin: '0px 10px' }}>{nameValue ? nameValue : ''}</span>
         </div>
     )
 }

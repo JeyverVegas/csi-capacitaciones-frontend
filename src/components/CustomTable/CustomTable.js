@@ -61,7 +61,7 @@ const CustomTable = ({
                         <div id="patientTable_basic_table" className="dataTables_wrapper">
                             <table
                                 id="example5"
-                                className="display dataTable no-footer w-100"
+                                className="display dataTable no-footer w-100 text-center"
                                 style={{ minWidth: 845 }}
                                 role="grid"
                                 aria-describedby="example5_info"
@@ -125,6 +125,7 @@ const CustomTable = ({
                                                                                         onDelete={() => { onDelete?.(value) }}
                                                                                         checked={selectedValues?.includes(value?.id)}
                                                                                         optionsCount={value?.options?.length}
+                                                                                        value={value}
                                                                                     />
                                                                                     :
                                                                                     accessor ?

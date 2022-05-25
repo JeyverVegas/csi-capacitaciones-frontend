@@ -26,6 +26,10 @@ const ProductsColumns = [
         Component: ({ provider }) => provider?.name
     },
     {
+        Label: () => 'Repuesto',
+        Component: ({ value }) => <span style={{ fontSize: '25px' }}>{value?.isReplacement ? '✔️' : '🚫'}</span>
+    },
+    {
         Label: () => 'Fecha de Creación',
         Component: ({ date }) => format(new Date(date), 'dd/MM/yyyy')
     },
