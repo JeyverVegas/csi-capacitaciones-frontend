@@ -10,7 +10,7 @@ import clsx from "clsx";
 import useAxios from "../../../hooks/useAxios";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useServices from "../../../hooks/useServices";
-
+import Toggle from "react-toggle";
 
 
 
@@ -47,7 +47,8 @@ const ProductsCreate = () => {
         description: '',
         code: '',
         price: 0,
-        serviceIds: []
+        serviceIds: [],
+        isReplacement: false
     });
 
     const { openMenuToggle, customMenuToggle, sideBarStyle } = useTheme();
@@ -115,16 +116,20 @@ const ProductsCreate = () => {
 
         Object.keys(data).forEach((key, i) => {
             if (key !== 'id') {
-                if (data[key]) {
-                    if (key === 'image' || key === 'dataSheet' || key === 'certificate') {
-                        formData.append(key, data[key], data[key].name);
-                    } else {
-                        if (key === 'serviceIds') {
-                            data[key].forEach((id, i) => {
-                                formData.append(`${key}[${i}]`, id);
-                            })
+                if (key === 'isReplacement') {
+                    formData.append(key, data[key] ? 1 : 0);
+                } else {
+                    if (data[key]) {
+                        if (key === 'image' || key === 'dataSheet' || key === 'certificate') {
+                            formData.append(key, data[key], data[key].name);
                         } else {
-                            formData.append(key, data[key]);
+                            if (key === 'serviceIds') {
+                                data[key].forEach((id, i) => {
+                                    formData.append(`${key}[${i}]`, id);
+                                })
+                            } else {
+                                formData.append(key, data[key]);
+                            }
                         }
                     }
                 }
@@ -235,6 +240,10 @@ const ProductsCreate = () => {
                 <div className="basic-form">
                     <form onSubmit={handleSubmit}>
                         <div className="row mb-5">
+                            <div className="col-md-12 mb-4">
+                                <h5>¿Es un Repuesto?</h5>
+                                <Toggle onChange={() => { setData((oldData) => { return { ...oldData, isReplacement: !oldData?.isReplacement } }) }} checked={data?.isReplacement} />
+                            </div>
                             <div className="form-group mb-3 col-md-8">
                                 <div className="mb-4">
                                     <label>
@@ -362,18 +371,23 @@ const ProductsCreate = () => {
                             <div className="form-group mb-3 col-md-12 mt-4">
                                 <h6>Servicios</h6>
                                 <p>Seleccione los servicios a los cuales Pertenece el producto.</p>
-                                <div className="form-check form-check-inline">
-                                    <label className="form-check-label">
-                                        <input
-                                            type="checkbox"
-                                            className="form-check-input"
-                                            name="serviceIds"
-                                            checked={checker(services?.map(service => service.id), data?.serviceIds)}
-                                            onChange={handleAllServices}
-                                        />
-                                        Seleccionar todos
-                                    </label>
-                                </div>
+                                {
+                                    servicesLoading ?
+                                        <span>Obteniendo servicios...</span>
+                                        :
+                                        <div className="form-check form-check-inline">
+                                            <label className="form-check-label">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-check-input"
+                                                    name="serviceIds"
+                                                    checked={checker(services?.map(service => service.id), data?.serviceIds)}
+                                                    onChange={handleAllServices}
+                                                />
+                                                Seleccionar todos
+                                            </label>
+                                        </div>
+                                }
                                 {
                                     services?.map((service, i) => {
                                         return (

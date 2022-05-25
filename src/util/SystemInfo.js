@@ -8,7 +8,7 @@ const SystemInfo = {
     logo: logo,
     logoBlanco: logoBlanco,
     logoShort: logoShort,
-    host: 'http://pedidos.test',
+    host: process.env.REACT_APP_HOST_URL,
     api: process.env.REACT_APP_API_URL,
     systemCode: 'sys-002',
 }

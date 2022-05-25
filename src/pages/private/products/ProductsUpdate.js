@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import CustomSelect from "../../../components/CustomSelect";
@@ -7,14 +7,12 @@ import { useTheme } from "../../../context/ThemeContext";
 import useCategories from "../../../hooks/useCategories";
 import useProviders from "../../../hooks/useProviders";
 import clsx from "clsx";
-import ProductVersionForm from "../../../components/Forms/ProductVersionsContainer";
-import swal from "sweetalert";
 import useAxios from "../../../hooks/useAxios";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import SystemInfo from "../../../util/SystemInfo";
-import update from 'immutability-helper';
 import useServices from "../../../hooks/useServices";
 import ProductVersionsContainer from "../../../components/Forms/ProductVersionsContainer";
+import Toggle from "react-toggle";
 
 
 
@@ -56,12 +54,15 @@ const ProductsUpdate = () => {
         serviceIds: [],
         code: '',
         price: 0,
+        isReplacement: false,
         _method: 'PUT'
     });
 
     const [imagePreview, setImagePreview] = useState('');
 
-    const [productVersions, setProductVersions] = useState([]);
+    const [certificatePreview, setCertificatePreview] = useState('');
+
+    const [dataSheetPreview, setDataSheetPreview] = useState('');
 
     const [{ providers, total, numberOfPages, size, error, loading }, getProviders] = useProviders({ options: { manual: true, useCache: false } });
 
@@ -100,10 +101,10 @@ const ProductsUpdate = () => {
                     }
                 });
             }
+            if (dataSheet) setDataSheetPreview(`${SystemInfo?.host}${dataSheet}`);
+            if (certificate) setCertificatePreview(`${SystemInfo?.host}${certificate}`);
+            if (imagePath) setImagePreview(`${SystemInfo?.host}${imagePath}`);
 
-            if (imagePath) {
-                setImagePreview(`${SystemInfo?.host}/${imagePath}`);
-            }
         }
     }, [product]);
 
@@ -159,17 +160,27 @@ const ProductsUpdate = () => {
 
         const { productVersions, serviceIds, ...rest } = data;
         console.log(rest);
-        Object.keys(rest).forEach((key, i) => {
+        Object.keys(data).forEach((key, i) => {
             if (key !== 'id') {
-                if (data[key]) {
-                    if (key === 'image' || key === 'dataSheet' || key === 'certificate') {
-                        formData.append(key, data[key], data[key].name);
-                    } else {
-                        formData.append(key, data[key]);
+                if (key === 'isReplacement') {
+                    formData.append(key, data[key] ? 1 : 0);
+                } else {
+                    if (data[key]) {
+                        if (key === 'image' || key === 'dataSheet' || key === 'certificate') {
+                            formData.append(key, data[key], data[key].name);
+                        } else {
+                            if (key === 'serviceIds') {
+                                data[key].forEach((id, i) => {
+                                    formData.append(`${key}[${i}]`, id);
+                                })
+                            } else {
+                                formData.append(key, data[key]);
+                            }
+                        }
                     }
                 }
             }
-        });
+        })
 
         serviceIds?.forEach((serviceId, key) => {
             formData.append(`serviceIds[${key}]`, serviceId);
@@ -277,6 +288,10 @@ const ProductsUpdate = () => {
                 <div className="basic-form">
                     <form onSubmit={handleSubmit}>
                         <div className="row mb-5">
+                            <div className="col-md-12 mb-4">
+                                <h5>¿Es un Repuesto?</h5>
+                                <Toggle onChange={() => { setData((oldData) => { return { ...oldData, isReplacement: !oldData?.isReplacement } }) }} checked={data?.isReplacement} />
+                            </div>
                             <div className="form-group mb-3 col-md-8">
                                 <div className="mb-4">
                                     <label>
@@ -348,21 +363,27 @@ const ProductsUpdate = () => {
                                     name="image"
                                     change={handleChange}
                                 />
-                                <div className="text-center mt-4">
-                                    <label className={clsx(['btn mx-1'], {
-                                        "btn-primary": !data?.dataSheet,
-                                        "btn-success": data?.dataSheet,
-                                    })} htmlFor="datasheet-input">
-                                        Ficha tecnica
-                                    </label>
-                                    <input type="file" hidden name="dataSheet" onChange={handleChange} id="datasheet-input" />
-                                    <label className={clsx(['btn mx-1'], {
-                                        "btn-primary": !data?.certificate,
-                                        "btn-success": data?.certificate,
-                                    })} htmlFor="certificate-input">
-                                        Certificado
-                                    </label>
-                                    <input type="file" hidden name="certificate" onChange={handleChange} id="certificate-input" />
+                                <div className="text-center mt-4 row">
+                                    <div className="col-md-6">
+                                        <a href={dataSheetPreview} target="_blank" style={{ margin: 0 }}>Mostrar Ficha Tecnica</a>
+                                        <label className={clsx(['btn'], {
+                                            "btn-primary": !dataSheetPreview,
+                                            "btn-success": dataSheetPreview,
+                                        })} htmlFor="datasheet-input">
+                                            Ficha tecnica
+                                        </label>
+                                        <input type="file" hidden name="dataSheet" onChange={handleChange} id="datasheet-input" />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <a href={certificatePreview} target="_blank" style={{ margin: 0 }}>Mostrar Certificado</a>
+                                        <label className={clsx(['btn'], {
+                                            "btn-primary": !certificatePreview,
+                                            "btn-success": certificatePreview,
+                                        })} htmlFor="certificate-input">
+                                            Certificado
+                                        </label>
+                                        <input type="file" hidden name="certificate" onChange={handleChange} id="certificate-input" />
+                                    </div>
                                 </div>
                             </div>
                             <div className="col-md-6">

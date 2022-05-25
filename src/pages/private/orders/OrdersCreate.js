@@ -7,6 +7,7 @@ import Toggle from "react-toggle";
 import { Button, Modal } from "react-bootstrap";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import update from 'immutability-helper';
+import notImage from "../../../images/not-image.jpg"
 
 const defaultProducts = [
     {
@@ -49,10 +50,17 @@ const OrdersCreate = () => {
 
     const [data, setData] = useState({
         spareParts: false,
-        orderType: '',
+        orderTypeCode: '',
         serviceId: '',
         orderItems: []
     });
+
+    const [newProductData, setNewProductData] = useState({
+        name: '',
+        price: 0
+    });
+
+    const [showAddItemModal, setShowAddItemModal] = useState(false);
 
     const [total, setTotal] = useState(0);
 
@@ -126,7 +134,7 @@ const OrdersCreate = () => {
         const orderHasProduct = data?.orderItems?.find(x => x.code === product.code);
 
         if (orderHasProduct) {
-            alert('El producto ye se encuentra en la orden.');
+            alert('El producto ye se encuentra en el pedido.');
             return;
         }
 
@@ -176,6 +184,38 @@ const OrdersCreate = () => {
         });
     }
 
+    const handleChangeNewProduct = (e) => {
+        setNewProductData((oldNewProductData) => {
+            return {
+                ...oldNewProductData,
+                [e.target.name]: e.target.value
+            }
+        })
+    }
+
+    const handleAddItem = (e) => {
+        e.preventDefault?.();
+        setData((oldData) => {
+            return {
+                ...oldData,
+                orderItems: [...oldData?.orderItems, {
+                    name: newProductData.name,
+                    quantity: 1,
+                    imgPath: null,
+                    price: newProductData?.price,
+                    code: '--'
+                }]
+            }
+        });
+
+        setNewProductData({
+            name: '',
+            price: 0
+        })
+
+        setShowAddItemModal(false);
+    }
+
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
             <div className="row" style={{ marginBottom: '50px' }}>
@@ -187,7 +227,7 @@ const OrdersCreate = () => {
                                     <div className="row align-items-center justify-content-between">
                                         <div className="col-md-4">
                                             <label htmlFor="order_type">Tipo de pedido</label>
-                                            <select onChange={handleChange} name="orderType" className="form-control" id="order_type" value={data.orderType}>
+                                            <select onChange={handleChange} name="orderTypeCode" className="form-control" id="order_type" value={data.orderTypeCode}>
                                                 <option value="mensual">Mensual</option>
                                                 <option value="extraordinary">Extraordinario</option>
                                                 <option value="manual">Manual</option>
@@ -222,7 +262,7 @@ const OrdersCreate = () => {
                                                             borderRadius: '5px'
                                                         }}
                                                     >
-                                                        <table className="table">
+                                                        <table className="table text-center">
                                                             <thead>
                                                                 <tr>
                                                                     <th></th>
@@ -255,9 +295,14 @@ const OrdersCreate = () => {
                                                                                     </td>
                                                                                     <td>{i + 1}</td>
                                                                                     <td>{product.code}</td>
-                                                                                    <td style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
-                                                                                        <img style={{ width: '40px', height: '40px', borderRadius: '10px' }} src={product.imgPath} alt="" />
-                                                                                        <span>{product.name}</span>
+                                                                                    <td>
+                                                                                        {
+                                                                                            product.imgPath ?
+                                                                                                <img style={{ width: '40px', height: '40px', borderRadius: '10px' }} src={product.imgPath} alt="" />
+                                                                                                :
+                                                                                                <img style={{ width: '40px', height: '40px', borderRadius: '10px' }} src={notImage} alt="" />
+                                                                                        }
+                                                                                        <span style={{ display: 'block' }}>{product.name}</span>
                                                                                     </td>
                                                                                     <td>
                                                                                         <input
@@ -280,6 +325,16 @@ const OrdersCreate = () => {
                                                                                 </tr>
                                                                             )
                                                                         })
+                                                                }
+                                                                {
+                                                                    data?.orderTypeCode === 'manual' &&
+                                                                    <tr>
+                                                                        <td colSpan={7} className="text-center">
+                                                                            <button className="btn btn-success" onClick={() => { setShowAddItemModal((old) => !old) }}>
+                                                                                Añadir producto
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
                                                                 }
                                                                 <tr>
                                                                     <td colSpan={6}>
@@ -459,6 +514,69 @@ const OrdersCreate = () => {
                         </Button>
                         <Button variant="primary" onClick={() => setShowFilters(false)}>Filtrar</Button>
                     </Modal.Footer>
+                </Modal>
+                <Modal size="lg" className="fade" show={showAddItemModal}>
+                    <Modal.Header>
+                        <Modal.Title>Cargar Producto</Modal.Title>
+                        <Button
+                            variant="danger light"
+                            className="btn-close"
+                            onClick={() => setShowAddItemModal(false)}
+                        >
+
+                        </Button>
+                    </Modal.Header>
+                    <form onSubmit={handleAddItem}>
+                        <Modal.Body>
+                            <div className="row">
+                                <div className="col-md-8">
+                                    <div className="mb-4">
+                                        <label>
+                                            <h5>
+                                                Nombre del Producto
+                                            </h5>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Nombre"
+                                            name="name"
+                                            autoFocus
+                                            value={newProductData?.name}
+                                            onChange={handleChangeNewProduct}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="col-md-4">
+                                    <div className="mb-4">
+                                        <label>
+                                            <h5>
+                                                Precio
+                                            </h5>
+                                        </label>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            placeholder="Precio"
+                                            name="price"
+                                            value={newProductData?.price}
+                                            onChange={handleChangeNewProduct}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button
+                                onClick={() => setShowAddItemModal(false)}
+                                variant="danger light"
+                                type="button"
+                            >
+                                Cerrar
+                            </Button>
+                            <Button variant="primary" type="submit" onClick={handleAddItem}>Añadir</Button>
+                        </Modal.Footer>
+                    </form>
                 </Modal>
             </div >
         </DragDropContext >
