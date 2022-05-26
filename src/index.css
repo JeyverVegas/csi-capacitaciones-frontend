@@ -120,3 +120,8 @@ code {
 .order-tr>td {
     max-width: 200px;
 }
+
+
+.table-order>thead>tr>th {
+    font-size: 12px;
+}

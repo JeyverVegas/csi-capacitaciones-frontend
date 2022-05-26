@@ -8,7 +8,7 @@ const OrderCrudContext = createContext({
 export const OrderCrudProvider = ({ children }) => {
 
   const [data, setData] = useState({
-    spareParts: false,
+    isReplacement: false,
     orderTypeId: '',
     serviceId: '',
     orderItems: []
