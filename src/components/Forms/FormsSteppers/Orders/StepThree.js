@@ -2,17 +2,29 @@ import check from "../../../../images/check.png";
 import cancel from "../../../../images/cancel.png";
 import useOrdersTypes from "../../../../hooks/useOrdersTypes";
 import { useOrderCrud } from "../../../../context/OrderCrudContext";
+import { useEffect } from "react";
 
 const StepThree = () => {
 
     const { data, setData, currentStep, setCurrentStep } = useOrderCrud();
 
-    const [{ ordersTypes, loading: loadingOrdersTypes }, getOrdersTypes] = useOrdersTypes();
+    const [{ ordersTypes, loading: loadingOrdersTypes }, getOrdersTypes] = useOrdersTypes({ options: { manual: true, useCache: false } });
+
+    useEffect(() => {
+        getOrdersTypes({
+            params: {
+                omitMonthlyForService: `${data.serviceId},${data.isReplacement ? 'true' : 'false'}`
+            }
+        })
+    }, [data.serviceId, data.isReplacement])
 
     const handleChange = (e) => {
         if (e.target.value === 'Seleccione un tipo') {
             return;
         }
+
+        console.log(e.target.value);
+
         setData((oldData) => {
             return {
                 ...oldData,

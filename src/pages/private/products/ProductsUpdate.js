@@ -42,6 +42,11 @@ const ProductsUpdate = () => {
         page: 1
     });
 
+    const [subCategoriesFilters, setSubCategoriesFilters] = useState({
+        page: 1,
+        perPage: 200
+    });
+
     const [data, setData] = useState({
         name: '',
         image: null,
@@ -68,6 +73,8 @@ const ProductsUpdate = () => {
 
     const [{ categories, loading: loadingCategories }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
 
+    const [{ categories: subCategories, loading: subCategoriesLoading }, getSubCategories] = useCategories({ options: { manual: true, useCache: false } });
+
     const [{ services, error: servicesError, loading: servicesLoading }, getServices] = useServices({ axiosConfig: { params: { ...servicesFilters } }, options: { useCache: false } });
 
     const [{ data: product, loading: productLoading }, getProduct] = useAxios({ url: `/products/${id}` }, { useCache: false });
@@ -77,11 +84,13 @@ const ProductsUpdate = () => {
     useEffect(() => {
         if (product) {
 
-            const { category, certificate, dataSheet, createdAt, id, imagePath, provider, ...rest } = product?.data;
+            const { category, subCategory, certificate, dataSheet, createdAt, id, imagePath, provider, ...rest } = product?.data;
             setData((oldData) => {
                 return {
                     ...oldData,
-                    ...rest
+                    ...rest,
+                    categoryId: category?.id || '',
+                    subCategoryId: subCategory?.id || ''
                 }
             });
             if (category) {
@@ -91,6 +100,10 @@ const ProductsUpdate = () => {
                         name: category?.name
                     }
                 });
+            }
+
+            if (subCategory) {
+
             }
 
             if (provider) {
@@ -107,6 +120,22 @@ const ProductsUpdate = () => {
 
         }
     }, [product]);
+
+    useEffect(() => {
+        setData((oldData) => {
+            return {
+                ...oldData,
+                subCategoryId: ''
+            }
+        });
+        getSubCategories({
+            params: {
+                ...subCategoriesFilters,
+                parentId: data?.categoryId
+            }
+        });
+
+    }, [data?.categoryId])
 
     useEffect(() => {
         setLoading?.({
@@ -391,18 +420,36 @@ const ProductsUpdate = () => {
                                     <label>
                                         Categoria
                                     </label>
-                                    <CustomSelect
-                                        options={categories}
-                                        optionLabel="name"
-                                        inputPlaceholder="Escribe el nombre..."
-                                        isLoading={loadingCategories}
-                                        onSelectValue={handleCategory}
-                                        handleInputChange={(e) => { setCategoriesFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
-                                        inputValue={categoriesFilters?.name}
-                                    />
+                                    <select className="form-control" disabled={loadingCategories} name="categoryId" value={data?.categoryId} onChange={handleChange}>
+                                        <option value="">
+                                            Seleccione una categoria
+                                        </option>
+                                        {
+                                            categories?.map?.((category, i) => {
+                                                return <option key={i} value={category?.id}>{category?.name}</option>
+                                            })
+                                        }
+                                    </select>
                                 </div>
                             </div>
                             <div className="col-md-6">
+                                <div>
+                                    <label>
+                                        Sub-Categoria
+                                    </label>
+                                    <select className="form-control" disabled={subCategoriesLoading || !data?.categoryId} name="subCategoryId" value={data?.subCategoryId} onChange={handleChange}>
+                                        <option value="">
+                                            Seleccione una sub categoria
+                                        </option>
+                                        {
+                                            subCategories?.map?.((category, i) => {
+                                                return <option key={i} value={category?.id}>{category?.name}</option>
+                                            })
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="col-md-12">
                                 <div>
                                     <label>
                                         Precio

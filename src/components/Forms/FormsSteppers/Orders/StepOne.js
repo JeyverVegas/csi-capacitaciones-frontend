@@ -43,7 +43,7 @@ const StepOne = () => {
                         {
                             services?.map((service, i) => {
                                 return (
-                                    <option value={service?.id}>{service?.name}</option>
+                                    <option key={i} value={service?.id}>{service?.name}</option>
                                 )
                             })
                         }
