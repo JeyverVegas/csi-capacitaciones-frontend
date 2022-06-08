@@ -53,6 +53,7 @@ const ProductsUpdate = () => {
         reference: '',
         providerId: '',
         categoryId: '',
+        subCategoryId: '',
         dataSheet: '',
         certificate: '',
         description: '',
@@ -122,19 +123,12 @@ const ProductsUpdate = () => {
     }, [product]);
 
     useEffect(() => {
-        setData((oldData) => {
-            return {
-                ...oldData,
-                subCategoryId: ''
-            }
-        });
         getSubCategories({
             params: {
                 ...subCategoriesFilters,
                 parentId: data?.categoryId
             }
         });
-
     }, [data?.categoryId])
 
     useEffect(() => {

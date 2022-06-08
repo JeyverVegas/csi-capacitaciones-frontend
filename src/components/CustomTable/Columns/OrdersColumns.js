@@ -15,24 +15,24 @@ const OrdersColumns = [
         accessor: 'id'
     },
     {
-        Label: () => 'Nombre',
-        Component: ImageAndName
+        Label: () => 'Tipo',
+        Component: ({ value }) => value?.orderType?.name || '--'
     },
     {
-        Label: () => 'Nro. de documento',
-        Component: DocumentNumber
+        Label: () => 'Servicio',
+        Component: ({ value }) => value?.service?.name || '--'
     },
     {
-        Label: () => 'Telefono',
-        accessor: 'phoneNumber'
+        Label: () => '¿Repuestos?',
+        Component: ({ value }) => `${value?.isReplacement ? 'SI' : 'NO'}`
     },
     {
-        Label: () => 'Email',
-        accessor: 'email'
+        Label: () => 'Monto',
+        Component: ({ value }) => `${value?.total}`
     },
     {
-        Label: () => 'Dirección',
-        accessor: 'address'
+        Label: () => 'Estatus',
+        Component: ({ value }) => value?.status?.name || '--'
     },
     {
         Label: () => 'Fecha de Creación',

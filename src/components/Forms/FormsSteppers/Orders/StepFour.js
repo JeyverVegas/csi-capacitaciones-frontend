@@ -10,10 +10,8 @@ import notImage from "../../../../images/not-image.jpg";
 import { cutString } from "../../../../util/Utilities";
 import { Droppable, DragDropContext, Draggable } from 'react-beautiful-dnd';
 import { Button, Modal } from "react-bootstrap";
-import useProviders from "../../../../hooks/useProviders";
-import checkEmpty from "../../../../images/check-empty.png";
-import check from "../../../../images/check.png";
 import useCategories from "../../../../hooks/useCategories";
+import ImgUploadInput from "../../../ImgUploadInput";
 
 
 const StepFour = () => {
@@ -60,10 +58,13 @@ const StepFour = () => {
         name: '',
         price: 0,
         providerName: '',
-        description: ''
+        description: '',
+        image: null
     });
 
     const [{ data: service, loading: loadingService }, getService] = useAxios({ url: `/services/${data?.serviceId}` }, { useCache: false, manual: true });
+
+    const [{ data: orderType, loading: loadingOrderType }, getOrderType] = useAxios({ url: `/order-types/${data?.orderTypeId}` }, { useCache: false, manual: true });
 
     const [{ products, total: productsTotal, numberOfPages, loading: loadingProducts }, getProducts] = useProducts({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
 
@@ -74,6 +75,10 @@ const StepFour = () => {
     const [{ data: createData, loading: createLoading, error: createError }, createOrder] = useAxios({ url: `/orders`, method: 'POST' }, { manual: true, useCache: false });
 
     const [total, setTotal] = useState(0);
+
+    useEffect(() => {
+        console.log(data);
+    }, [data])
 
     useEffect(() => {
         if (filters?.categoryId) {
@@ -108,7 +113,7 @@ const StepFour = () => {
                 page: 1
             }
         });
-    }, [filters?.name, filters?.serviceId, filters?.reference, filters?.providerName, filters?.price, filters?.isReplacement, filters?.serviceId])
+    }, [filters?.name, filters?.serviceId, filters?.reference, filters?.providerName, filters?.price, filters?.isReplacement, filters?.serviceId, filters?.subCategoryId, filters?.categoryId])
 
     useEffect(() => {
         if (data?.serviceId) {
@@ -117,11 +122,18 @@ const StepFour = () => {
     }, [data?.serviceId])
 
     useEffect(() => {
+        if (data?.orderTypeId) {
+            getOrderType();
+        }
+    }, [data?.orderTypeId])
+
+    useEffect(() => {
         setFilters((oldFilters) => {
             return {
                 ...oldFilters,
                 serviceId: data?.serviceId || '',
                 isReplacement: data?.isReplacement ? 'true' : 'false',
+                isProduct: data?.isReplacement ? 'false' : 'true',
             }
         });
     }, [data?.serviceId, data?.isReplacement])
@@ -143,6 +155,7 @@ const StepFour = () => {
                 message: 'El pedido fue creado exitosamente.',
                 show: true
             });
+            localStorage.removeItem(SystemInfo?.AUTO_SAVE_KEY);
             navigate('/pedidos');
         }
     }, [createData])
@@ -236,14 +249,14 @@ const StepFour = () => {
         setNewItemData((oldData) => {
             return {
                 ...oldData,
-                [e.target.name]: e.target.value
+                [e.target.name]: e.target.type === 'file' ? e?.target?.files?.[0] : e.target.value
             }
         });
     }
 
     const handleAddNewItem = () => {
 
-        if (!newItemData?.name || !newItemData?.price || !newItemData?.providerId) {
+        if (!newItemData?.name || !newItemData?.price || !newItemData?.providerName || !newItemData?.image || !newItemData?.description) {
             alert('Todos lo campos son obligatorios');
             return;
         }
@@ -255,20 +268,23 @@ const StepFour = () => {
                     ...oldData?.orderItems,
                     {
                         name: newItemData?.name,
+                        image: newItemData?.image,
+                        providerName: newItemData?.providerName,
+                        description: newItemData?.description,
                         quantity: 1,
                         price: newItemData?.price,
                         code: '--',
-                        providerId: newItemData?.providerId
                     }
                 ]
             }
         });
-        setShowModal(false);
         setNewItemData({
             name: '',
-            price: '',
-            providerId: ''
-        })
+            price: 0,
+            providerName: '',
+            description: '',
+            image: null
+        });
     }
 
     const showProductDetails = (product) => {
@@ -308,8 +324,7 @@ const StepFour = () => {
                             name: `${detailProduct?.name} ${productVersion?.name}`,
                             quantity: 1,
                             price: productVersion?.price > 0 ? productVersion?.price : detailProduct?.price,
-                            code: productVersion?.code,
-                            providerId: detailProduct?.provider?.id
+                            code: productVersion?.code
                         }
                     ]
                 }
@@ -354,141 +369,229 @@ const StepFour = () => {
         })
     }
 
+    const handleCreateOrder = () => {
+        const { isReplacement, orderItems, ...rest } = data;
+
+        const formData = new FormData();
+
+        Object.keys(rest).forEach((key, i) => {
+            formData?.append(key, rest[key]);
+        });
+
+        formData?.append('isReplacement', isReplacement ? 1 : 0);
+
+        orderItems?.forEach((item, i) => {
+            if (data?.orderTypeId == 3) {
+                formData.append(`customOrderItems[${i}][name]`, item?.name);
+                formData.append(`customOrderItems[${i}][image]`, item?.image, item?.image?.name);
+                formData.append(`customOrderItems[${i}][providerName]`, item?.providerName);
+                formData.append(`customOrderItems[${i}][description]`, item?.description);
+                formData.append(`customOrderItems[${i}][quantity]`, item?.quantity);
+                formData.append(`customOrderItems[${i}][price]`, item?.price);
+            } else {
+                formData.append(`orderItems[${i}][quantity]`, item?.quantity);
+                formData.append(`orderItems[${i}][code]`, item?.code);
+            }
+        });
+
+        createOrder({ data: formData });
+    }
+
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
             <div className="container mb-5">
                 <div className="row">
-                    <div className="col-md-7">
-                        <h1 className="text-center">{data?.isReplacement ? 'Repuestos' : 'Productos'}</h1>
-                        <div className="mb-4 bg-white rounded shadow-sm">
-                            <div className="card-body">
-                                <div className="row">
-                                    <div className="col-md-6 form-group mb-2">
-                                        <input type="text" className="form-control" placeholder="Nombre..." name="name" onChange={handleChange} value={filters?.name} />
+                    {
+                        data?.orderTypeId == 3 ?
+                            <div className="col-md-7 card p-5">
+                                <div className="row align-items-center">
+                                    <div className="col-md-6">
+                                        <h3>
+                                            Información del producto
+                                        </h3>
                                     </div>
-                                    <div className="col-md-6 form-group mb-2">
-                                        <input type="text" className="form-control" placeholder="referencia..." name="reference" onChange={handleChange} value={filters?.reference} />
+                                    <div className="col-md-6 form-group mb-4">
+                                        <ImgUploadInput
+                                            name="image"
+                                            style={{
+                                                width: '100px',
+                                                height: '100px'
+                                            }}
+                                            value={newItemData?.image}
+                                            description="imagen"
+                                            deleteButton={newItemData?.image}
+                                            change={handleNewItemChange}
+                                        />
                                     </div>
-                                    <div className="col-md-6 form-group mb-2">
-                                        <input type="text" className="form-control" placeholder="proveedor..." name="providerName" onChange={handleChange} value={filters?.providerName} />
+                                    <div className="col-md-6 form-group mb-4">
+                                        <label>Nombre</label>
+                                        <input autoFocus value={newItemData?.name} onChange={handleNewItemChange} name="name" type="text" className="form-control" />
                                     </div>
-                                    <div className="col-md-6 form-group mb-2">
-                                        <input type="number" className="form-control" placeholder="Precio..." name="price" onChange={handleChange} value={filters?.price} />
+                                    <div className="col-md-6 form-group mb-4">
+                                        <label>Precio Referencia</label>
+                                        <input value={newItemData?.price} onChange={handleNewItemChange} name="price" type="number" className="form-control" />
                                     </div>
-                                    <div className="col-md-6 form-group mb-2">
-                                        <label>Categoria</label>
-                                        <select disabled={loadingCategories} className="form-control" onChange={handleChange} value={filters?.categoryId} name="categoryId">
-                                            <option value="">
-                                                Seleccione una opcion
-                                            </option>
-                                            {
-                                                categories?.map((category, i) => {
-                                                    return (
-                                                        <option value={category?.id} key={i}>
-                                                            {category?.name}
-                                                        </option>
-                                                    )
-                                                })
-                                            }
-                                        </select>
+                                    <div className="col-md-12 form-group mb-4">
+                                        <label>Proveedor</label>
+                                        <input value={newItemData?.providerName} type="text" className="form-control" name="providerName" onChange={handleNewItemChange} />
                                     </div>
-                                    <div className="col-md-6 form-group mb-2">
-                                        <label>Sub - Categorias</label>
-                                        <select disabled={!filters?.categoryId || loadingSubCategories} className="form-control" name="subCategoryId" value={filters?.subCategoryId} onChange={handleChange}>
-                                            <option value="">
-                                                Seleccione una opcion
-                                            </option>
-                                            {
-                                                subCategories?.map((category, i) => {
-                                                    return (
-                                                        <option value={category?.id} key={i}>
-                                                            {category?.name}
-                                                        </option>
-                                                    )
-                                                })
-                                            }
-                                        </select>
+                                    <div className="col-md-12 form-group mb-2">
+                                        <label>Descripcion</label>
+                                        <textarea
+                                            rows={4}
+                                            value={newItemData?.description}
+                                            style={{ minHeight: '100px' }}
+                                            className="form-control"
+                                            name="description"
+                                            onChange={handleNewItemChange}
+                                        />
                                     </div>
-                                    <div className="col-md-12 text-center mt-3">
-                                        <button className="btn btn-danger btn-sm" onClick={handleResetFilters}>
-                                            Limpiar filtros
+                                    <div className="col-md-12 text-center">
+                                        <button onClick={handleAddNewItem} className="btn btn-success">
+                                            Agregar
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        {
-                            data?.orderTypeId == 3 &&
-                            <div className="col-md-12 mb-5">
-                                <button className="btn btn-success btn-block" onClick={() => { setShowModal(true) }}>
-                                    Añadir Manual
-                                </button>
-                            </div>
-                        }
-                        <Droppable droppableId="products">
-                            {(droppableProvided) => <div
-                                {...droppableProvided?.droppableProps}
-                                ref={droppableProvided?.innerRef}
-                                className="row align-items-center"
-                            >
-                                {
-                                    currentProducts?.length > 0 ?
-                                        currentProducts?.map((product, i) => {
-                                            return (
-                                                <Draggable key={i} draggableId={product?.code} index={i}>
-                                                    {(draggableProvided) => <div
-                                                        {...draggableProvided?.draggableProps}
-                                                        ref={draggableProvided?.innerRef}
-                                                        {...draggableProvided?.dragHandleProps}
-                                                        className="col-md-4 animate__animated animate__fadeIn"
-                                                    >
-                                                        <div className="bg-white rounded" style={{ overflow: 'hidden' }}>
-                                                            <img src={`${SystemInfo?.host}${product?.imagePath || notImage}`} style={{ maxWidth: '100%' }} alt="" />
-                                                            <div className="p-3">
-                                                                <div className="d-flex justify-content-between">
-                                                                    <h5>{cutString(product?.name, 10, 0, '...')}</h5>
-                                                                    <span>{product?.price}$</span>
-                                                                </div>
-                                                                <div>
-                                                                    <span>
-                                                                        Categoria: <b>{product?.category?.name}</b>
-                                                                    </span>
-                                                                </div>
-                                                                <span>
-                                                                    Proveedor: <b>{product?.provider?.name}</b>
-                                                                </span>
-                                                                <div className="text-center mt-2">
-                                                                    <button onClick={() => { showProductDetails(product) }} className="btn btn-primary btn-xs">
-                                                                        Detalles
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                            :
+                            <div className="col-md-7">
+                                <h1 className="text-center">{data?.isReplacement ? 'Repuestos' : 'Productos'}</h1>
+                                <div className="mb-4 bg-white rounded shadow-sm">
+                                    <div className="card-body">
+                                        <div className="row">
+                                            <div className="col-md-6 form-group mb-2">
+                                                <input type="text" className="form-control" placeholder="Nombre..." name="name" onChange={handleChange} value={filters?.name} />
+                                            </div>
+                                            <div className="col-md-6 form-group mb-2">
+                                                <input type="text" className="form-control" placeholder="referencia..." name="reference" onChange={handleChange} value={filters?.reference} />
+                                            </div>
+                                            <div className="col-md-6 form-group mb-2">
+                                                <input type="text" className="form-control" placeholder="proveedor..." name="providerName" onChange={handleChange} value={filters?.providerName} />
+                                            </div>
+                                            <div className="col-md-6 form-group mb-2">
+                                                <input type="number" className="form-control" placeholder="Precio..." name="price" onChange={handleChange} value={filters?.price} />
+                                            </div>
+                                            <div className="col-md-6 form-group mb-2">
+                                                <label>Categoria</label>
+                                                <select disabled={loadingCategories} className="form-control" onChange={handleChange} value={filters?.categoryId} name="categoryId">
+                                                    <option value="">
+                                                        Seleccione una opcion
+                                                    </option>
+                                                    {
+                                                        categories?.map((category, i) => {
+                                                            return (
+                                                                <option value={category?.id} key={i}>
+                                                                    {category?.name}
+                                                                </option>
+                                                            )
+                                                        })
                                                     }
-                                                </Draggable>
-                                            )
-                                        })
-                                        :
-                                        !loadingProducts &&
-                                        <div className="text-center">
-                                            No se encontraron productos.
+                                                </select>
+                                            </div>
+                                            <div className="col-md-6 form-group mb-2">
+                                                <label>Sub - Categorias</label>
+                                                <select disabled={!filters?.categoryId || loadingSubCategories} className="form-control" name="subCategoryId" value={filters?.subCategoryId} onChange={handleChange}>
+                                                    <option value="">
+                                                        Seleccione una opcion
+                                                    </option>
+                                                    {
+                                                        subCategories?.map((category, i) => {
+                                                            return (
+                                                                <option value={category?.id} key={i}>
+                                                                    {category?.name}
+                                                                </option>
+                                                            )
+                                                        })
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div className="col-md-12 text-center mt-3">
+                                                <button className="btn btn-danger btn-sm" onClick={handleResetFilters}>
+                                                    Limpiar filtros
+                                                </button>
+                                            </div>
                                         </div>
-                                }
+                                    </div>
+                                </div>
                                 {
-                                    loadingProducts &&
-                                    <div className="col-md-4 animate__animated animate__fadeIn">
-                                        Cargando...
+                                    data?.orderTypeId == 3 &&
+                                    <div className="col-md-12 mb-5">
+                                        <button className="btn btn-success btn-block" onClick={() => { setShowModal(true) }}>
+                                            Añadir Manual
+                                        </button>
                                     </div>
                                 }
-                                {
-                                    droppableProvided?.placeholder
-                                }
+                                <Droppable droppableId="products">
+                                    {(droppableProvided) => <div
+                                        {...droppableProvided?.droppableProps}
+                                        ref={droppableProvided?.innerRef}
+                                        className="row align-items-center"
+                                    >
+                                        {
+                                            currentProducts?.length > 0 ?
+                                                currentProducts?.map((product, i) => {
+                                                    return (
+                                                        <Draggable key={i} draggableId={product?.code} index={i}>
+                                                            {(draggableProvided) => <div
+                                                                {...draggableProvided?.draggableProps}
+                                                                ref={draggableProvided?.innerRef}
+                                                                {...draggableProvided?.dragHandleProps}
+                                                                className="col-md-4 animate__animated animate__fadeIn"
+                                                            >
+                                                                <div className="bg-white rounded" style={{ overflow: 'hidden' }}>
+                                                                    <img src={`${SystemInfo?.host}${product?.imagePath || notImage}`} style={{ maxWidth: '100%' }} alt="" />
+                                                                    <div className="p-3">
+                                                                        <div className="d-flex justify-content-between">
+                                                                            <h5>{cutString(product?.name, 10, 0, '...')}</h5>
+                                                                            <span>{product?.price}$</span>
+                                                                        </div>
+                                                                        <div>
+                                                                            <span>
+                                                                                Categoria: <b>{product?.category?.name}</b>
+                                                                            </span>
+                                                                        </div>
+                                                                        <span>
+                                                                            Proveedor: <b>{product?.provider?.name}</b>
+                                                                        </span>
+                                                                        <div className="text-center mt-2">
+                                                                            <button onClick={() => { showProductDetails(product) }} className="btn btn-primary btn-xs">
+                                                                                Detalles
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            }
+                                                        </Draggable>
+                                                    )
+                                                })
+                                                :
+                                                !loadingProducts &&
+                                                <div className="text-center">
+                                                    No se encontraron productos.
+                                                </div>
+                                        }
+                                        {
+                                            loadingProducts &&
+                                            <div className="col-md-4 animate__animated animate__fadeIn">
+                                                Cargando...
+                                            </div>
+                                        }
+                                        {
+                                            droppableProvided?.placeholder
+                                        }
+                                    </div>
+                                    }
+                                </Droppable>
                             </div>
-                            }
-                        </Droppable>
-                    </div>
+                    }
                     <div className="col-md-5">
+                        <div className="text-center">
+                            <button className="btn btn-primary mb-2">
+                                Cargar desde Pedido anterior
+                                <i className="flaticon-381-add mx-2"></i>
+                            </button>
+                        </div>
                         <Droppable droppableId="orderItems">
                             {
                                 (droppableProvided, snapshot) => <div
@@ -514,7 +617,12 @@ const StepFour = () => {
                                                 Tipo de pedido:
                                             </div>
                                             <div className="col-md-6 text-end">
-                                                <b>Mensual</b>
+                                                {
+                                                    loadingOrderType ?
+                                                        <b>Cargado...</b>
+                                                        :
+                                                        <b>{orderType?.data?.name}</b>
+                                                }
                                             </div>
                                         </div>
                                         <div className="row mb-2">
@@ -596,7 +704,7 @@ const StepFour = () => {
                                         <button type="button" className="btn btn-danger mx-1" onClick={handleBack}>
                                             Volver
                                         </button>
-                                        <button className="btn btn-success mx-1">
+                                        <button onClick={handleCreateOrder} className="btn btn-success mx-1">
                                             Crear Pedido
                                         </button>
                                     </div>
@@ -606,52 +714,6 @@ const StepFour = () => {
                     </div>
                 </div>
             </div>
-            <Modal show={showModal} className="fade" size="lg">
-                <Modal.Header>
-                    <Modal.Title>Añadir Item</Modal.Title>
-                    <Button
-                        variant=""
-                        className="btn-close"
-                        onClick={() => setShowModal(false)}
-                    >
-                    </Button>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="row">
-                        <div className="col-md-12 form-group mb-4">
-                            <label>Nombre</label>
-                            <input value={newItemData?.name} onChange={handleNewItemChange} name="name" type="text" className="form-control" />
-                        </div>
-                        <div className="col-md-6 form-group mb-4">
-                            <label>Precio Referencia</label>
-                            <input value={newItemData?.price} onChange={handleNewItemChange} name="price" type="number" className="form-control" />
-                        </div>
-                        <div className="col-md-6 form-group mb-2">
-                            <label>Proveedor</label>
-                            <input value={newItemData?.providerName} type="text" className="form-control" name="providerName" onChange={handleNewItemChange} />
-                        </div>
-                        <div className="col-md-12 form-group mb-2">
-                            <label>Descripcion</label>
-                            <textarea
-                                rows={4}
-                                value={newItemData?.description}
-                                style={{ minHeight: '100px' }}
-                                className="form-control"
-                                name="description"
-                                onChange={handleNewItemChange}
-                            />
-                        </div>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <button onClick={() => setShowModal(false)} className="btn btn-danger">
-                        Cancelar
-                    </button>
-                    <button onClick={handleAddNewItem} className="btn btn-success">
-                        Aceptar
-                    </button>
-                </Modal.Footer>
-            </Modal>
             <Modal show={showDetails} className="fade" size="lg">
                 <Modal.Header>
                     <Modal.Title>{detailProduct?.name}</Modal.Title>

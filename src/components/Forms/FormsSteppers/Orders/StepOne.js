@@ -3,11 +3,26 @@ import { useOrderCrud } from "../../../../context/OrderCrudContext";
 import useServices from "../../../../hooks/useServices";
 import check from "../../../../images/check.png";
 import cancel from "../../../../images/cancel.png";
+
 const StepOne = () => {
 
     const { data, setData, currentStep, setCurrentStep } = useOrderCrud();
 
-    const [{ services, loading: servicesLoading }, getServices] = useServices({ options: { useCache: false } });
+    const [{ services, loading: servicesLoading }, getServices] = useServices({ axiosConfig: { params: { perPage: 200, currentUserServices: true, page: 1 } }, options: { useCache: false } });
+
+
+    useEffect(() => {
+        if (services?.length === 1) {
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    serviceId: services[0]?.id
+                }
+            });
+            setCurrentStep((oldStep) => oldStep + 1);
+        }
+    }, [services])
+
 
     const handleChange = (e) => {
         if (e.target.value === 'Seleccione un servicio') {

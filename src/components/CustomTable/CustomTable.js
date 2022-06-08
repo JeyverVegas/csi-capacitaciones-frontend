@@ -20,7 +20,8 @@ const CustomTable = ({
     selectAll,
     onSelectValue,
     changePage,
-    loading
+    loading,
+    updateOptionString = 'Actualizar'
 }) => {
 
     const { setCustomAlertDialog } = useFeedBack();
@@ -108,6 +109,7 @@ const CustomTable = ({
                                                                             {
                                                                                 Component ?
                                                                                     <Component
+                                                                                        updateOptionString={updateOptionString}
                                                                                         id={value?.id}
                                                                                         updatePath={updatePath}
                                                                                         positionName={value?.position?.name}

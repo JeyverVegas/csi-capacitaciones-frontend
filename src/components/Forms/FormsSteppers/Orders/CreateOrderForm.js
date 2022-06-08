@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import SystemInfo from "../../../../util/SystemInfo";
 import swal from "sweetalert";
 
-const AUTO_SAVE_KEY = `${SystemInfo?.systemCode}_order_create`;
+
 
 const CreateOrderForm = () => {
 
@@ -24,7 +24,7 @@ const CreateOrderForm = () => {
     ];
 
     useEffect(() => {
-        const lastData = localStorage.getItem(AUTO_SAVE_KEY);
+        const lastData = localStorage.getItem(SystemInfo?.AUTO_SAVE_KEY);
         if (lastData) {
             const orderData = JSON.parse(lastData);
             if (orderData?.currentStep > 0 && orderData?.data?.serviceId) {
@@ -57,7 +57,7 @@ const CreateOrderForm = () => {
 
     useEffect(() => {
         if (canSave) {
-            localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify({
+            localStorage.setItem(SystemInfo?.AUTO_SAVE_KEY, JSON.stringify({
                 data: data,
                 currentStep: currentStep
             }));

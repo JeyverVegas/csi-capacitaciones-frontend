@@ -16,7 +16,8 @@ const CategoriesUpdate = () => {
     const [filters, setFilters] = useState({
         perPage: 200,
         page: 1,
-        name: ''
+        name: '',
+        parentsOnly: true
     });
 
     const [data, setData] = useState({

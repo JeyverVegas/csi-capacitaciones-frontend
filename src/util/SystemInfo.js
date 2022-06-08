@@ -11,6 +11,7 @@ const SystemInfo = {
     host: process.env.REACT_APP_HOST_URL,
     api: process.env.REACT_APP_API_URL,
     systemCode: 'sys-002',
+    AUTO_SAVE_KEY: `sys-002-order_create`
 }
 
 export default SystemInfo;
