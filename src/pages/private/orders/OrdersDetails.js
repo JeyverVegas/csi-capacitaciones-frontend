@@ -21,6 +21,10 @@ const OrdersDetails = () => {
 
     const [observationText, setObservationText] = useState('');
 
+    const [showModalTemplateName, setShowModalTemplateName] = useState(false);
+
+    const [templateName, setTemplateName] = useState('');
+
     const [showObservationModal, setShowObservationModal] = useState(false);
 
     const [filters, setFilters] = useState({
@@ -28,13 +32,27 @@ const OrdersDetails = () => {
         page: 1
     });
 
+    const [template, setTemplate] = useState(null);
+
     const [{ data: orderDetails, loading: loadingOrderDetails }] = useAxios({ url: `/orders/${id}` }, { useCache: false });
 
     const [{ data: changeStatusData, loading: changeStatusLoading }, changeStatus] = useAxios({ url: `/orders/${id}/status`, method: 'PUT' }, { useCache: false, manual: true });
 
     const [{ data: deleteData, loading: deleteLoading }, deleteOrder] = useAxios({ url: `/orders/${id}`, method: 'DELETE' }, { useCache: false, manual: true });
 
+    const [{ data: createTemplateData, loading: createTemplateLoading }, createTemplate] = useAxios({ url: `/orders-templates`, method: 'POST' }, { useCache: false, manual: true });
+
+    const [{ loading: deleteTemplateLoading }, deleteTemplate] = useAxios({ method: 'DELETE' }, { useCache: false, manual: true });
+
     const [{ orderStatuses, loading: loadingOrderStatuses }, getOrderStatuses] = useOrderStatuses();
+
+
+
+    useEffect(() => {
+        if (createTemplateData) {
+            setTemplate(createTemplateData?.data);
+        }
+    }, [createTemplateData]);
 
     useEffect(() => {
         if (orderDetails) {
@@ -44,6 +62,8 @@ const OrdersDetails = () => {
                     ...orderDetails?.data
                 }
             });
+
+            setTemplate(orderDetails?.data?.template);
         }
     }, [orderDetails]);
 
@@ -117,6 +137,35 @@ const OrdersDetails = () => {
             setShowObservationModal(false);
             setObservationText('');
         });
+    }
+
+    const handleCreateTemplate = (e) => {
+        e?.preventDefault();
+
+        if (currentOrderDetails?.orderTypeId !== 3) {
+            createTemplate({
+                data: {
+                    name: templateName,
+                    order_id: id
+                }
+            }).then((response) => {
+                setShowModalTemplateName(false);
+                setTemplateName('');
+
+            })
+        }
+    }
+
+    const handleDeleteTemplate = () => {
+        if (!template) {
+            alert('No es una plantilla');
+            return;
+        }
+
+        deleteTemplate({ url: `/orders-templates/${template?.id}` })
+            .then(() => {
+                setTemplate(null);
+            })
     }
 
     return (
@@ -287,9 +336,30 @@ const OrdersDetails = () => {
                                     }
                                 </button>
                                 <br />
-                                <button className="btn btn-block btn-primary">
-                                    Guardar Como Plantilla
-                                </button>
+
+                                {
+                                    currentOrderDetails?.orderTypeId !== 3 ?
+                                        template ?
+                                            <button onClick={handleDeleteTemplate} disabled={deleteTemplateLoading} className="btn btn-block btn-danger">
+                                                {
+                                                    deleteTemplateLoading ?
+                                                        'Cargando...'
+                                                        :
+                                                        'Eliminar Como Plantilla'
+                                                }
+                                            </button>
+                                            :
+                                            <button onClick={() => setShowModalTemplateName(true)} disabled={createTemplateLoading} className="btn btn-block btn-primary">
+                                                {
+                                                    createTemplateLoading ?
+                                                        'Cargando...'
+                                                        :
+                                                        'Guardar Como Plantilla'
+                                                }
+                                            </button>
+                                        :
+                                        null
+                                }
                             </div>
 
                         </div>
@@ -297,6 +367,47 @@ const OrdersDetails = () => {
                     </div>
                 </div>
             </div>
+            <Modal size="lg" className="fade" show={showModalTemplateName}>
+                <form onSubmit={handleCreateTemplate}>
+                    <Modal.Header>
+                        <Modal.Title>Nombre del Template:</Modal.Title>
+                        <Button
+                            variant=""
+                            className="btn-close"
+                            onClick={() => setShowModalTemplateName(false)}
+                        >
+                        </Button>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <input
+                            autoFocus
+                            value={templateName}
+                            onChange={(e) => setTemplateName(e.target.value)}
+                            className="form-control"
+                            placeholder="Ingrese el nombre de la plantilla..."
+                        />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <button type="button" onClick={() => setShowModalTemplateName(false)} className="btn btn-danger btn-block">
+                                    Cancelar
+                                </button>
+                            </div>
+                            <div className="col-md-6">
+                                <button disabled={createTemplateLoading} type="submit" className="btn btn-success btn-block">
+                                    {
+                                        createTemplateLoading ?
+                                            'Cargando...'
+                                            :
+                                            'Aceptar'
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </Modal.Footer>
+                </form>
+            </Modal>
             <Modal size="lg" className="fade" show={showObservationModal}>
                 <Modal.Header>
                     <Modal.Title>Observaciones:</Modal.Title>
