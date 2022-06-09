@@ -58,7 +58,7 @@ const StepThree = () => {
                         {
                             ordersTypes?.map((ordersTypes, i) => {
                                 return (
-                                    <option value={ordersTypes?.id}>{ordersTypes?.displayText}</option>
+                                    <option key={i} value={ordersTypes?.id}>{ordersTypes?.displayText}</option>
                                 )
                             })
                         }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useAxios from './useAxios';
 
-const useFeatures = ({ options, axiosConfig } = {}) => {
+const useFeatures = ({ options, ...axiosConfig } = {}) => {
   const [{ data, error, loading }, getFeatures] = useAxios({ url: '/product-features', ...axiosConfig }, options);
 
   const [features, setFeatures] = useState([]);

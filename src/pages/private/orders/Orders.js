@@ -22,13 +22,9 @@ const Orders = () => {
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [{ orders, total, numberOfPages, error: ordersError, loading }, getOrders] = useOrders({ params: { ...filters } }, { useCache: false });
+    const [{ orders, total, numberOfPages, error: ordersError, loading }, getOrders] = useOrders({ params: { ...filters }, options: { useCache: false } });
 
     const [{ error: deleteError, loading: deleteLoading }, deleteProvider] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
-
-    useEffect(() => {
-        console.log(orders);
-    }, [orders])
 
     useEffect(() => {
         getOrders();

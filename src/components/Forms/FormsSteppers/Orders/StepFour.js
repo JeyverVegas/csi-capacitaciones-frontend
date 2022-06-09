@@ -12,12 +12,16 @@ import { Droppable, DragDropContext, Draggable } from 'react-beautiful-dnd';
 import { Button, Modal } from "react-bootstrap";
 import useCategories from "../../../../hooks/useCategories";
 import ImgUploadInput from "../../../ImgUploadInput";
+import clsx from "clsx";
+import { useTheme } from "../../../../context/ThemeContext";
 
 
 const StepFour = () => {
     const navigate = useNavigate();
 
     const { setCustomAlert } = useFeedBack();
+
+    const { background } = useTheme();
 
     const [showModal, setShowModal] = useState(false);
 
@@ -66,19 +70,15 @@ const StepFour = () => {
 
     const [{ data: orderType, loading: loadingOrderType }, getOrderType] = useAxios({ url: `/order-types/${data?.orderTypeId}` }, { useCache: false, manual: true });
 
-    const [{ products, total: productsTotal, numberOfPages, loading: loadingProducts }, getProducts] = useProducts({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
+    const [{ products, total: productsTotal, numberOfPages, loading: loadingProducts }, getProducts] = useProducts({ params: { ...filters }, options: { useCache: false } });
 
-    const [{ categories, loading: loadingCategories }] = useCategories({ axiosConfig: { params: { ...categoriesFilters } } });
+    const [{ categories, loading: loadingCategories }] = useCategories({ params: { ...categoriesFilters } });
 
-    const [{ categories: subCategories, loading: loadingSubCategories }, getSubCategories] = useCategories({ axiosConfig: { params: { ...categoriesFilters } }, options: { manual: true } });
+    const [{ categories: subCategories, loading: loadingSubCategories }, getSubCategories] = useCategories({ params: { ...categoriesFilters }, options: { manual: true } });
 
     const [{ data: createData, loading: createLoading, error: createError }, createOrder] = useAxios({ url: `/orders`, method: 'POST' }, { manual: true, useCache: false });
 
     const [total, setTotal] = useState(0);
-
-    useEffect(() => {
-        console.log(data);
-    }, [data])
 
     useEffect(() => {
         if (filters?.categoryId) {
@@ -158,7 +158,7 @@ const StepFour = () => {
             localStorage.removeItem(SystemInfo?.AUTO_SAVE_KEY);
             navigate('/pedidos');
         }
-    }, [createData])
+    }, [createData]);
 
     useEffect(() => {
         if (createError) {
@@ -200,7 +200,8 @@ const StepFour = () => {
                         quantity: 1,
                         price: product?.price,
                         code: product?.code,
-                        providerId: product?.provider?.id
+                        providerId: product?.provider?.id,
+                        productType: 'product'
                     }
                 ]
             }
@@ -324,7 +325,8 @@ const StepFour = () => {
                             name: `${detailProduct?.name} ${productVersion?.name}`,
                             quantity: 1,
                             price: productVersion?.price > 0 ? productVersion?.price : detailProduct?.price,
-                            code: productVersion?.code
+                            code: productVersion?.code,
+                            productType: 'productVersion'
                         }
                     ]
                 }
@@ -372,27 +374,36 @@ const StepFour = () => {
     const handleCreateOrder = () => {
         const { isReplacement, orderItems, ...rest } = data;
 
-        const formData = new FormData();
+        var formData = new FormData();
 
-        Object.keys(rest).forEach((key, i) => {
-            formData?.append(key, rest[key]);
-        });
+        if (data?.orderTypeId == 3) {
+            Object.keys(rest).forEach((key, i) => {
+                formData?.append(key, rest[key]);
+            });
 
-        formData?.append('isReplacement', isReplacement ? 1 : 0);
+            formData?.append('isReplacement', isReplacement ? 1 : 0);
 
-        orderItems?.forEach((item, i) => {
-            if (data?.orderTypeId == 3) {
+            orderItems?.forEach((item, i) => {
                 formData.append(`customOrderItems[${i}][name]`, item?.name);
                 formData.append(`customOrderItems[${i}][image]`, item?.image, item?.image?.name);
                 formData.append(`customOrderItems[${i}][providerName]`, item?.providerName);
                 formData.append(`customOrderItems[${i}][description]`, item?.description);
                 formData.append(`customOrderItems[${i}][quantity]`, item?.quantity);
                 formData.append(`customOrderItems[${i}][price]`, item?.price);
-            } else {
-                formData.append(`orderItems[${i}][quantity]`, item?.quantity);
-                formData.append(`orderItems[${i}][code]`, item?.code);
+            });
+        } else {
+            formData = {
+                ...rest,
+                isReplacement: isReplacement ? 1 : 0,
+                orderItems: orderItems?.map((item, i) => {
+                    return {
+                        productCode: item?.code,
+                        quantity: item?.quantity,
+                        productType: item?.productType
+                    }
+                })
             }
-        });
+        }
 
         createOrder({ data: formData });
     }
@@ -456,7 +467,10 @@ const StepFour = () => {
                             :
                             <div className="col-md-7">
                                 <h1 className="text-center">{data?.isReplacement ? 'Repuestos' : 'Productos'}</h1>
-                                <div className="mb-4 bg-white rounded shadow-sm">
+                                <div style={{ height: 'fit-content' }} className={clsx(["mb-4 rounded shadow-sm"], {
+                                    "bg-white": background?.value === 'light',
+                                    'card': background?.value !== 'light'
+                                })}>
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col-md-6 form-group mb-2">
@@ -538,7 +552,7 @@ const StepFour = () => {
                                                                 {...draggableProvided?.dragHandleProps}
                                                                 className="col-md-4 animate__animated animate__fadeIn"
                                                             >
-                                                                <div className="bg-white rounded" style={{ overflow: 'hidden' }}>
+                                                                <div className="rounded" style={{ overflow: 'hidden', background: background?.value === 'light' ? 'white' : '#171622' }}>
                                                                     <img src={`${SystemInfo?.host}${product?.imagePath || notImage}`} style={{ maxWidth: '100%' }} alt="" />
                                                                     <div className="p-3">
                                                                         <div className="d-flex justify-content-between">
@@ -597,8 +611,11 @@ const StepFour = () => {
                                 (droppableProvided, snapshot) => <div
                                     {...droppableProvided?.droppableProps}
                                     ref={droppableProvided?.innerRef}
-                                    className="bg-white rounded shadow-sm"
-                                    style={{ position: 'relative', overflow: 'hidden', minHeight: '60vh' }}
+                                    className={clsx(["rounded shadow-sm", {
+                                        "bg-white": background?.value === 'light',
+                                        "card": background?.value !== 'light',
+                                    }])}
+                                    style={{ position: 'relative', overflow: 'hidden', minHeight: '60vh', height: 'fit-content' }}
                                 >
                                     {
                                         snapshot.isDraggingOver &&
@@ -621,7 +638,7 @@ const StepFour = () => {
                                                     loadingOrderType ?
                                                         <b>Cargado...</b>
                                                         :
-                                                        <b>{orderType?.data?.name}</b>
+                                                        <b>{orderType?.data?.displayText}</b>
                                                 }
                                             </div>
                                         </div>
@@ -675,7 +692,14 @@ const StepFour = () => {
                                                                     <td>{item?.code}</td>
                                                                     <td title={item?.name}>{cutString(`${item?.name}`, 15, 0, '...')}</td>
                                                                     <td colSpan={2}>
-                                                                        <input type="number" min={1} style={{ borderRadius: '8px', width: '100%', border: '1px solid whitesmoke', padding: '5px' }} name="quantity" value={item?.quantity} onChange={(e) => { handleArrayChange(e, i, 'orderItems') }} />
+                                                                        <input type="number" min={1} style={{
+                                                                            borderRadius: '8px',
+                                                                            width: '100%',
+                                                                            border: '1px solid whitesmoke',
+                                                                            padding: '5px',
+                                                                            background: 'transparent',
+                                                                            color: background?.value === 'light' ? 'black' : 'white'
+                                                                        }} name="quantity" value={item?.quantity} onChange={(e) => { handleArrayChange(e, i, 'orderItems') }} />
                                                                     </td>
                                                                     <td>{item?.price}$</td>
                                                                     <td>{item?.price * item?.quantity}$</td>
@@ -704,8 +728,10 @@ const StepFour = () => {
                                         <button type="button" className="btn btn-danger mx-1" onClick={handleBack}>
                                             Volver
                                         </button>
-                                        <button onClick={handleCreateOrder} className="btn btn-success mx-1">
-                                            Crear Pedido
+                                        <button disabled={createLoading} onClick={handleCreateOrder} className="btn btn-success mx-1">
+                                            {
+                                                createLoading ? 'Cargando...' : 'Crear Pedido'
+                                            }
                                         </button>
                                     </div>
                                 </div>

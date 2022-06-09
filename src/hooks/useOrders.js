@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useAxios from './useAxios';
 
-const useOrders = ({ options, axiosConfig } = {}) => {
+const useOrders = ({ options, ...axiosConfig } = {}) => {
   const [{ data, error, loading }, getOrders] = useAxios({ url: '/orders', ...axiosConfig }, options);
 
   const [orders, setOrders] = useState([]);
@@ -14,7 +14,6 @@ const useOrders = ({ options, axiosConfig } = {}) => {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       setOrders(data.data);
       setTotal(data?.meta?.total);
       setSize(data?.meta?.per_page);

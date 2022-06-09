@@ -3,6 +3,7 @@ import DocumentNumber from "../../DocumentNumber";
 import ImageAndName from "../../ImageAndName";
 import TableCheck from "../TableCheck";
 import { format } from "date-fns";
+import RenderStatus from "../../RenderStatus";
 
 const OrdersColumns = [
     {
@@ -15,8 +16,12 @@ const OrdersColumns = [
         accessor: 'id'
     },
     {
+        Label: () => 'Elaborado por',
+        Component: ({ value }) => value?.user?.name || '--'
+    },
+    {
         Label: () => 'Tipo',
-        Component: ({ value }) => value?.orderType?.name || '--'
+        Component: ({ value }) => value?.orderType?.displayText || '--'
     },
     {
         Label: () => 'Servicio',
@@ -28,11 +33,11 @@ const OrdersColumns = [
     },
     {
         Label: () => 'Monto',
-        Component: ({ value }) => `${value?.total}`
+        Component: ({ value }) => `${value?.total}$`
     },
     {
         Label: () => 'Estatus',
-        Component: ({ value }) => value?.status?.name || '--'
+        Component: RenderStatus
     },
     {
         Label: () => 'Fecha de Creación',
