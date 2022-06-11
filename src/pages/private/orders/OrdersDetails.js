@@ -42,11 +42,18 @@ const OrdersDetails = () => {
 
     const [{ data: createTemplateData, loading: createTemplateLoading }, createTemplate] = useAxios({ url: `/orders-templates`, method: 'POST' }, { useCache: false, manual: true });
 
+    const [{ data: generateExcelData, loading: generateExcelLoading }, generateExcelUrl] = useAxios({ url: `/orders/${id}/excel` }, { useCache: false, manual: true });
+
     const [{ loading: deleteTemplateLoading }, deleteTemplate] = useAxios({ method: 'DELETE' }, { useCache: false, manual: true });
 
     const [{ orderStatuses, loading: loadingOrderStatuses }, getOrderStatuses] = useOrderStatuses();
 
-
+    useEffect(() => {
+        if (generateExcelData) {
+            window.open(`${SystemInfo?.host}/${generateExcelData?.filePath}`);
+            console.log(generateExcelData);
+        }
+    }, [generateExcelData])
 
     useEffect(() => {
         if (createTemplateData) {
@@ -319,7 +326,7 @@ const OrdersDetails = () => {
                             <br />
                             <div>
                                 <h4>Exportar a:</h4>
-                                <button className="btn btn-success mx-2">
+                                <button onClick={() => generateExcelUrl()} className="btn btn-success mx-2">
                                     EXCEL
                                 </button>
                                 <button className="btn btn-danger mx-2">
