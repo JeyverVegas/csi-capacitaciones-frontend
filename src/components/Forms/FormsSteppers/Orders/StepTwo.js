@@ -9,11 +9,11 @@ const StepTwo = () => {
     return (
         <div className="container">
             <div className="card col-md-12 animate__animated animate__fadeInUp">
-                <h4 style={{ textAlign: 'center', padding: "20px", borderBottom: '1px solid whitesmoke' }}>¿Es Para Repuestos?</h4>
+                <h4 style={{ textAlign: 'center', padding: "20px", borderBottom: '1px solid whitesmoke' }}>Elija si es repuesto o artículo general</h4>
                 <div className="text-center">
                     <label htmlFor="togglesome" className="text-center mt-5 animate__animated animate__fadeIn" style={{ width: 'fit-content', cursor: 'pointer' }}>
-                        <img src={data?.isReplacement ? replacementImage : productsImage} style={{ width: '100px' }} />
-                        <h3>{data?.isReplacement ? "Si, es para repuestos." : "No, es para productos."}</h3>
+                        <img src={data?.isReplacement ? replacementImage : productsImage} style={{ width: '150px' }} />
+                        <h3>{data?.isReplacement ? "Es repuestos." : "Es artículo general."}</h3>
                     </label>
                 </div>
                 <div className="card-body text-center">
