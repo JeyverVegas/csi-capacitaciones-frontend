@@ -42,12 +42,18 @@ const ProductsUpdate = () => {
         page: 1
     });
 
+    const [subCategoriesFilters, setSubCategoriesFilters] = useState({
+        page: 1,
+        perPage: 200
+    });
+
     const [data, setData] = useState({
         name: '',
         image: null,
         reference: '',
         providerId: '',
         categoryId: '',
+        subCategoryId: '',
         dataSheet: '',
         certificate: '',
         description: '',
@@ -68,6 +74,8 @@ const ProductsUpdate = () => {
 
     const [{ categories, loading: loadingCategories }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
 
+    const [{ categories: subCategories, loading: subCategoriesLoading }, getSubCategories] = useCategories({ options: { manual: true, useCache: false } });
+
     const [{ services, error: servicesError, loading: servicesLoading }, getServices] = useServices({ axiosConfig: { params: { ...servicesFilters } }, options: { useCache: false } });
 
     const [{ data: product, loading: productLoading }, getProduct] = useAxios({ url: `/products/${id}` }, { useCache: false });
@@ -77,11 +85,13 @@ const ProductsUpdate = () => {
     useEffect(() => {
         if (product) {
 
-            const { category, certificate, dataSheet, createdAt, id, imagePath, provider, ...rest } = product?.data;
+            const { category, subCategory, certificate, dataSheet, createdAt, id, imagePath, provider, ...rest } = product?.data;
             setData((oldData) => {
                 return {
                     ...oldData,
-                    ...rest
+                    ...rest,
+                    categoryId: category?.id || '',
+                    subCategoryId: subCategory?.id || ''
                 }
             });
             if (category) {
@@ -91,6 +101,10 @@ const ProductsUpdate = () => {
                         name: category?.name
                     }
                 });
+            }
+
+            if (subCategory) {
+
             }
 
             if (provider) {
@@ -107,6 +121,15 @@ const ProductsUpdate = () => {
 
         }
     }, [product]);
+
+    useEffect(() => {
+        getSubCategories({
+            params: {
+                ...subCategoriesFilters,
+                parentId: data?.categoryId
+            }
+        });
+    }, [data?.categoryId])
 
     useEffect(() => {
         setLoading?.({
@@ -283,196 +306,224 @@ const ProductsUpdate = () => {
     const checker = (arr, target) => arr.every((value) => target?.includes(value));
 
     return (
-        <div className="card" style={{ width: '100%', marginBottom: 200 }}>
-            <div className="card-body">
-                <div className="basic-form">
-                    <form onSubmit={handleSubmit}>
-                        <div className="row mb-5">
-                            <div className="col-md-12 mb-4">
-                                <h5>¿Es un Repuesto?</h5>
-                                <Toggle onChange={() => { setData((oldData) => { return { ...oldData, isReplacement: !oldData?.isReplacement } }) }} checked={data?.isReplacement} />
-                            </div>
-                            <div className="form-group mb-3 col-md-8">
-                                <div className="mb-4">
+        <div>
+            <div className="text-end">
+                <Link to={'/productos'} className="mx-2 my-2 btn btn-primary">
+                    volver al listado
+                </Link>
+                <Link to={'/productos/crear'} className="mx-2 my-2 btn btn-primary">
+                    Crear nuevo
+                </Link>
+            </div>
+            <div className="card" style={{ width: '100%', marginBottom: 200 }}>
+                <div className="card-body">
+                    <div className="basic-form">
+                        <form onSubmit={handleSubmit}>
+                            <div className="row mb-5">
+                                <div className="col-md-12 mb-4">
+                                    <h5>¿Es un Repuesto?</h5>
+                                    <Toggle onChange={() => { setData((oldData) => { return { ...oldData, isReplacement: !oldData?.isReplacement } }) }} checked={data?.isReplacement} />
+                                </div>
+                                <div className="form-group mb-3 col-md-8">
+                                    <div className="mb-4">
+                                        <label>
+                                            <h5>
+                                                Nombre del Producto
+                                            </h5>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Nombre"
+                                            name="name"
+                                            autoFocus
+                                            value={data?.name}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label>
+                                            Codigo
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Codigo"
+                                            name="code"
+                                            value={data?.code}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label>
+                                            Referencia
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Referencia"
+                                            name="reference"
+                                            value={data?.reference}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label>
+                                            Proveedor
+                                        </label>
+                                        <CustomSelect
+                                            options={providers}
+                                            optionLabel="name"
+                                            inputPlaceholder="Escribe el nombre..."
+                                            isLoading={loading}
+                                            onSelectValue={handleProvider}
+                                            handleInputChange={(e) => { setFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
+                                            inputValue={filters?.name}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-group mb-3 col-md-4">
                                     <label>
                                         <h5>
-                                            Nombre del Producto
+                                            Imagen Base del Producto
                                         </h5>
                                     </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Nombre"
-                                        name="name"
-                                        autoFocus
-                                        value={data?.name}
-                                        onChange={handleChange}
+                                    <ImgUploadInput
+                                        previewImage={imagePreview}
+                                        style={{ width: '65%' }}
+                                        description="imagen del producto"
+                                        name="image"
+                                        change={handleChange}
                                     />
-                                </div>
-                                <div className="mb-4">
-                                    <label>
-                                        Codigo
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Codigo"
-                                        name="code"
-                                        value={data?.code}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label>
-                                        Referencia
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Referencia"
-                                        name="reference"
-                                        value={data?.reference}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label>
-                                        Proveedor
-                                    </label>
-                                    <CustomSelect
-                                        options={providers}
-                                        optionLabel="name"
-                                        inputPlaceholder="Escribe el nombre..."
-                                        isLoading={loading}
-                                        onSelectValue={handleProvider}
-                                        handleInputChange={(e) => { setFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
-                                        inputValue={filters?.name}
-                                    />
-                                </div>
-                            </div>
-                            <div className="form-group mb-3 col-md-4">
-                                <label>
-                                    <h5>
-                                        Imagen Base del Producto
-                                    </h5>
-                                </label>
-                                <ImgUploadInput
-                                    previewImage={imagePreview}
-                                    style={{ width: '65%' }}
-                                    description="imagen del producto"
-                                    name="image"
-                                    change={handleChange}
-                                />
-                                <div className="text-center mt-4 row">
-                                    <div className="col-md-6">
-                                        <a href={dataSheetPreview} target="_blank" style={{ margin: 0 }}>Mostrar Ficha Tecnica</a>
-                                        <label className={clsx(['btn'], {
-                                            "btn-primary": !dataSheetPreview,
-                                            "btn-success": dataSheetPreview,
-                                        })} htmlFor="datasheet-input">
-                                            Ficha tecnica
-                                        </label>
-                                        <input type="file" hidden name="dataSheet" onChange={handleChange} id="datasheet-input" />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <a href={certificatePreview} target="_blank" style={{ margin: 0 }}>Mostrar Certificado</a>
-                                        <label className={clsx(['btn'], {
-                                            "btn-primary": !certificatePreview,
-                                            "btn-success": certificatePreview,
-                                        })} htmlFor="certificate-input">
-                                            Certificado
-                                        </label>
-                                        <input type="file" hidden name="certificate" onChange={handleChange} id="certificate-input" />
+                                    <div className="text-center mt-4 row">
+                                        <div className="col-md-6">
+                                            <a href={dataSheetPreview} target="_blank" style={{ margin: 0 }}>Mostrar Ficha Tecnica</a>
+                                            <label className={clsx(['btn'], {
+                                                "btn-primary": !dataSheetPreview,
+                                                "btn-success": dataSheetPreview,
+                                            })} htmlFor="datasheet-input">
+                                                Ficha tecnica
+                                            </label>
+                                            <input type="file" hidden name="dataSheet" onChange={handleChange} id="datasheet-input" />
+                                        </div>
+                                        <div className="col-md-6">
+                                            <a href={certificatePreview} target="_blank" style={{ margin: 0 }}>Mostrar Certificado</a>
+                                            <label className={clsx(['btn'], {
+                                                "btn-primary": !certificatePreview,
+                                                "btn-success": certificatePreview,
+                                            })} htmlFor="certificate-input">
+                                                Certificado
+                                            </label>
+                                            <input type="file" hidden name="certificate" onChange={handleChange} id="certificate-input" />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="col-md-6">
-                                <div>
-                                    <label>
-                                        Categoria
-                                    </label>
-                                    <CustomSelect
-                                        options={categories}
-                                        optionLabel="name"
-                                        inputPlaceholder="Escribe el nombre..."
-                                        isLoading={loadingCategories}
-                                        onSelectValue={handleCategory}
-                                        handleInputChange={(e) => { setCategoriesFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
-                                        inputValue={categoriesFilters?.name}
-                                    />
+                                <div className="col-md-6">
+                                    <div>
+                                        <label>
+                                            Categoria
+                                        </label>
+                                        <select className="form-control" disabled={loadingCategories} name="categoryId" value={data?.categoryId} onChange={handleChange}>
+                                            <option value="">
+                                                Seleccione una categoria
+                                            </option>
+                                            {
+                                                categories?.map?.((category, i) => {
+                                                    return <option key={i} value={category?.id}>{category?.name}</option>
+                                                })
+                                            }
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-md-6">
-                                <div>
-                                    <label>
-                                        Precio
-                                    </label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        placeholder="Precio del producto"
-                                        name="price"
-                                        value={data?.price}
-                                        onChange={handleChange}
-                                    />
+                                <div className="col-md-6">
+                                    <div>
+                                        <label>
+                                            Sub-Categoria
+                                        </label>
+                                        <select className="form-control" disabled={subCategoriesLoading || !data?.categoryId} name="subCategoryId" value={data?.subCategoryId} onChange={handleChange}>
+                                            <option value="">
+                                                Seleccione una sub categoria
+                                            </option>
+                                            {
+                                                subCategories?.map?.((category, i) => {
+                                                    return <option key={i} value={category?.id}>{category?.name}</option>
+                                                })
+                                            }
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-md-12 mt-4">
-                                <label>
-                                    Descripción
-                                </label>
-                                <textarea name="description" onChange={handleChange} value={data?.description} className="form-control" style={{ height: 120 }} rows={8}></textarea>
-                            </div>
-                            <div className="form-group mb-3 col-md-12 mt-4">
-                                <h6>Servicios</h6>
-                                <p>Seleccione los servicios a los cuales Pertenece el producto.</p>
-                                <div className="form-check form-check-inline">
-                                    <label className="form-check-label">
+                                <div className="col-md-12">
+                                    <div>
+                                        <label>
+                                            Precio
+                                        </label>
                                         <input
-                                            type="checkbox"
-                                            className="form-check-input"
-                                            name="serviceIds"
-                                            checked={checker(services?.map(service => service.id), data?.serviceIds)}
-                                            onChange={handleAllServices}
+                                            type="number"
+                                            className="form-control"
+                                            placeholder="Precio del producto"
+                                            name="price"
+                                            value={data?.price}
+                                            onChange={handleChange}
                                         />
-                                        Seleccionar todos
-                                    </label>
+                                    </div>
                                 </div>
-                                {
-                                    services?.map((service, i) => {
-                                        return (
-                                            <div className="form-check form-check-inline" key={i}>
-                                                <label className="form-check-label">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="form-check-input"
-                                                        name="serviceIds"
-                                                        value={service?.id}
-                                                        checked={data?.serviceIds?.includes(service?.id)}
-                                                        onChange={() => { handleChange({ target: { name: 'serviceIds', value: Number(service?.id), type: 'checkbox' } }) }}
-                                                    />
-                                                    {service?.name}
-                                                </label>
-                                            </div>
-                                        )
-                                    })
-                                }
+                                <div className="col-md-12 mt-4">
+                                    <label>
+                                        Descripción
+                                    </label>
+                                    <textarea name="description" onChange={handleChange} value={data?.description} className="form-control" style={{ height: 120 }} rows={8}></textarea>
+                                </div>
+                                <div className="form-group mb-3 col-md-12 mt-4">
+                                    <h6>Servicios</h6>
+                                    <p>Seleccione los servicios a los cuales Pertenece el producto.</p>
+                                    <div className="form-check form-check-inline">
+                                        <label className="form-check-label">
+                                            <input
+                                                type="checkbox"
+                                                className="form-check-input"
+                                                name="serviceIds"
+                                                checked={checker(services?.map(service => service.id), data?.serviceIds)}
+                                                onChange={handleAllServices}
+                                            />
+                                            Seleccionar todos
+                                        </label>
+                                    </div>
+                                    {
+                                        services?.map((service, i) => {
+                                            return (
+                                                <div className="form-check form-check-inline" key={i}>
+                                                    <label className="form-check-label">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            name="serviceIds"
+                                                            value={service?.id}
+                                                            checked={data?.serviceIds?.includes(service?.id)}
+                                                            onChange={() => { handleChange({ target: { name: 'serviceIds', value: Number(service?.id), type: 'checkbox' } }) }}
+                                                        />
+                                                        {service?.name}
+                                                    </label>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="mb-3 d-flex justify-content-end">
-                            <Link to={`#`} onClick={() => { navigate(-1) }} className="btn btn-danger mx-2">
-                                Volver
-                            </Link>
-                            <button type="submit" className="btn btn-primary mx-2">
-                                Actualizar
-                            </button>
-                        </div>
-                    </form>
-                    <ProductVersionsContainer
-                        initialVersions={product?.data?.productVersions}
-                        productId={id}
-                    />
+                            <div className="mb-3 d-flex justify-content-end">
+                                <Link to={`#`} onClick={() => { navigate(-1) }} className="btn btn-danger mx-2">
+                                    Volver
+                                </Link>
+                                <button type="submit" className="btn btn-primary mx-2">
+                                    Actualizar
+                                </button>
+                            </div>
+                        </form>
+                        <ProductVersionsContainer
+                            initialVersions={product?.data?.productVersions}
+                            productId={id}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

@@ -22,7 +22,7 @@ const Orders = () => {
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [{ orders, total, numberOfPages, error: ordersError, loading }, getOrders] = useOrders({ params: { ...filters } }, { useCache: false });
+    const [{ orders, total, numberOfPages, error: ordersError, loading }, getOrders] = useOrders({ params: { ...filters }, options: { useCache: false } });
 
     const [{ error: deleteError, loading: deleteLoading }, deleteProvider] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
@@ -109,7 +109,8 @@ const Orders = () => {
                 severity: 'success',
                 message: 'Los pedidos han sido eliminados exitosamente.',
                 show: true
-            });
+            })
+            setSelectedValues([]);
             getOrders();
         });
     }
@@ -133,7 +134,8 @@ const Orders = () => {
                 loading={loading}
                 selectAll={selectAll}
                 title={'Pedidos'}
-                updatePath={"/pedidos"}
+                updatePath={"/pedidos/detalles"}
+                updateOptionString={'Ver Detalles'}
                 onDelete={handleDelete}
                 selectedValues={selectedValues}
                 pages={numberOfPages}

@@ -109,7 +109,8 @@ const Providers = () => {
                 severity: 'success',
                 message: 'Los proveedores han sido eliminados exitosamente.',
                 show: true
-            });
+            })
+            setSelectedValues([]);
             getProviders();
         });
     }

@@ -4,16 +4,24 @@ import { useAuth } from "../../context/AuthContext";
 import { useFeedBack } from "../../context/FeedBackContext";
 import { useTheme } from "../../context/ThemeContext";
 import { dezThemeSet } from "../../context/ThemeDemo";
+import useCategories from "../../hooks/useCategories";
 import { mainPermissions } from "../../util/MenuLinks";
 
 const Dashboard = () => {
 
     const { chnageSidebarColor, colors, changePrimaryColor, setDemoTheme } = useTheme();
 
-    console.log(dezThemeSet);
+    const [{ categories, total, numberOfPages, size, error, loading }, getCategories] = useCategories();
+
+    useEffect(() => {
+        console.log(categories);
+    }, [categories])
 
     return (
         <div>
+            <button onClick={() => { getCategories() }} className="btn btn-primary">
+                Obtener Categorias
+            </button>
             {/* <div>
                 {dezThemeSet.map((theme, i) => {
                     return (

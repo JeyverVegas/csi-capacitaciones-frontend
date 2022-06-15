@@ -109,7 +109,8 @@ const Features = () => {
                 severity: 'success',
                 message: 'Las caracteristicas han sido eliminadas exitosamente.',
                 show: true
-            });
+            })
+            setSelectedValues([]);
             getFeatures();
         });
     }

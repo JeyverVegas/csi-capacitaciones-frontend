@@ -7,7 +7,7 @@ import FeaturesCreate from "../pages/private/features/FeaturesCreate";
 import FeaturesUpdate from "../pages/private/features/FeaturesUpdate";
 import Orders from "../pages/private/orders/Orders";
 import OrdersCreate from "../pages/private/orders/OrdersCreate";
-import OrdersUpdate from "../pages/private/orders/OrdersUpdate";
+import OrdersDetails from "../pages/private/orders/OrdersDetails";
 import Products from "../pages/private/products/Products";
 import ProductsCreate from "../pages/private/products/ProductsCreate";
 import ProductsUpdate from "../pages/private/products/ProductsUpdate";
@@ -44,7 +44,7 @@ const MenuLinks = [
     createLink('Pedidos', null, null, 'flaticon-381-list', '/pedidos', mainPermissions?.products, [
         createLink('Crear Pedido', null, <OrdersCreate />, '', '/pedidos/crear', mainPermissions?.products[1]),
         createLink('Listar Pedidos', null, <Orders />, '', '/pedidos', mainPermissions?.products[0]),
-        createLink('Actualizar Pedido', true, <OrdersUpdate />, '', '/pedidos/:id', mainPermissions?.products[2]),
+        createLink('Actualizar Pedido', true, <OrdersDetails />, '', '/pedidos/detalles/:id', mainPermissions?.products[2]),
     ]),
 
     createLink('Proveedores', null, null, 'flaticon-052-inside', '/proveedores', mainPermissions?.providers, [

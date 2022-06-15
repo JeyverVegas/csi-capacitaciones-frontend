@@ -20,7 +20,9 @@ const StepTwo = () => {
                     <Toggle id="togglesome" onChange={() => { setData((oldData) => { return { ...oldData, isReplacement: !oldData?.isReplacement } }) }} checked={data?.isReplacement} />
                 </div>
                 <div className="card-footer text-end">
-                    <button type="button" className="btn btn-danger mx-1" onClick={() => { setCurrentStep((oldStep) => oldStep - 1) }}>
+                    <button type="button" className="btn btn-danger mx-1" onClick={() => setCurrentStep((oldStep) => {
+                        return oldStep - 1
+                    })}>
                         Atras
                     </button>
                     <button type="button" className="btn btn-primary mx-1" onClick={() => { setCurrentStep((oldStep) => oldStep + 1) }}>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useAxios from './useAxios';
 
-const useProviders = ({ options, axiosConfig } = {}) => {
+const useProviders = ({ options, ...axiosConfig } = {}) => {
   const [{ data, error, loading }, getProviders] = useAxios({ url: '/providers', ...axiosConfig }, options);
 
   const [providers, setProviders] = useState([]);

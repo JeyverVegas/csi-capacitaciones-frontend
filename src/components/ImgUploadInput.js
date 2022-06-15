@@ -7,13 +7,19 @@ import clsx from "clsx";
 
 const ImgUploadInput = (options) => {
 
-  const { multiple, style, accept, icon, button, className, description, change, name, previewImage, deleteButton } = options;
+  const { multiple, value, style, accept, icon, button, className, description, change, name, previewImage, deleteButton } = options;
 
   const [files, setFiles] = useState([]);
 
   const [preview, setPreview] = useState(null)
 
   const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    if (!value) {
+      setPreview(null);
+    }
+  }, [value])
 
   useEffect(() => {
     setPreview(previewImage)
@@ -55,7 +61,9 @@ const ImgUploadInput = (options) => {
   return (
     <div style={{ height: "200px", position: 'relative', margin: 'auto', width: '100%', ...style }} className={`rounded ${className}`} >
       {deleteButton ?
-        <button className="btn btn-danger" type="button" onClick={handleDelete} style={{ height: 20, width: 20, position: 'absolute', borderRadius: '100%', padding: 0, top: -7, right: -7, zIndex: 1 }}>
+        <button className="btn btn-danger" type="button" onClick={handleDelete}
+          style={{ height: 20, width: 20, position: 'absolute', borderRadius: '100%', padding: 0, top: -7, right: -7, zIndex: 10 }}
+        >
           X
         </button>
         :

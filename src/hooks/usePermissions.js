@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useAxios from './useAxios';
 
-const usePermissions = ({ options, axiosConfig } = {}) => {
+const usePermissions = ({ options, ...axiosConfig } = {}) => {
   const [{ data, error, loading }, getPermissions] = useAxios({ url: '/permissions', ...axiosConfig }, options);
 
   const [permissions, setPermissions] = useState([]);

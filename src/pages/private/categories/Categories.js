@@ -115,6 +115,7 @@ const Categories = () => {
                 message: 'Las categorias han sido eliminadas exitosamente.',
                 show: true
             });
+            setSelectedValues([]);
             getCategories();
         });
     }

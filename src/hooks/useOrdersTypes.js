@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useAxios from './useAxios';
 
-const useOrdersTypes = ({ options, axiosConfig } = {}) => {
+const useOrdersTypes = ({ options, ...axiosConfig } = {}) => {
   const [{ data, error, loading }, getOrdersTypes] = useAxios({ url: '/order-types', ...axiosConfig }, options);
 
   const [ordersTypes, setOrdersTypes] = useState([]);

@@ -96,6 +96,11 @@ code {
     border-radius: 10px;
 }
 
+.scrollbar-primary::-webkit-scrollbar-thumb {
+    background: #034bd9;
+    border-radius: 10px;
+}
+
 .custom-bg-dark {
     background: #171622;
 }

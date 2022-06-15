@@ -33,6 +33,12 @@ const ProductsCreate = () => {
     const [categoriesFilters, setCategoriesFilters] = useState({
         name: '',
         page: 1,
+        perPage: 200,
+        parentsOnly: true
+    });
+
+    const [subCategoriesFilters, setSubCategoriesFilters] = useState({
+        page: 1,
         perPage: 200
     });
 
@@ -42,6 +48,7 @@ const ProductsCreate = () => {
         reference: '',
         providerId: '',
         categoryId: '',
+        subCategoryId: '',
         dataSheet: '',
         certificate: '',
         description: '',
@@ -57,6 +64,8 @@ const ProductsCreate = () => {
 
     const [{ categories, loading: loadingCategories }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
 
+    const [{ categories: subCategories, loading: subCategoriesLoading }, getSubCategories] = useCategories({ options: { manual: true, useCache: false } });
+
     const [{ data: createData, loading: createLoading }, createProduct] = useAxios({ url: `/products`, method: 'POST' }, { manual: true, useCache: false });
 
     const [{ services, error: servicesError, loading: servicesLoading }, getServices] = useServices({ axiosConfig: { params: { ...servicesFilters } }, options: { useCache: false } });
@@ -67,6 +76,22 @@ const ProductsCreate = () => {
             message: `Creando Producto`
         });
     }, [createLoading])
+
+    useEffect(() => {
+        setData((oldData) => {
+            return {
+                ...oldData,
+                subCategoryId: ''
+            }
+        });
+        getSubCategories({
+            params: {
+                ...subCategoriesFilters,
+                parentId: data?.categoryId
+            }
+        });
+
+    }, [data?.categoryId])
 
     useEffect(() => {
         if (createData) {
@@ -336,18 +361,36 @@ const ProductsCreate = () => {
                                     <label>
                                         Categoria
                                     </label>
-                                    <CustomSelect
-                                        options={categories}
-                                        optionLabel="name"
-                                        inputPlaceholder="Escribe el nombre..."
-                                        isLoading={loadingCategories}
-                                        onSelectValue={handleCategory}
-                                        handleInputChange={(e) => { setCategoriesFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
-                                        inputValue={categoriesFilters?.name}
-                                    />
+                                    <select className="form-control" disabled={loadingCategories} name="categoryId" value={data?.categoryId} onChange={handleChange}>
+                                        <option value="">
+                                            Seleccione una categoria
+                                        </option>
+                                        {
+                                            categories?.map?.((category, i) => {
+                                                return <option key={i} value={category?.id}>{category?.name}</option>
+                                            })
+                                        }
+                                    </select>
                                 </div>
                             </div>
                             <div className="col-md-6">
+                                <div>
+                                    <label>
+                                        Sub-Categoria
+                                    </label>
+                                    <select className="form-control" disabled={subCategoriesLoading || !data?.categoryId} name="subCategoryId" value={data?.subCategoryId} onChange={handleChange}>
+                                        <option value="">
+                                            Seleccione una sub categoria
+                                        </option>
+                                        {
+                                            subCategories?.map?.((category, i) => {
+                                                return <option key={i} value={category?.id}>{category?.name}</option>
+                                            })
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="col-md-12">
                                 <div>
                                     <label>
                                         Precio

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useAxios from './useAxios';
 
-const useDocumentNumberTypes = ({ options, axiosConfig } = {}) => {
+const useDocumentNumberTypes = ({ options, ...axiosConfig } = {}) => {
   const [{ data, error, loading }, getDocumentNumberTypes] = useAxios({ url: '/document-number-types', ...axiosConfig }, options);
 
   const [documentNumberTypes, setDocumentNumberTypes] = useState([]);

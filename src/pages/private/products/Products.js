@@ -109,7 +109,8 @@ const Products = () => {
                 severity: 'success',
                 message: 'Los productos han sido eliminados exitosamente.',
                 show: true
-            });
+            })
+            setSelectedValues([]);
             getProducts();
         });
     }

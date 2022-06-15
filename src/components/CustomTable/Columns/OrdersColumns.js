@@ -3,6 +3,7 @@ import DocumentNumber from "../../DocumentNumber";
 import ImageAndName from "../../ImageAndName";
 import TableCheck from "../TableCheck";
 import { format } from "date-fns";
+import RenderStatus from "../../RenderStatus";
 
 const OrdersColumns = [
     {
@@ -15,24 +16,28 @@ const OrdersColumns = [
         accessor: 'id'
     },
     {
-        Label: () => 'Nombre',
-        Component: ImageAndName
+        Label: () => 'Elaborado por',
+        Component: ({ value }) => value?.user?.name || '--'
     },
     {
-        Label: () => 'Nro. de documento',
-        Component: DocumentNumber
+        Label: () => 'Tipo',
+        Component: ({ value }) => value?.orderType?.displayText || '--'
     },
     {
-        Label: () => 'Telefono',
-        accessor: 'phoneNumber'
+        Label: () => 'Servicio',
+        Component: ({ value }) => value?.service?.name || '--'
     },
     {
-        Label: () => 'Email',
-        accessor: 'email'
+        Label: () => '¿Repuestos?',
+        Component: ({ value }) => `${value?.isReplacement ? 'SI' : 'NO'}`
     },
     {
-        Label: () => 'Dirección',
-        accessor: 'address'
+        Label: () => 'Monto',
+        Component: ({ value }) => `${value?.total}$`
+    },
+    {
+        Label: () => 'Estatus',
+        Component: RenderStatus
     },
     {
         Label: () => 'Fecha de Creación',

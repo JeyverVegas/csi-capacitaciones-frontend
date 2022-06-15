@@ -20,7 +20,8 @@ const CustomTable = ({
     selectAll,
     onSelectValue,
     changePage,
-    loading
+    loading,
+    updateOptionString = 'Actualizar'
 }) => {
 
     const { setCustomAlertDialog } = useFeedBack();
@@ -108,6 +109,7 @@ const CustomTable = ({
                                                                             {
                                                                                 Component ?
                                                                                     <Component
+                                                                                        updateOptionString={updateOptionString}
                                                                                         id={value?.id}
                                                                                         updatePath={updatePath}
                                                                                         positionName={value?.position?.name}
@@ -152,7 +154,7 @@ const CustomTable = ({
 
                             <div className="d-sm-flex text-center justify-content-between align-items-center mt-3">
                                 <div className="dataTables_info">
-                                    Mostrando del {`${currentPage - 1}1 al ${currentPage - 1}${values?.length}`} de {currentPage > 1 ? total : `${currentPage - 1}${total}`}
+                                    Total de registros: {total}
                                 </div>
                                 <div
                                     className="dataTables_paginate paging_simple_numbers"

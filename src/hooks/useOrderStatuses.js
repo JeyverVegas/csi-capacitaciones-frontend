@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import useAxios from './useAxios';
 
-const useCategories = ({ options, ...axiosConfig } = {}) => {
-  const [{ data, error, loading }, getCategories] = useAxios({ url: '/categories', ...axiosConfig }, options);
+const useOrderStatuses = ({ options, ...axiosConfig } = {}) => {
+  const [{ data, error, loading }, getOrderStatuses] = useAxios({ url: '/order-statuses', ...axiosConfig }, options);
 
-  const [categories, setCategories] = useState([]);
+  const [orderStatuses, setOrderStatuses] = useState([]);
 
   const [total, setTotal] = useState(0);
 
@@ -14,7 +14,7 @@ const useCategories = ({ options, ...axiosConfig } = {}) => {
 
   useEffect(() => {
     if (data) {
-      setCategories(data?.data);
+      setOrderStatuses(data.data);
       setTotal(data?.meta?.total);
       setSize(data?.meta?.per_page);
       setNumberOfPages(data.meta?.last_page);
@@ -22,7 +22,7 @@ const useCategories = ({ options, ...axiosConfig } = {}) => {
 
   }, [data, loading, error]);
 
-  return [{ categories, total, numberOfPages, size, error, loading }, getCategories];
+  return [{ orderStatuses, total, numberOfPages, size, error, loading }, getOrderStatuses];
 };
 
-export default useCategories;
+export default useOrderStatuses;
