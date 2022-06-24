@@ -6,6 +6,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useOrders from "../../../hooks/useOrders";
+import useServices from "../../../hooks/useServices";
 import { mainPermissions } from "../../../util/MenuLinks";
 
 const Orders = () => {
@@ -15,12 +16,19 @@ const Orders = () => {
     const { setCustomAlert, setLoading } = useFeedBack();
 
     const [filters, setFilters] = useState({
-        page: 1
-    })
+        page: 1,
+        serviceIds: ''
+    });
+
+    const [servicesFilters, setServicesFilters] = useState({
+        currentUserServices: true
+    });
 
     const [selectedValues, setSelectedValues] = useState([]);
 
     const [selectAll, setSelectAll] = useState(false);
+
+    const [{ services, loading: servicesLoading }, getServices] = useServices({ params: { ...servicesFilters } }, { useCache: false });
 
     const [{ orders, total, numberOfPages, error: ordersError, loading }, getOrders] = useOrders({ params: { ...filters }, options: { useCache: false } });
 
@@ -115,6 +123,15 @@ const Orders = () => {
         });
     }
 
+    const handleChange = (e) => {
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                [e.target.name]: e.target.value
+            }
+        });
+    }
+
     return (
         <div>
             {
@@ -127,6 +144,28 @@ const Orders = () => {
                     :
                     null
             }
+
+            <div className="row">
+                <div className="col-md-6">
+                    <div className="card p-4">
+                        <label>
+                            Servicio
+                        </label>
+                        <select name="serviceIds" className="form-control" value={filters?.serviceIds} onChange={handleChange}>
+                            <option value="">Seleccione uno</option>
+                            {
+                                services?.map((service, i) => {
+                                    return (
+                                        <option key={i} value={service?.id}>{service?.name}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div className="col-md-6">
+                </div>
+            </div>
             <CustomTable
                 onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}

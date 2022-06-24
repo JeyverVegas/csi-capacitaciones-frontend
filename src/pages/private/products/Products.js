@@ -6,6 +6,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useProducts from "../../../hooks/useProducts";
+import useServices from "../../../hooks/useServices";
 import { mainPermissions } from "../../../util/MenuLinks";
 
 const Products = () => {
@@ -15,8 +16,13 @@ const Products = () => {
     const { setCustomAlert, setLoading } = useFeedBack();
 
     const [filters, setFilters] = useState({
-        page: 1
-    })
+        page: 1,
+        serviceIds: ''
+    });
+
+    const [servicesFilters, setServicesFilters] = useState({
+        currentUserServices: true
+    });
 
     const [selectedValues, setSelectedValues] = useState([]);
 
@@ -24,7 +30,18 @@ const Products = () => {
 
     const [{ products, total, numberOfPages, error: productsError, loading }, getProducts] = useProducts({ params: { ...filters } }, { useCache: false });
 
+    const [{ services, loading: servicesLoading }, getServices] = useServices({ params: { ...servicesFilters } }, { useCache: false });
+
     const [{ error: deleteError, loading: deleteLoading }, deleteProducts] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
+
+    useEffect(() => {
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                page: 1
+            }
+        });
+    }, [filters?.serviceIds])
 
     useEffect(() => {
         getProducts();
@@ -115,20 +132,52 @@ const Products = () => {
         });
     }
 
+    const handleChange = (e) => {
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                [e.target.name]: e.target.value
+            }
+        });
+    }
+
     return (
         <div>
-
-
             <div className="my-4 justify-content-end d-flex">
                 {
                     permissions?.includes?.(mainPermissions?.products[1]) ?
-                        <Link to={"/productos/crear"} className="btn btn-primary">
-                            Crear producto
-                        </Link>
+                        <>
+                            <Link to={"/productos/asociar-servicios"} className="btn btn-primary mx-1">
+                                Asociar A los Servicios
+                            </Link>
+                            <Link to={"/productos/crear"} className="btn btn-primary">
+                                Crear producto
+                            </Link>
+                        </>
                         :
                         null
                 }
-
+            </div>
+            <div className="row">
+                <div className="col-md-6">
+                    <div className="card p-4">
+                        <label>
+                            Servicio
+                        </label>
+                        <select name="serviceIds" className="form-control" value={filters?.serviceIds} onChange={handleChange}>
+                            <option value="">Seleccione uno</option>
+                            {
+                                services?.map((service, i) => {
+                                    return (
+                                        <option key={i} value={service?.id}>{service?.name}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div className="col-md-6">
+                </div>
             </div>
             <CustomTable
                 onDeleteSelected={handleDeleteSelected}

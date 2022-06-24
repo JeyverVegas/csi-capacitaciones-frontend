@@ -19,9 +19,6 @@ const Dashboard = () => {
 
     return (
         <div>
-            <button onClick={() => { getCategories() }} className="btn btn-primary">
-                Obtener Categorias
-            </button>
             {/* <div>
                 {dezThemeSet.map((theme, i) => {
                     return (

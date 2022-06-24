@@ -329,9 +329,9 @@ const OrdersDetails = () => {
                                 <button onClick={() => generateExcelUrl()} className="btn btn-success mx-2">
                                     EXCEL
                                 </button>
-                                <button className="btn btn-danger mx-2">
+                                <a target="_blank" href={`${SystemInfo?.api}/orders/${id}/pdf`} className="btn btn-danger mx-2">
                                     PDF
-                                </button>
+                                </a>
                             </div>
                             <br />
                             <br />

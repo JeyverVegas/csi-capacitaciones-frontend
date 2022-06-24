@@ -33,7 +33,7 @@ const OrdersColumns = [
     },
     {
         Label: () => 'Monto',
-        Component: ({ value }) => `${value?.total}$`
+        Component: ({ value }) => `$${value?.total}`
     },
     {
         Label: () => 'Estatus',
