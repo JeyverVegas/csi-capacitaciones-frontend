@@ -151,7 +151,7 @@ const OrdersDetails = () => {
                     ...oldOrdersDetails,
                     allowedStatuses: response?.data?.data?.allowedStatuses,
                     orderStatus: response?.data?.data?.orderStatus,
-                    observation: response?.data?.data?.observation,
+                    receiptObservation: response?.data?.data?.receiptObservation,
                     trakingFile: response?.data?.data?.trakingFile
                 }
             });
@@ -239,15 +239,14 @@ const OrdersDetails = () => {
                                     }
                                     <b>Estatus</b>
                                     <RenderStatus hiddenBar styles={{ marginBottom: '10px' }} value={currentOrderDetails} />
-
                                 </div>
                                 <div className="col-md-12 my-4">
                                     <b>Elaborado Por:  </b> {currentOrderDetails?.user?.name}
                                 </div>
                                 {
-                                    currentOrderDetails?.observation &&
+                                    currentOrderDetails?.receiptObservation &&
                                     <div className="col-md-12">
-                                        <b>Observaciones:  </b> {currentOrderDetails?.observation}
+                                        <b>Observaciones:  </b> {currentOrderDetails?.receiptObservation?.content}
                                     </div>
                                 }
 
@@ -503,4 +502,5 @@ const OrdersDetails = () => {
         </div>
     )
 }
+
 export default OrdersDetails;

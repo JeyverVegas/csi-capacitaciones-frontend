@@ -832,11 +832,11 @@ const StepFour = () => {
                             </div>
                             <div className="form-group my-2">
                                 <b>Precio: </b>
-                                {detailProduct?.price}$
+                                ${detailProduct?.price}
                             </div>
                             <div className="form-group my-2">
                                 <b>Categoria: </b>
-                                {detailProduct?.category?.name}$
+                                {detailProduct?.category?.name}
                             </div>
                         </div>
                     </div>
