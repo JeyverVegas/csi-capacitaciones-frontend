@@ -50,6 +50,7 @@ const OrdersDetails = () => {
 
     useEffect(() => {
         if (generateFileData) {
+            window.open(`${SystemInfo?.host}${generateFileData?.filePath}`)
             console.log(generateFileData);
         }
     }, [generateFileData])
@@ -393,7 +394,7 @@ const OrdersDetails = () => {
                                 {
                                     currentOrderDetails?.trakingFile ?
                                         <a href={`${SystemInfo?.host}${currentOrderDetails?.trakingFile}`} target="_blank" className="btn btn-block btn-warning">
-                                            Descargar ficha de envio
+                                            Descargar Guia de despacho
                                         </a>
                                         :
                                         null
@@ -462,7 +463,7 @@ const OrdersDetails = () => {
                             <div className="mb-4">
 
                                 <p htmlFor="trakingInput">
-                                    Documento de envio
+                                    Guia de despacho
                                 </p>
                                 <input
                                     id="trakingInput"
