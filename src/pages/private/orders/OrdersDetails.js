@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, ProgressBar } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
 import RenderStatus from "../../../components/RenderStatus";
@@ -27,6 +27,8 @@ const OrdersDetails = () => {
 
     const [showObservationModal, setShowObservationModal] = useState(false);
 
+    const [trakingFile, setTrakingFile] = useState(null);
+
     const [filters, setFilters] = useState({
         perPage: 200,
         page: 1
@@ -42,18 +44,15 @@ const OrdersDetails = () => {
 
     const [{ data: createTemplateData, loading: createTemplateLoading }, createTemplate] = useAxios({ url: `/orders-templates`, method: 'POST' }, { useCache: false, manual: true });
 
-    const [{ data: generateExcelData, loading: generateExcelLoading }, generateExcelUrl] = useAxios({ url: `/orders/${id}/excel` }, { useCache: false, manual: true });
+    const [{ data: generateFileData }, generateFile] = useAxios({ useCache: false, manual: true });
 
     const [{ loading: deleteTemplateLoading }, deleteTemplate] = useAxios({ method: 'DELETE' }, { useCache: false, manual: true });
 
-    const [{ orderStatuses, loading: loadingOrderStatuses }, getOrderStatuses] = useOrderStatuses();
-
     useEffect(() => {
-        if (generateExcelData) {
-            window.open(`${SystemInfo?.host}/${generateExcelData?.filePath}`);
-            console.log(generateExcelData);
+        if (generateFileData) {
+            console.log(generateFileData);
         }
-    }, [generateExcelData])
+    }, [generateFileData])
 
     useEffect(() => {
         if (createTemplateData) {
@@ -96,7 +95,7 @@ const OrdersDetails = () => {
     }
 
     const handleAcceptChangeStatus = (newStatusCode) => {
-        setShowObservationModal({ show: true, statusCode: newStatusCode });
+        setShowObservationModal({ show: false, statusCode: newStatusCode });
     };
 
     const handleDelete = () => {
@@ -122,28 +121,45 @@ const OrdersDetails = () => {
     }
 
     const handleAccepChangeStatus = () => {
+
+        var dataToSend = {
+            order_status_code: showObservationModal?.statusCode,
+            observation: observationText || 'Ninguna...'
+        };
+
+        const formData = new FormData();
+
+        if (showObservationModal?.statusCode === 'ors-004') {
+            formData.append('order_status_code', showObservationModal?.statusCode);
+            formData.append('observation', observationText || 'Ninguna...');
+            formData.append('traking_file', trakingFile, trakingFile?.name);
+        }
+
+
         changeStatus({
-            data: {
-                order_status_code: showObservationModal?.statusCode,
-                observation: observationText || 'Ninguna...'
-            }
+            data: showObservationModal?.statusCode === 'ors-004' ? formData : dataToSend,
+            method: 'POST'
         }).then((response) => {
             setCustomAlert({
                 message: 'El status se ha cambiado exitosamente.',
                 show: true,
                 severity: 'success'
             });
+            console.log(response?.data?.data);
             setCurrentOrderDetails((oldOrdersDetails) => {
                 return {
                     ...oldOrdersDetails,
+                    allowedStatuses: response?.data?.data?.allowedStatuses,
                     orderStatus: response?.data?.data?.orderStatus,
-                    observation: response?.data?.data?.observation
+                    observation: response?.data?.data?.observation,
+                    trakingFile: response?.data?.data?.trakingFile
                 }
             });
         }).finally(() => {
             setShowObservationModal(false);
             setObservationText('');
         });
+
     }
 
     const handleCreateTemplate = (e) => {
@@ -175,6 +191,11 @@ const OrdersDetails = () => {
             })
     }
 
+    const handleGenerate = (fileType) => {
+        generateFile({ url: `${SystemInfo?.api}/orders/${id}/${fileType}` });
+
+    }
+
     return (
         <div>
             <div className="text-end my-4">
@@ -185,6 +206,12 @@ const OrdersDetails = () => {
                     Crear Nuevo
                 </Link>
             </div>
+            <h4 className="text-center">Progreso {currentOrderDetails?.orderStatus?.progress}%</h4>
+            <ProgressBar
+                now={currentOrderDetails?.orderStatus?.progress}
+                variant={currentOrderDetails?.orderStatus?.variantColor}
+                className="my-3"
+            />
             <div className="row">
                 <div className="col-md-8">
                     <div className="card">
@@ -211,7 +238,7 @@ const OrdersDetails = () => {
                                             <p>--</p>
                                     }
                                     <b>Estatus</b>
-                                    <RenderStatus styles={{ marginBottom: '10px' }} value={currentOrderDetails} />
+                                    <RenderStatus hiddenBar styles={{ marginBottom: '10px' }} value={currentOrderDetails} />
 
                                 </div>
                                 <div className="col-md-12 my-4">
@@ -292,46 +319,40 @@ const OrdersDetails = () => {
                         <div>
                             <h4>Cambiar Estatus</h4>
                             {
-                                loadingOrderStatuses ?
-                                    <h6>Cargando...</h6>
+                                currentOrderDetails?.allowedStatuses?.length > 0 ?
+                                    <div className="row">
+                                        {
+                                            currentOrderDetails?.allowedStatuses?.map((status, i) => {
+                                                return (
+                                                    <button
+                                                        onClick={() => handleStatusChange(status?.code)}
+                                                        type="button"
+                                                        className="btn mx-4 my-2"
+                                                        key={i}
+                                                        value={status?.code}
+                                                        style={{ textTransform: 'capitalize', background: status?.color, color: 'white' }}
+                                                    >
+                                                        {status?.name}
+                                                    </button>
+                                                )
+                                            })
+                                        }
+                                    </div>
                                     :
-                                    currentOrderDetails?.orderStatus?.code === 'ors-001' ?
-                                        <div className="row">
-                                            {
-                                                orderStatuses?.map((status, i) => {
-                                                    return (
-                                                        status?.code !== 'ors-001' &&
-                                                        <button
-                                                            onClick={() => handleStatusChange(status?.code)}
-                                                            type="button"
-                                                            className="btn mx-4 my-2"
-                                                            key={i}
-                                                            value={status?.code}
-                                                            style={{ textTransform: 'capitalize', background: status?.color, color: 'white' }}
-                                                        >
-                                                            {status?.name}
-                                                        </button>
-                                                    )
-                                                })
-                                            }
-                                        </div>
-                                        :
-                                        <button className="btn btn-block" style={{ background: currentOrderDetails?.orderStatus?.color, color: 'white', textTransform: 'capitalize' }}>
-                                            {
-                                                currentOrderDetails?.orderStatus?.name
-                                            }
-                                        </button>
+                                    <p>
+                                        Ya no hay mas estatus para cambiar.
+                                    </p>
                             }
                             <br />
                             <br />
                             <div>
                                 <h4>Exportar a:</h4>
-                                <button onClick={() => generateExcelUrl()} className="btn btn-success mx-2">
+                                <button onClick={() => handleGenerate('excel')} className="btn btn-success mx-2">
                                     EXCEL
                                 </button>
-                                <a target="_blank" href={`${SystemInfo?.api}/orders/${id}/pdf`} className="btn btn-danger mx-2">
+                                <button onClick={() => handleGenerate('pdf')} className="btn btn-danger mx-2">
                                     PDF
-                                </a>
+                                </button>
                             </div>
                             <br />
                             <br />
@@ -343,7 +364,6 @@ const OrdersDetails = () => {
                                     }
                                 </button>
                                 <br />
-
                                 {
                                     currentOrderDetails?.orderTypeId !== 3 ?
                                         template ?
@@ -364,6 +384,15 @@ const OrdersDetails = () => {
                                                         'Guardar Como Plantilla'
                                                 }
                                             </button>
+                                        :
+                                        null
+                                }
+                                <br />
+                                {
+                                    currentOrderDetails?.trakingFile ?
+                                        <a href={`${SystemInfo?.host}${currentOrderDetails?.trakingFile}`} target="_blank" className="btn btn-block btn-warning">
+                                            Descargar ficha de envio
+                                        </a>
                                         :
                                         null
                                 }
@@ -426,6 +455,24 @@ const OrdersDetails = () => {
                     </Button>
                 </Modal.Header>
                 <Modal.Body>
+                    {
+                        showObservationModal?.statusCode === 'ors-004' ?
+                            <div className="mb-4">
+
+                                <p htmlFor="trakingInput">
+                                    Documento de envio
+                                </p>
+                                <input
+                                    id="trakingInput"
+                                    onChange={(e) => { setTrakingFile(e.target.files[0]) }}
+                                    type="file"
+                                    accept="application/pdf,application/vnd.ms-excel"
+                                />
+                            </div>
+                            :
+                            null
+                    }
+
                     <p>Por favor indique las observaciones en caso de que hubiera de lo contrario coloque la palabra <b>"Ninguna"</b>.</p>
                     <textarea
                         style={{
