@@ -152,6 +152,7 @@ const OrdersDetails = () => {
                     allowedStatuses: response?.data?.data?.allowedStatuses,
                     orderStatus: response?.data?.data?.orderStatus,
                     receiptObservation: response?.data?.data?.receiptObservation,
+                    rejectionObservation: response?.data?.data?.rejectionObservation,
                     trakingFile: response?.data?.data?.trakingFile
                 }
             });
@@ -244,10 +245,12 @@ const OrdersDetails = () => {
                                     <b>Elaborado Por:  </b> {currentOrderDetails?.user?.name}
                                 </div>
                                 {
-                                    currentOrderDetails?.receiptObservation &&
-                                    <div className="col-md-12">
-                                        <b>Observaciones:  </b> {currentOrderDetails?.receiptObservation?.content}
-                                    </div>
+                                    currentOrderDetails?.receiptObservation || currentOrderDetails?.rejectionObservation ?
+                                        <div className="col-md-12">
+                                            <b>Observaciones:  </b> {currentOrderDetails?.receiptObservation?.content || ''} {currentOrderDetails?.rejectionObservation?.content || ''}
+                                        </div>
+                                        :
+                                        null
                                 }
 
                             </div>
