@@ -30,7 +30,7 @@ const CreateOrderForm = () => {
             if (orderData?.currentStep > 0 && orderData?.data?.serviceId) {
                 swal({
                     title: "¡Orden incompleta!",
-                    text: "Se ha detectado una orden incompleta la ultima vez que vinistes. ¿Desea cargar la información?",
+                    text: "¿Desea cancelar el pedido o continuarlo?",
                     icon: "warning",
                     buttons: true,
                 }).then((willLoad) => {

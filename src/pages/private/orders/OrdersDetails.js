@@ -297,8 +297,8 @@ const OrdersDetails = () => {
                                                         </td>
                                                         <td>{item?.name}</td>
                                                         <td>{item?.quantity}</td>
-                                                        <td>{item?.price}$</td>
-                                                        <td>{item?.price * item?.quantity}$</td>
+                                                        <td>${item?.price}</td>
+                                                        <td>${item?.price * item?.quantity}</td>
                                                     </tr>
                                                 )
                                             })
@@ -308,7 +308,7 @@ const OrdersDetails = () => {
                                                 <h3>Total</h3>
                                             </td>
                                             <td colSpan={4} className="text-end">
-                                                <h3>{currentOrderDetails?.total}$</h3>
+                                                <h3>${currentOrderDetails?.total}</h3>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -393,8 +393,8 @@ const OrdersDetails = () => {
                                 <br />
                                 {
                                     currentOrderDetails?.trakingFile ?
-                                        <a href={`${SystemInfo?.host}${currentOrderDetails?.trakingFile}`} target="_blank" className="btn btn-block btn-warning">
-                                            Descargar Guia de despacho
+                                        <a href={`${SystemInfo?.host}${currentOrderDetails?.trakingFile}`} target="_blank" className="btn btn-block btn-dark">
+                                            Descargar guia de despacho
                                         </a>
                                         :
                                         null
