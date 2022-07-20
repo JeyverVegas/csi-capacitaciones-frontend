@@ -8,8 +8,7 @@ const StepOne = () => {
 
     const { data, setData, currentStep, setCurrentStep } = useOrderCrud();
 
-    const [{ services, loading: servicesLoading }, getServices] = useServices({ axiosConfig: { params: { perPage: 200, currentUserServices: true, page: 1 } }, options: { useCache: false } });
-
+    const [{ services, loading: servicesLoading }, getServices] = useServices({ params: { perPage: 200, currentUserServices: true, page: 1 }, options: { useCache: false } });
 
     useEffect(() => {
         if (services?.length === 1) {

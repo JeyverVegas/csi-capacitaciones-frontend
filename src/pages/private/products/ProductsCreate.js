@@ -123,6 +123,14 @@ const ProductsCreate = () => {
     }, [filters]);
 
     useEffect(() => {
+        getServices({
+            params: {
+                ...servicesFilters
+            }
+        });
+    }, [servicesFilters])
+
+    useEffect(() => {
         getCategories({
             params: {
                 ...categoriesFilters
@@ -431,25 +439,29 @@ const ProductsCreate = () => {
                                             </label>
                                         </div>
                                 }
-                                {
-                                    services?.map((service, i) => {
-                                        return (
-                                            <div className="form-check form-check-inline" key={i}>
-                                                <label className="form-check-label">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="form-check-input"
-                                                        name="serviceIds"
-                                                        value={service?.id}
-                                                        checked={data?.serviceIds?.includes(service?.id)}
-                                                        onChange={() => { handleChange({ target: { name: 'serviceIds', value: Number(service?.id), type: 'checkbox' } }) }}
-                                                    />
-                                                    {service?.name}
-                                                </label>
-                                            </div>
-                                        )
-                                    })
-                                }
+                                <div className="row">
+                                    {
+                                        services?.map((service, i) => {
+                                            return (
+                                                <div className="col-md-3" key={i}>
+                                                    <div className="form-check form-check-inline">
+                                                        <label className="form-check-label">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="form-check-input"
+                                                                name="serviceIds"
+                                                                value={service?.id}
+                                                                checked={data?.serviceIds?.includes(service?.id)}
+                                                                onChange={() => { handleChange({ target: { name: 'serviceIds', value: Number(service?.id), type: 'checkbox' } }) }}
+                                                            />
+                                                            {service?.name}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
                             </div>
                         </div>
                         <div className="mb-3 d-flex justify-content-end">

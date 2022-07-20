@@ -29,6 +29,8 @@ const OrdersDetails = () => {
 
     const [trakingFile, setTrakingFile] = useState(null);
 
+    const [showModalImagePreview, setShowModalImagePreview] = useState({ show: false, imagePath: '' });
+
     const [filters, setFilters] = useState({
         perPage: 200,
         page: 1
@@ -293,7 +295,18 @@ const OrdersDetails = () => {
                                                             {item?.productCode || '--'}
                                                         </td>
                                                         <td>
-                                                            <img className="rounded" style={{ width: 60, height: 60 }} src={`${SystemInfo?.host}${item?.imagePath}`} alt="" />
+                                                            <img
+                                                                onClick={() => {
+                                                                    setShowModalImagePreview({
+                                                                        show: true,
+                                                                        imagePath: `${SystemInfo?.host}${item?.imagePath}`
+                                                                    });
+                                                                }}
+                                                                className="rounded"
+                                                                style={{ width: 60, height: 60, cursor: 'pointer' }}
+                                                                src={`${SystemInfo?.host}${item?.imagePath}`}
+                                                                alt=""
+                                                            />
                                                         </td>
                                                         <td>{item?.name}</td>
                                                         <td>{item?.quantity}</td>
@@ -502,6 +515,20 @@ const OrdersDetails = () => {
                         </div>
                     </div>
                 </Modal.Footer>
+            </Modal>
+            <Modal size="lg" className="fade" show={showModalImagePreview?.show}>
+                <Modal.Header>
+                    <Modal.Title></Modal.Title>
+                    <Button
+                        variant=""
+                        className="btn-close"
+                        onClick={() => setShowModalImagePreview({ show: false, imagePath: '' })}
+                    >
+                    </Button>
+                </Modal.Header>
+                <Modal.Body>
+                    <img src={showModalImagePreview?.imagePath} />
+                </Modal.Body>
             </Modal>
         </div>
     )
