@@ -11,6 +11,9 @@ import useAxios from "../../../hooks/useAxios";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useServices from "../../../hooks/useServices";
 import Toggle from "react-toggle";
+import useProducts from "../../../hooks/useProducts";
+import { Button, Modal } from "react-bootstrap";
+import SystemInfo from "../../../util/SystemInfo";
 
 
 
@@ -30,6 +33,13 @@ const ProductsCreate = () => {
         page: 1
     })
 
+    const [productsFilters, setProductsFilters] = useState({
+        perPage: 200,
+        page: 1,
+        parentsOnly: 'true',
+        name: ''
+    })
+
     const [categoriesFilters, setCategoriesFilters] = useState({
         name: '',
         page: 1,
@@ -41,6 +51,8 @@ const ProductsCreate = () => {
         page: 1,
         perPage: 200
     });
+
+    const [showProductsModal, setShowProductsModal] = useState(false);
 
     const [data, setData] = useState({
         name: '',
@@ -55,12 +67,15 @@ const ProductsCreate = () => {
         code: '',
         price: 0,
         serviceIds: [],
-        isReplacement: false
+        isReplacement: false,
+        parentId: ''
     });
 
     const { openMenuToggle, customMenuToggle, sideBarStyle } = useTheme();
 
     const [{ providers, total, numberOfPages, size, error, loading }, getProviders] = useProviders({ options: { manual: true, useCache: false } });
+
+    const [{ products, numberOfPages: productsPages, loading: loadingProducts }, getProducts] = useProducts({ options: { manual: true, useCache: false } });
 
     const [{ categories, loading: loadingCategories }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
 
@@ -121,6 +136,14 @@ const ProductsCreate = () => {
             }
         });
     }, [filters]);
+
+    useEffect(() => {
+        getProducts({
+            params: {
+                ...productsFilters
+            }
+        });
+    }, [productsFilters]);
 
     useEffect(() => {
         getServices({
@@ -273,9 +296,17 @@ const ProductsCreate = () => {
                 <div className="basic-form">
                     <form onSubmit={handleSubmit}>
                         <div className="row mb-5">
-                            <div className="col-md-12 mb-4">
+                            <div className="col-md-6 mb-4">
                                 <h5>¿Es un Repuesto?</h5>
                                 <Toggle onChange={() => { setData((oldData) => { return { ...oldData, isReplacement: !oldData?.isReplacement } }) }} checked={data?.isReplacement} />
+                            </div>
+                            <div className="col-md-6 mb-4">
+                                <h5>Producto padre</h5>
+                                <span>
+                                    Escoja un producto padre si este es una version de otro producto.
+                                </span>
+                                <br />
+                                <button type="button" onClick={() => setShowProductsModal(true)} className="btn btn-success">Añadir</button>
                             </div>
                             <div className="form-group mb-3 col-md-8">
                                 <div className="mb-4">
@@ -475,6 +506,73 @@ const ProductsCreate = () => {
                     </form>
                 </div>
             </div>
+            <Modal show={showProductsModal} className="fade" size="lg">
+                <Modal.Header>
+                    <Modal.Title>Productos</Modal.Title>
+                    <Button
+                        variant=""
+                        className="btn-close"
+                        onClick={() => setShowProductsModal(false)}
+                    >
+                    </Button>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="table-responsive">
+                        <table className="table text-center">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Codigo
+                                    </th>
+                                    <th>
+                                        Imagen
+                                    </th>
+                                    <th>
+                                        Nombre
+                                    </th>
+                                    <th>
+                                        Seleccionar
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    products?.map((product, i) => {
+                                        return (
+                                            <tr key={i}>
+                                                <td>
+                                                    {product?.code}
+                                                </td>
+                                                <td>
+                                                    <img src={`${SystemInfo?.host}/${product?.imagePath}`} alt="" />
+                                                </td>
+                                                <td>
+                                                    {product?.items?.length}
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        onChange={handleChange}
+                                                        type="checkbox"
+                                                        name="parentId"
+                                                        className="form-control"
+                                                        value={product?.id}
+                                                        checked={product?.id === data?.parentId}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button onClick={() => { setShowProductsModal(false) }} className="btn btn-danger">
+                        Cerrar
+                    </button>
+                </Modal.Footer>
+            </Modal>
         </div>
     )
 }
