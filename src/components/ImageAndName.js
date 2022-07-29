@@ -1,6 +1,6 @@
 import SystemInfo from "../util/SystemInfo";
 
-const ImageAndName = ({ nameValue, imgValue }) => {
+const ImageAndName = ({ nameValue, imgValue, value }) => {
     let haveImage = false;
     if (imgValue !== '/storage/') haveImage = true;
     return (
@@ -8,7 +8,7 @@ const ImageAndName = ({ nameValue, imgValue }) => {
             {
                 haveImage ?
                     <img
-                        src={`${SystemInfo?.host}${imgValue}`}
+                        src={`${SystemInfo?.host}${value?.imagePath ? value?.imagePath : imgValue}`}
                         style={{ borderRadius: '100%' }}
                         width="36"
                         height={"36"}

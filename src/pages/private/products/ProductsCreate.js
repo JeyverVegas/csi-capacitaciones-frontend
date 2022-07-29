@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import CustomSelect from "../../../components/CustomSelect";
 import ImgUploadInput from "../../../components/ImgUploadInput";
 import { useTheme } from "../../../context/ThemeContext";
@@ -13,7 +12,8 @@ import useServices from "../../../hooks/useServices";
 import Toggle from "react-toggle";
 import useProducts from "../../../hooks/useProducts";
 import { Button, Modal } from "react-bootstrap";
-import SystemInfo from "../../../util/SystemInfo";
+import CustomTable from "../../../components/CustomTable/CustomTable";
+import ShortProductsColumns from "../../../components/CustomTable/Columns/ShortProductsColumns";
 
 
 
@@ -34,10 +34,9 @@ const ProductsCreate = () => {
     })
 
     const [productsFilters, setProductsFilters] = useState({
-        perPage: 200,
+        perPage: 100,
         page: 1,
-        parentsOnly: 'true',
-        name: ''
+        parentsOnly: true
     })
 
     const [categoriesFilters, setCategoriesFilters] = useState({
@@ -68,14 +67,15 @@ const ProductsCreate = () => {
         price: 0,
         serviceIds: [],
         isReplacement: false,
-        parentId: ''
+        parentId: [],
+        parent: ''
     });
 
     const { openMenuToggle, customMenuToggle, sideBarStyle } = useTheme();
 
     const [{ providers, total, numberOfPages, size, error, loading }, getProviders] = useProviders({ options: { manual: true, useCache: false } });
 
-    const [{ products, numberOfPages: productsPages, loading: loadingProducts }, getProducts] = useProducts({ options: { manual: true, useCache: false } });
+    const [{ products, numberOfPages: productsPages, loading: loadingProducts, total: productsTotal }, getProducts] = useProducts({ options: { manual: true, useCache: false } });
 
     const [{ categories, loading: loadingCategories }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
 
@@ -170,7 +170,9 @@ const ProductsCreate = () => {
 
         const formData = new FormData();
 
-        Object.keys(data).forEach((key, i) => {
+        const { parent, parentId, ...rest } = data;
+
+        Object.keys(rest).forEach((key, i) => {
             if (key !== 'id') {
                 if (key === 'isReplacement') {
                     formData.append(key, data[key] ? 1 : 0);
@@ -192,6 +194,10 @@ const ProductsCreate = () => {
             }
         })
 
+        if (parentId?.length > 0) {
+            formData?.append('parentId', parentId[0]);
+        }
+
         createProduct({ data: formData });
     }
 
@@ -209,23 +215,6 @@ const ProductsCreate = () => {
                 name: provider?.name
             }
         });
-    }
-
-    const handleCategory = (category) => {
-
-        setData((oldData) => {
-            return {
-                ...oldData,
-                categoryId: category?.id
-            }
-        });
-
-        setCategoriesFilters((oldFilters) => {
-            return {
-                ...oldFilters,
-                name: category?.name
-            }
-        })
     }
 
     const handleChange = (e) => {
@@ -290,6 +279,25 @@ const ProductsCreate = () => {
 
     const checker = (arr, target) => arr.every((value) => target?.includes(value));
 
+    const handleProduct = (value) => {
+        setData((oldData) => {
+            return {
+                ...oldData,
+                parent: value?.id === oldData['parentId'][0] ? '' : value,
+                parentId: value?.id === oldData['parentId'][0] ? [] : [value?.id]
+            }
+        });
+    }
+
+    const handlePage = (page) => {
+        setProductsFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                page: page
+            }
+        });
+    }
+
     return (
         <div className="card" style={{ width: '100%' }}>
             <div className="card-body">
@@ -302,10 +310,21 @@ const ProductsCreate = () => {
                             </div>
                             <div className="col-md-6 mb-4">
                                 <h5>Producto padre</h5>
-                                <span>
-                                    Escoja un producto padre si este es una version de otro producto.
-                                </span>
-                                <br />
+                                {
+                                    !data?.parent &&
+                                    <>
+                                        <span>
+                                            Escoja un producto padre si este es una version de otro producto.
+                                        </span>
+                                        <br />
+                                    </>
+                                }
+                                {
+                                    data?.parent &&
+                                    <h4 title="remover" className="animate__animated animate__fadeInLeft rounded bg-light p-3" style={{ color: "#505050", cursor: 'pointer' }} onClick={() => handleProduct(data?.parent)}>
+                                        "{data?.parent?.code}": {data?.parent?.name}
+                                    </h4>
+                                }
                                 <button type="button" onClick={() => setShowProductsModal(true)} className="btn btn-success">Añadir</button>
                             </div>
                             <div className="form-group mb-3 col-md-8">
@@ -429,7 +448,7 @@ const ProductsCreate = () => {
                                     </select>
                                 </div>
                             </div>
-                            <div className="col-md-12">
+                            <div className="col-md-12 mt-4">
                                 <div>
                                     <label>
                                         Precio
@@ -517,55 +536,20 @@ const ProductsCreate = () => {
                     </Button>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className="table-responsive">
-                        <table className="table text-center">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Codigo
-                                    </th>
-                                    <th>
-                                        Imagen
-                                    </th>
-                                    <th>
-                                        Nombre
-                                    </th>
-                                    <th>
-                                        Seleccionar
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    products?.map((product, i) => {
-                                        return (
-                                            <tr key={i}>
-                                                <td>
-                                                    {product?.code}
-                                                </td>
-                                                <td>
-                                                    <img src={`${SystemInfo?.host}/${product?.imagePath}`} alt="" />
-                                                </td>
-                                                <td>
-                                                    {product?.items?.length}
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        onChange={handleChange}
-                                                        type="checkbox"
-                                                        name="parentId"
-                                                        className="form-control"
-                                                        value={product?.id}
-                                                        checked={product?.id === data?.parentId}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                    <CustomTable
+                        onSelectValue={handleProduct}
+                        loading={loadingProducts}
+                        withoutGlobalActions
+                        variant="simple"
+                        hideSelectAll
+                        selectedValues={data?.parentId}
+                        total={productsTotal}
+                        values={products}
+                        currentPage={productsFilters.page}
+                        collumns={ShortProductsColumns}
+                        changePage={handlePage}
+                        pages={productsPages}
+                    />
                 </Modal.Body>
                 <Modal.Footer>
                     <button onClick={() => { setShowProductsModal(false) }} className="btn btn-danger">

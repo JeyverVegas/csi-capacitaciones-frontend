@@ -4,6 +4,7 @@ import CustomTableBodyCollumn from "./CustomTableBodyCollumn";
 import CustomTableBodyRow from "./CustomTableBodyRow";
 import CustomTableHeadColumn from "./CustomTableHeadColumn";
 import swal from "sweetalert";
+import clsx from "clsx";
 
 const CustomTable = ({
     title,
@@ -21,15 +22,18 @@ const CustomTable = ({
     onSelectValue,
     changePage,
     loading,
-    updateOptionString = 'Actualizar'
+    updateParamAccesor = 'id',
+    withoutGlobalActions,
+    variant = 'card',
+    hideSelectAll
 }) => {
 
     const { setCustomAlertDialog } = useFeedBack();
 
     const handleDeleteSelected = () => {
         swal({
-            title: "¿Estas Seguro?",
-            text: "¿Quieres eliminar todos los registros seleccionados?",
+            title: "¿are you sure?",
+            text: "¿You want to delete all selected records?",
             icon: "warning",
             buttons: true,
             dangerMode: true,
@@ -42,22 +46,51 @@ const CustomTable = ({
         })
     }
 
+    const handleDelete = (value) => {
+        swal({
+            title: "¿are you sure?",
+            text: `¿You want to delete ${value?.name} record?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                onDelete?.(value);
+            } else {
+
+            }
+        })
+    }
+
     return (
         <div className="col-12">
-            <div className="card">
-                <div className="card-header d-flex align-items-center">
-                    <h4 className="card-title">{title}</h4>
-                    <div>
-                        <h5>Acciones Globales:</h5>
-                        {
-                            selectedValues?.length > 0 ?
-                                <ActionDropdown withOutUpdate onDelete={handleDeleteSelected} />
-                                :
-                                <span>debe seleccionar al menos un registro</span>
-                        }
-                    </div>
+            <div className={clsx({
+                'card': variant === 'card',
+            })}>
+
+                <div className={clsx(["d-flex align-items-center"], {
+                    "card-header": variant === 'card'
+                })}>
+                    {
+                        title &&
+                        <h4 className="card-title">{title}</h4>
+                    }
+                    {
+                        !withoutGlobalActions &&
+                        <div>
+                            <h5>Global Actions:</h5>
+                            {
+                                selectedValues?.length > 0 ?
+                                    <ActionDropdown withOutUpdate onDelete={handleDeleteSelected} />
+                                    :
+                                    <span>you must select at least one record</span>
+                            }
+                        </div>
+                    }
                 </div>
-                <div className="card-body">
+                <div className={clsx({
+                    "card-body": variant === 'card'
+                })}>
                     <div className="w-100 table-responsive">
                         <div id="patientTable_basic_table" className="dataTables_wrapper">
                             <table
@@ -109,24 +142,25 @@ const CustomTable = ({
                                                                             {
                                                                                 Component ?
                                                                                     <Component
-                                                                                        updateOptionString={updateOptionString}
                                                                                         id={value?.id}
                                                                                         updatePath={updatePath}
                                                                                         positionName={value?.position?.name}
+                                                                                        userStatus={value?.userStatus}
                                                                                         serviceName={value?.service?.name}
                                                                                         roleName={value?.role?.displayText}
                                                                                         nameValue={value?.name}
                                                                                         date={value?.createdAt}
-                                                                                        imgValue={`${value?.imagePath}`}
+                                                                                        imgValue={value?.imgPath}
                                                                                         parentCategory={value?.parentCategory}
                                                                                         provider={value?.provider}
                                                                                         categoryName={value?.category?.name}
                                                                                         documentNumberValue={value?.documentNumber}
                                                                                         roleDisplayText={value?.displayText}
                                                                                         onChange={() => { onSelectValue?.(value) }}
-                                                                                        onDelete={() => { onDelete?.(value) }}
+                                                                                        onDelete={() => { handleDelete?.(value) }}
                                                                                         checked={selectedValues?.includes(value?.id)}
                                                                                         optionsCount={value?.options?.length}
+                                                                                        updateParamAccesor={updateParamAccesor}
                                                                                         value={value}
                                                                                     />
                                                                                     :
@@ -157,34 +191,39 @@ const CustomTable = ({
                                     Total de registros: {total}
                                 </div>
                                 <div
-                                    className="dataTables_paginate paging_simple_numbers"
-                                    id="example5_paginate"
+                                    className="dataTables_paginate"
+                                    style={{ maxWidth: '70%', display: 'flex' }}
                                 >
                                     <button
-                                        className="paginate_button previous disabled"
-                                        to="/table-datatable-basic"
+                                        className="paginate_button previous disabled btn-sm border-none"
+                                        style={{ border: 'none !important' }}
                                         onClick={() =>
-                                            currentPage > 0 && changePage?.(currentPage - 1)
+                                            currentPage > 1 && changePage?.(currentPage - 1)
                                         }
                                     >
                                         <i className="fa fa-angle-double-left" aria-hidden="true"></i>
                                         Anterior
                                     </button>
-                                    <span>
+                                    <span className="p-1 custom-horizontal-scrollbar scrollbar-primary" style={{ maxWidth: '54%', display: 'flex', overflowX: 'auto' }}>
                                         {Array.from(Array(pages).keys()).map((number, i) => (
-                                            <button
+                                            <div
                                                 key={i}
-                                                className={`paginate_button  ${currentPage === (i + 1) ? "current" : ""
-                                                    } `}
+                                                className={`${currentPage === (i + 1) ? "current bg-primary text-white" : ""}`}
                                                 onClick={() => { changePage?.(1 + number) }}
+                                                style={{
+                                                    marginRight: '10px',
+                                                    padding: '10px 15px',
+                                                    borderRadius: '10px',
+                                                    cursor: 'pointer'
+                                                }}
                                             >
                                                 {1 + number}
-                                            </button>
+                                            </div>
                                         ))}
                                     </span>
                                     <button
-                                        className="paginate_button next disabled"
-                                        to="/table-datatable-basic"
+                                        className="paginate_button next disabled btn-sm"
+                                        style={{ border: 'none !important' }}
                                         onClick={() =>
                                             currentPage < pages &&
                                             changePage?.(currentPage + 1)
@@ -198,8 +237,8 @@ const CustomTable = ({
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

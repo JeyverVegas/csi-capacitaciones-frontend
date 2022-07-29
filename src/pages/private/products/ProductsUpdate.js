@@ -13,7 +13,10 @@ import SystemInfo from "../../../util/SystemInfo";
 import useServices from "../../../hooks/useServices";
 import ProductVersionsContainer from "../../../components/Forms/ProductVersionsContainer";
 import Toggle from "react-toggle";
-
+import useProducts from "../../../hooks/useProducts";
+import { Button, Modal } from "react-bootstrap";
+import CustomTable from "../../../components/CustomTable/CustomTable";
+import ShortProductsColumns from "../../../components/CustomTable/Columns/ShortProductsColumns";
 
 
 
@@ -27,9 +30,18 @@ const ProductsUpdate = () => {
 
     const { openMenuToggle, customMenuToggle, sideBarStyle } = useTheme();
 
+    const [showProductsModal, setShowProductsModal] = useState(false);
+
     const [servicesFilters, setServicesFilters] = useState({
         perPage: 200,
         page: 1
+    })
+
+    const [productsFilters, setProductsFilters] = useState({
+        perPage: 100,
+        page: 1,
+        parentsOnly: 'true',
+        exceptId: id
     })
 
     const [filters, setFilters] = useState({
@@ -61,7 +73,9 @@ const ProductsUpdate = () => {
         code: '',
         price: 0,
         isReplacement: false,
-        _method: 'PUT'
+        _method: 'PUT',
+        parentId: [],
+        parent: ''
     });
 
     const [imagePreview, setImagePreview] = useState('');
@@ -71,6 +85,8 @@ const ProductsUpdate = () => {
     const [dataSheetPreview, setDataSheetPreview] = useState('');
 
     const [{ providers, total, numberOfPages, size, error, loading }, getProviders] = useProviders({ options: { manual: true, useCache: false } });
+
+    const [{ products, numberOfPages: productsPages, loading: loadingProducts, total: productsTotal }, getProducts] = useProducts({ options: { manual: true, useCache: false } });
 
     const [{ categories, loading: loadingCategories }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
 
@@ -85,15 +101,17 @@ const ProductsUpdate = () => {
     useEffect(() => {
         if (product) {
 
-            const { category, subCategory, certificate, dataSheet, createdAt, id, imagePath, provider, ...rest } = product?.data;
+            const { parentId, category, subCategory, certificate, dataSheet, createdAt, id, imagePath, provider, ...rest } = product?.data;
             setData((oldData) => {
                 return {
                     ...oldData,
                     ...rest,
                     categoryId: category?.id || '',
-                    subCategoryId: subCategory?.id || ''
+                    subCategoryId: subCategory?.id || '',
+                    parentId: parentId ? [parentId] : []
                 }
             });
+
             if (category) {
                 setCategoriesFilters((oldCategoriesFilters) => {
                     return {
@@ -101,10 +119,6 @@ const ProductsUpdate = () => {
                         name: category?.name
                     }
                 });
-            }
-
-            if (subCategory) {
-
             }
 
             if (provider) {
@@ -121,6 +135,14 @@ const ProductsUpdate = () => {
 
         }
     }, [product]);
+
+    useEffect(() => {
+        getProducts({
+            params: {
+                ...productsFilters
+            }
+        });
+    }, [productsFilters]);
 
     useEffect(() => {
         getSubCategories({
@@ -189,8 +211,8 @@ const ProductsUpdate = () => {
 
         const formData = new FormData();
 
-        const { productVersions, serviceIds, ...rest } = data;
-        console.log(rest);
+        const { parent, parentId, productVersions, serviceIds, ...rest } = data;
+
         Object.keys(data).forEach((key, i) => {
             if (key !== 'id') {
                 if (key === 'isReplacement') {
@@ -211,11 +233,15 @@ const ProductsUpdate = () => {
                     }
                 }
             }
-        })
+        });
 
         serviceIds?.forEach((serviceId, key) => {
             formData.append(`serviceIds[${key}]`, serviceId);
         });
+
+        if (parentId?.length > 0) {
+            formData?.append('parentId', parentId[0]);
+        }
 
         updateProduct({ data: formData });
     }
@@ -313,6 +339,25 @@ const ProductsUpdate = () => {
 
     const checker = (arr, target) => arr.every((value) => target?.includes(value));
 
+    const handleProduct = (value) => {
+        setData((oldData) => {
+            return {
+                ...oldData,
+                parent: value?.id === oldData?.['parentId']?.[0] ? '' : value,
+                parentId: value?.id === oldData?.['parentId']?.[0] ? [] : [value?.id]
+            }
+        });
+    }
+
+    const handlePage = (page) => {
+        setProductsFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                page: page
+            }
+        });
+    }
+
     return (
         <div>
             <div className="text-end">
@@ -328,9 +373,28 @@ const ProductsUpdate = () => {
                     <div className="basic-form">
                         <form onSubmit={handleSubmit}>
                             <div className="row mb-5">
-                                <div className="col-md-12 mb-4">
+                                <div className="col-md-6 mb-4">
                                     <h5>¿Es un Repuesto?</h5>
                                     <Toggle onChange={() => { setData((oldData) => { return { ...oldData, isReplacement: !oldData?.isReplacement } }) }} checked={data?.isReplacement} />
+                                </div>
+                                <div className="col-md-6 mb-4">
+                                    <h5>Producto padre</h5>
+                                    {
+                                        !data?.parent &&
+                                        <>
+                                            <span>
+                                                Escoja un producto padre si este es una version de otro producto.
+                                            </span>
+                                            <br />
+                                        </>
+                                    }
+                                    {
+                                        data?.parent &&
+                                        <h4 title="remover" className="animate__animated animate__fadeInLeft rounded bg-light p-3" style={{ color: "#505050", cursor: 'pointer' }} onClick={() => handleProduct(data?.parent)}>
+                                            "{data?.parent?.code}": {data?.parent?.name}
+                                        </h4>
+                                    }
+                                    <button type="button" onClick={() => setShowProductsModal(true)} className="btn btn-success">Añadir</button>
                                 </div>
                                 <div className="form-group mb-3 col-md-8">
                                     <div className="mb-4">
@@ -538,6 +602,38 @@ const ProductsUpdate = () => {
                     </div>
                 </div>
             </div>
+            <Modal show={showProductsModal} className="fade" size="lg">
+                <Modal.Header>
+                    <Modal.Title>Productos</Modal.Title>
+                    <Button
+                        variant=""
+                        className="btn-close"
+                        onClick={() => setShowProductsModal(false)}
+                    >
+                    </Button>
+                </Modal.Header>
+                <Modal.Body>
+                    <CustomTable
+                        onSelectValue={handleProduct}
+                        loading={loadingProducts}
+                        withoutGlobalActions
+                        variant="simple"
+                        hideSelectAll
+                        selectedValues={data?.parentId}
+                        total={productsTotal}
+                        values={products}
+                        currentPage={productsFilters.page}
+                        collumns={ShortProductsColumns}
+                        changePage={handlePage}
+                        pages={productsPages}
+                    />
+                </Modal.Body>
+                <Modal.Footer>
+                    <button onClick={() => { setShowProductsModal(false) }} className="btn btn-danger">
+                        Cerrar
+                    </button>
+                </Modal.Footer>
+            </Modal>
         </div>
     )
 }
