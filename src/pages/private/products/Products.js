@@ -212,7 +212,14 @@ const Products = () => {
                         <label>
                             Codigo
                         </label>
-                        <input type="text" name="code" value={filters?.code} onChange={handleChange} className="form-control" />
+                        <input
+                            placeholder="codigo..."
+                            type="text"
+                            name="code"
+                            value={filters?.code}
+                            onChange={handleChange}
+                            className="form-control"
+                        />
                     </div>
                 </div>
                 <div className="col-md-4">

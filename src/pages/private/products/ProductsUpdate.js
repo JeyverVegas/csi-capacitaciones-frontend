@@ -377,24 +377,30 @@ const ProductsUpdate = () => {
                                     <h5>¿Es un Repuesto?</h5>
                                     <Toggle onChange={() => { setData((oldData) => { return { ...oldData, isReplacement: !oldData?.isReplacement } }) }} checked={data?.isReplacement} />
                                 </div>
+
                                 <div className="col-md-6 mb-4">
-                                    <h5>Producto padre</h5>
                                     {
-                                        !data?.parent &&
+                                        product?.data?.childrens?.length === 0 &&
                                         <>
-                                            <span>
-                                                Escoja un producto padre si este es una version de otro producto.
-                                            </span>
-                                            <br />
+                                            <h5>Producto padre</h5>
+                                            {
+                                                !data?.parent &&
+                                                <>
+                                                    <span>
+                                                        Escoja un producto padre si este es una version de otro producto.
+                                                    </span>
+                                                    <br />
+                                                </>
+                                            }
+                                            {
+                                                data?.parent &&
+                                                <h4 title="remover" className="animate__animated animate__fadeInLeft rounded bg-light p-3" style={{ color: "#505050", cursor: 'pointer' }} onClick={() => handleProduct(data?.parent)}>
+                                                    "{data?.parent?.code}": {data?.parent?.name}
+                                                </h4>
+                                            }
+                                            <button type="button" onClick={() => setShowProductsModal(true)} className="btn btn-success">Añadir</button>
                                         </>
                                     }
-                                    {
-                                        data?.parent &&
-                                        <h4 title="remover" className="animate__animated animate__fadeInLeft rounded bg-light p-3" style={{ color: "#505050", cursor: 'pointer' }} onClick={() => handleProduct(data?.parent)}>
-                                            "{data?.parent?.code}": {data?.parent?.name}
-                                        </h4>
-                                    }
-                                    <button type="button" onClick={() => setShowProductsModal(true)} className="btn btn-success">Añadir</button>
                                 </div>
                                 <div className="form-group mb-3 col-md-8">
                                     <div className="mb-4">
@@ -524,7 +530,7 @@ const ProductsUpdate = () => {
                                         </select>
                                     </div>
                                 </div>
-                                <div className="col-md-12">
+                                <div className="col-md-12 mt-4">
                                     <div>
                                         <label>
                                             Precio
@@ -595,7 +601,66 @@ const ProductsUpdate = () => {
                                 </button>
                             </div>
                         </form>
-
+                        <br />
+                        <div style={{ borderTop: '1px solid gray', padding: '15px 0px' }}>
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <h3>Versiones</h3>
+                                </div>
+                                <div className="col-md-6 text-end">
+                                    <a style={{ marginLeft: 'auto' }} className="btn btn-primary" href={`/productos/crear?parentId=${product?.data?.id}`}>
+                                        Añadir version
+                                    </a>
+                                </div>
+                            </div>
+                            {
+                                product?.data?.childrens?.length > 0 ?
+                                    product?.data?.childrens?.map((productChild, i) => {
+                                        return (
+                                            <div className="row align-items-center">
+                                                <div className="col-md-2">
+                                                    <img
+                                                        style={{ height: '80px', width: '80px', borderRadius: '10px' }}
+                                                        src={`${SystemInfo?.host}${productChild?.image_path}`}
+                                                        alt=""
+                                                    />
+                                                </div>
+                                                <div className="col-md-3">
+                                                    <a href={`/productos/${productChild?.id}?name="${productChild?.name}"`}>
+                                                        <h5>
+                                                            {productChild?.name}
+                                                        </h5>
+                                                    </a>
+                                                </div>
+                                                <div className="col-md-3">
+                                                    <h5>
+                                                        {productChild?.code}
+                                                    </h5>
+                                                </div>
+                                                <div className="col-md-2">
+                                                    <h5>
+                                                        {productChild?.price}$
+                                                    </h5>
+                                                </div>
+                                                <div className="col-md-2">
+                                                    <a className="btn btn-block btn-warning" href={`/productos/${productChild?.id}?name="${productChild?.name}"`}>
+                                                        Editar
+                                                    </a>
+                                                    <button type="button" className="btn btn-block btn-danger mt-2">
+                                                        Remover
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                    :
+                                    <div className="text-center text-danger">
+                                        <h4>
+                                            No tiene versiones
+                                        </h4>
+                                    </div>
+                            }
+                        </div>
                         {/* <ProductVersionsContainer
                             initialVersions={product?.data?.productVersions}
                             productId={id}

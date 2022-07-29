@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import CustomSelect from "../../../components/CustomSelect";
 import ImgUploadInput from "../../../components/ImgUploadInput";
 import { useTheme } from "../../../context/ThemeContext";
@@ -18,6 +18,8 @@ import ShortProductsColumns from "../../../components/CustomTable/Columns/ShortP
 
 
 const ProductsCreate = () => {
+
+    const [searchParams] = useSearchParams();
 
     const { setLoading, setCustomAlert } = useFeedBack();
 
@@ -83,7 +85,26 @@ const ProductsCreate = () => {
 
     const [{ data: createData, loading: createLoading }, createProduct] = useAxios({ url: `/products`, method: 'POST' }, { manual: true, useCache: false });
 
+    const [{ loading: findParentLoading }, findParent] = useAxios({ manual: true, useCache: false });
+
     const [{ services, error: servicesError, loading: servicesLoading }, getServices] = useServices({ axiosConfig: { params: { ...servicesFilters } }, options: { useCache: false } });
+
+    useEffect(() => {
+        const productParentId = searchParams?.get('parentId');
+        if (productParentId) {
+            findParent({ url: `/products/${productParentId}` }).then((response) => {
+                const parentData = response?.data?.data;
+                console.log(parentData);
+                setData((oldData) => {
+                    return {
+                        ...oldData,
+                        parent: parentData,
+                        parentId: [parentData?.id]
+                    }
+                })
+            });
+        }
+    }, [searchParams])
 
     useEffect(() => {
         setLoading?.({
