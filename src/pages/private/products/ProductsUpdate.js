@@ -213,7 +213,7 @@ const ProductsUpdate = () => {
 
         const { parent, parentId, productVersions, serviceIds, ...rest } = data;
 
-        Object.keys(data).forEach((key, i) => {
+        Object.keys(rest).forEach((key, i) => {
             if (key !== 'id') {
                 if (key === 'isReplacement') {
                     formData.append(key, data[key] ? 1 : 0);
@@ -595,10 +595,11 @@ const ProductsUpdate = () => {
                                 </button>
                             </div>
                         </form>
-                        <ProductVersionsContainer
+
+                        {/* <ProductVersionsContainer
                             initialVersions={product?.data?.productVersions}
                             productId={id}
-                        />
+                        /> */}
                     </div>
                 </div>
             </div>

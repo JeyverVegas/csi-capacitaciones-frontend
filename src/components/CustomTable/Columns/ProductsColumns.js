@@ -30,6 +30,10 @@ const ProductsColumns = [
         Component: ({ provider }) => provider?.name
     },
     {
+        Label: () => 'Version',
+        Component: ({ value }) => <span style={{ fontSize: '25px' }}>{value?.parentId ? '✔️' : '🚫'}</span>
+    },
+    {
         Label: () => 'Repuesto',
         Component: ({ value }) => <span style={{ fontSize: '25px' }}>{value?.isReplacement ? '✔️' : '🚫'}</span>
     },

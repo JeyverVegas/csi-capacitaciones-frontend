@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Toggle from "react-toggle";
 import ProductsColumns from "../../../components/CustomTable/Columns/ProductsColumns";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
+import useCategories from "../../../hooks/useCategories";
 import useProducts from "../../../hooks/useProducts";
 import useServices from "../../../hooks/useServices";
 import { mainPermissions } from "../../../util/MenuLinks";
@@ -17,7 +19,24 @@ const Products = () => {
 
     const [filters, setFilters] = useState({
         page: 1,
-        serviceIds: ''
+        serviceIds: '',
+        childrensOnly: false,
+        isReplacement: false,
+        code: '',
+        categoryId: '',
+        subCategoryId: ''
+    });
+
+    const [categoriesFilters, setCategoriesFilters] = useState({
+        name: '',
+        page: 1,
+        perPage: 200,
+        parentsOnly: true
+    });
+
+    const [subCategoriesFilters, setSubCategoriesFilters] = useState({
+        page: 1,
+        perPage: 200
     });
 
     const [servicesFilters, setServicesFilters] = useState({
@@ -31,6 +50,10 @@ const Products = () => {
     const [{ products, total, numberOfPages, error: productsError, loading }, getProducts] = useProducts({ params: { ...filters } }, { useCache: false });
 
     const [{ services, loading: servicesLoading }, getServices] = useServices({ params: { ...servicesFilters } }, { useCache: false });
+
+    const [{ categories, loading: loadingCategories }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
+
+    const [{ categories: subCategories, loading: subCategoriesLoading }, getSubCategories] = useCategories({ options: { manual: true, useCache: false } });
 
     const [{ error: deleteError, loading: deleteLoading }, deleteProducts] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
@@ -48,11 +71,35 @@ const Products = () => {
     }, [])
 
     useEffect(() => {
+        setFilters((oldData) => {
+            return {
+                ...oldData,
+                subCategoryId: ''
+            }
+        });
+        getSubCategories({
+            params: {
+                ...subCategoriesFilters,
+                parentId: filters?.categoryId
+            }
+        });
+
+    }, [filters?.categoryId]);
+
+    useEffect(() => {
+        getCategories({
+            params: {
+                ...categoriesFilters
+            }
+        });
+    }, [categoriesFilters])
+
+    useEffect(() => {
         setLoading?.({
             show: deleteLoading,
             message: 'Eliminando Productos'
         })
-    }, [deleteLoading])
+    }, [deleteLoading]);
 
     useEffect(() => {
         if (deleteError) {
@@ -136,7 +183,8 @@ const Products = () => {
         setFilters((oldFilters) => {
             return {
                 ...oldFilters,
-                [e.target.name]: e.target.value
+                [e.target.name]: e.target.value,
+                page: 1
             }
         });
     }
@@ -159,7 +207,49 @@ const Products = () => {
                 }
             </div>
             <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-4">
+                    <div className="card p-4">
+                        <label>
+                            Codigo
+                        </label>
+                        <input type="text" name="code" value={filters?.code} onChange={handleChange} className="form-control" />
+                    </div>
+                </div>
+                <div className="col-md-4">
+                    <div className="card p-4">
+                        <label>
+                            Categoria
+                        </label>
+                        <select className="form-control" disabled={loadingCategories} name="categoryId" value={filters?.categoryId} onChange={handleChange}>
+                            <option value="">
+                                Seleccione una categoria
+                            </option>
+                            {
+                                categories?.map?.((category, i) => {
+                                    return <option key={i} value={category?.id}>{category?.name}</option>
+                                })
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div className="col-md-4">
+                    <div className="card p-4">
+                        <label>
+                            Sub-Categoria
+                        </label>
+                        <select className="form-control" disabled={subCategoriesLoading || !filters?.categoryId} name="subCategoryId" value={filters?.subCategoryId} onChange={handleChange}>
+                            <option value="">
+                                Seleccione una sub categoria
+                            </option>
+                            {
+                                subCategories?.map?.((category, i) => {
+                                    return <option key={i} value={category?.id}>{category?.name}</option>
+                                })
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div className="col-md-4">
                     <div className="card p-4">
                         <label>
                             Servicio
@@ -176,7 +266,21 @@ const Products = () => {
                         </select>
                     </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-4">
+                    <div className="card p-4">
+                        <label>
+                            Solo Versiones
+                        </label>
+                        <Toggle onChange={() => { setFilters((oldfilters) => { return { ...oldfilters, childrensOnly: !oldfilters?.childrensOnly, page: 1 } }) }} checked={filters?.childrensOnly} />
+                    </div>
+                </div>
+                <div className="col-md-4">
+                    <div className="card p-4">
+                        <label>
+                            Solo Repuestos
+                        </label>
+                        <Toggle onChange={() => { setFilters((oldfilters) => { return { ...oldfilters, isReplacement: !oldfilters?.isReplacement, page: 1 } }) }} checked={filters?.isReplacement} />
+                    </div>
                 </div>
             </div>
             <CustomTable
