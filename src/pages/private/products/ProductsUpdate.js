@@ -11,7 +11,6 @@ import useAxios from "../../../hooks/useAxios";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import SystemInfo from "../../../util/SystemInfo";
 import useServices from "../../../hooks/useServices";
-import ProductVersionsContainer from "../../../components/Forms/ProductVersionsContainer";
 import Toggle from "react-toggle";
 import useProducts from "../../../hooks/useProducts";
 import { Button, Modal } from "react-bootstrap";
@@ -44,7 +43,7 @@ const ProductsUpdate = () => {
     })
 
     const [productsFilters, setProductsFilters] = useState({
-        perPage: 100,
+        perPage: 10,
         page: 1,
         parentsOnly: 'true',
         exceptId: id
@@ -57,10 +56,17 @@ const ProductsUpdate = () => {
 
     const [categoriesFilters, setCategoriesFilters] = useState({
         name: '',
-        page: 1
+        page: 1,
+        parentsOnly: true,
+        perPage: 100
     });
 
     const [subCategoriesFilters, setSubCategoriesFilters] = useState({
+        page: 1,
+        perPage: 200
+    });
+
+    const [modalSubCategoriesFilters, setModalSubCategoriesFilters] = useState({
         page: 1,
         perPage: 200
     });
@@ -101,6 +107,8 @@ const ProductsUpdate = () => {
 
     const [{ categories: subCategories, loading: subCategoriesLoading }, getSubCategories] = useCategories({ options: { manual: true, useCache: false } });
 
+    const [{ categories: modalSubCategories, loading: modalSubCategoriesLoading }, getModalSubCategories] = useCategories({ options: { manual: true, useCache: false } });
+
     const [{ services, error: servicesError, loading: servicesLoading }, getServices] = useServices({ axiosConfig: { params: { ...servicesFilters } }, options: { useCache: false } });
 
     const [{ data: product, loading: productLoading }, getProduct] = useAxios({ url: `/products/${id}` }, { useCache: false });
@@ -134,15 +142,6 @@ const ProductsUpdate = () => {
                 }
             });
 
-            if (category) {
-                setCategoriesFilters((oldCategoriesFilters) => {
-                    return {
-                        ...oldCategoriesFilters,
-                        name: category?.name
-                    }
-                });
-            }
-
             if (provider) {
                 setFilters((oldFilters) => {
                     return {
@@ -174,6 +173,21 @@ const ProductsUpdate = () => {
             }
         });
     }, [data?.categoryId])
+
+    useEffect(() => {
+        setProductsFilters((oldProductsFilters) => {
+            return {
+                ...oldProductsFilters,
+                subCategoryId: ''
+            }
+        })
+        getModalSubCategories({
+            params: {
+                ...modalSubCategoriesFilters,
+                parentId: productsFilters?.categoryId,
+            }
+        });
+    }, [productsFilters?.categoryId])
 
     useEffect(() => {
         setLoading?.({
@@ -744,10 +758,6 @@ const ProductsUpdate = () => {
                                     </div>
                             }
                         </div>
-                        {/* <ProductVersionsContainer
-                            initialVersions={product?.data?.productVersions}
-                            productId={id}
-                        /> */}
                     </div>
                 </div>
             </div>
@@ -762,6 +772,90 @@ const ProductsUpdate = () => {
                     </Button>
                 </Modal.Header>
                 <Modal.Body>
+                    <div className="row">
+                        <div className="col-md-4">
+                            <div>
+                                <label style={{ marginRight: '10px' }}>Nombre:</label>
+                                <input
+                                    placeholder="Escriba el nombre..."
+                                    className="form-control"
+                                    value={productsFilters?.name}
+                                    type="text"
+                                    onChange={(e) => {
+                                        setProductsFilters((oldFilters) => {
+                                            return {
+                                                ...oldFilters,
+                                                name: e.target.value,
+                                                page: 1
+                                            }
+                                        })
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div>
+                                <label>
+                                    Categoria
+                                </label>
+                                <select
+                                    className="form-control"
+                                    disabled={loadingCategories}
+                                    name="categoryId"
+                                    value={productsFilters?.categoryId}
+                                    onChange={(e) => {
+                                        setProductsFilters((oldFilters) => {
+                                            return {
+                                                ...oldFilters,
+                                                [e.target.name]: e.target.value,
+                                                page: 1
+                                            }
+                                        })
+                                    }}
+                                >
+                                    <option value="">
+                                        Seleccione una categoria
+                                    </option>
+                                    {
+                                        categories?.map?.((category, i) => {
+                                            return <option key={i} value={category?.id}>{category?.name}</option>
+                                        })
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div>
+                                <label>
+                                    Sub-Categoria
+                                </label>
+                                <select
+                                    className="form-control"
+                                    disabled={modalSubCategoriesLoading || !productsFilters?.categoryId}
+                                    name="subCategoryId"
+                                    value={filters?.subCategoryId}
+                                    onChange={(e) => {
+                                        setProductsFilters((oldFilters) => {
+                                            return {
+                                                ...oldFilters,
+                                                [e.target.name]: e.target.value,
+                                                page: 1
+                                            }
+                                        })
+                                    }}
+                                >
+                                    <option value="">
+                                        Seleccione una sub categoria
+                                    </option>
+                                    {
+                                        modalSubCategories?.map?.((category, i) => {
+                                            return <option key={i} value={category?.id}>{category?.name}</option>
+                                        })
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <CustomTable
                         onSelectValue={handleProduct}
                         loading={loadingProducts}

@@ -61,6 +61,11 @@ const ProductsCreate = () => {
         perPage: 200
     });
 
+    const [modalSubCategoriesFilters, setModalSubCategoriesFilters] = useState({
+        page: 1,
+        perPage: 200
+    });
+
     const [showProductsModal, setShowProductsModal] = useState(false);
 
     const [data, setData] = useState({
@@ -93,6 +98,8 @@ const ProductsCreate = () => {
     const [{ categories, loading: loadingCategories }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
 
     const [{ categories: subCategories, loading: subCategoriesLoading }, getSubCategories] = useCategories({ options: { manual: true, useCache: false } });
+
+    const [{ categories: modalSubCategories, loading: modalSubCategoriesLoading }, getModalSubCategories] = useCategories({ options: { manual: true, useCache: false } });
 
     const [{ data: createData, loading: createLoading }, createProduct] = useAxios({ url: `/products`, method: 'POST' }, { manual: true, useCache: false });
 
@@ -194,12 +201,27 @@ const ProductsCreate = () => {
     }, [servicesFilters])
 
     useEffect(() => {
+        setProductsFilters((oldProductsFilters) => {
+            return {
+                ...oldProductsFilters,
+                subCategoryId: ''
+            }
+        })
+        getModalSubCategories({
+            params: {
+                ...modalSubCategoriesFilters,
+                parentId: productsFilters?.categoryId,
+            }
+        });
+    }, [productsFilters?.categoryId])
+
+    useEffect(() => {
         getCategories({
             params: {
                 ...categoriesFilters
             }
         });
-    }, [categoriesFilters])
+    }, [categoriesFilters]);
 
     useEffect(() => {
         customMenuToggle(true);
@@ -687,7 +709,7 @@ const ProductsCreate = () => {
                                 </label>
                                 <select
                                     className="form-control"
-                                    disabled={subCategoriesLoading || !productsFilters?.categoryId}
+                                    disabled={modalSubCategoriesLoading || !productsFilters?.categoryId}
                                     name="subCategoryId"
                                     value={filters?.subCategoryId}
                                     onChange={(e) => {
@@ -704,7 +726,7 @@ const ProductsCreate = () => {
                                         Seleccione una sub categoria
                                     </option>
                                     {
-                                        subCategories?.map?.((category, i) => {
+                                        modalSubCategories?.map?.((category, i) => {
                                             return <option key={i} value={category?.id}>{category?.name}</option>
                                         })
                                     }
