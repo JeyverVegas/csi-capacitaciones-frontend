@@ -220,9 +220,13 @@ const StepFour = () => {
             return;
         }
 
-        const product = products.find(x => x.code === e.draggableId);
 
-        const orderHasProduct = data?.orderItems?.find(x => x.code === product.code);
+
+        const product = products.find(x => x.id == e.draggableId);
+
+        console.log(product);
+
+        const orderHasProduct = data?.orderItems?.find(x => x.id === product.id);
 
         if (orderHasProduct) {
             alert('El producto ye se encuentra en el pedido.');
@@ -235,12 +239,11 @@ const StepFour = () => {
                 orderItems: [
                     ...oldData?.orderItems,
                     {
+                        id: product?.id,
                         name: product?.name,
                         quantity: 1,
                         price: product?.price,
                         code: product?.code,
-                        providerId: product?.provider?.id,
-                        productType: 'product'
                     }
                 ]
             }
@@ -373,8 +376,8 @@ const StepFour = () => {
         }
     }
 
-    const orderHasProduct = ($code) => {
-        const itemIndex = data?.orderItems?.findIndex(x => x.code === $code);
+    const orderHasProduct = ($id) => {
+        const itemIndex = data?.orderItems?.findIndex(x => x.id === $id);
 
         if (itemIndex >= 0) {
             return { have: true, index: itemIndex };
@@ -448,9 +451,8 @@ const StepFour = () => {
                 isReplacement: isReplacement ? 1 : 0,
                 orderItems: orderItems?.map((item, i) => {
                     return {
-                        productCode: item?.code,
+                        productId: item?.id,
                         quantity: item?.quantity,
-                        productType: item?.productType
                     }
                 })
             }
@@ -465,8 +467,7 @@ const StepFour = () => {
                 ...oldData,
                 orderItems: template?.items?.map((item) => {
                     return {
-                        productType: item?.productType,
-                        code: item?.code,
+                        productId: item?.id,
                         quantity: item?.quantity,
                         name: item?.name,
                         price: item?.price
@@ -608,7 +609,7 @@ const StepFour = () => {
                                             currentProducts?.length > 0 ?
                                                 currentProducts?.map((product, i) => {
                                                     return (
-                                                        <Draggable key={i} draggableId={product?.code} index={i}>
+                                                        <Draggable key={i} draggableId={`${product?.id}`} index={i}>
                                                             {(draggableProvided) => <div
                                                                 {...draggableProvided?.draggableProps}
                                                                 ref={draggableProvided?.innerRef}
@@ -872,7 +873,7 @@ const StepFour = () => {
                                                     <td>
                                                         <input
                                                             onChange={() => { handleToggleVersion(productVersion) }}
-                                                            checked={orderHasProduct(productVersion?.code)}
+                                                            checked={orderHasProduct(productVersion?.id)}
                                                             type={'checkbox'}
                                                         />
                                                     </td>
