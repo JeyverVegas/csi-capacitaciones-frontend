@@ -72,40 +72,50 @@ const FeaturesUpdate = () => {
     }
 
     return (
-        <div className="card" style={{ width: '100%' }}>
-            <div className="card-body">
-                <div className="basic-form">
-                    <form onSubmit={handleSubmit}>
-                        <div className="row mb-5">
-                            <div className="form-group mb-3 col-md-12">
-                                <div className="mb-4">
-                                    <label>
-                                        <h5>
-                                            Nombre
-                                        </h5>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Nombre"
-                                        name="name"
-                                        autoFocus
-                                        value={data?.name}
-                                        onChange={handleChange}
-                                    />
+        <div>
+            <div className="text-end">
+                <Link to={'/caracteristicas'} className="mx-2 my-2 btn btn-primary">
+                    volver al listado
+                </Link>
+                <Link to={'/caracteristicas/crear'} className="mx-2 my-2 btn btn-primary">
+                    Crear nueva
+                </Link>
+            </div>
+            <div className="card" style={{ width: '100%' }}>
+                <div className="card-body">
+                    <div className="basic-form">
+                        <form onSubmit={handleSubmit}>
+                            <div className="row mb-5">
+                                <div className="form-group mb-3 col-md-12">
+                                    <div className="mb-4">
+                                        <label>
+                                            <h5>
+                                                Nombre
+                                            </h5>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Nombre"
+                                            name="name"
+                                            autoFocus
+                                            value={data?.name}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="mb-3 d-flex justify-content-end">
-                            <Link to={`/caracteristicas`} className="btn btn-danger mx-2">
-                                Volver
-                            </Link>
-                            <button type="submit" className="btn btn-primary mx-2">
-                                Actualizar
-                            </button>
-                        </div>
-                    </form>
-                    <FeatureOptionsForm initialOptions={featureData?.data?.options} featureId={id} />
+                            <div className="mb-3 d-flex justify-content-end">
+                                <Link to={`/caracteristicas`} className="btn btn-danger mx-2">
+                                    Volver
+                                </Link>
+                                <button type="submit" className="btn btn-primary mx-2">
+                                    Actualizar
+                                </button>
+                            </div>
+                        </form>
+                        <FeatureOptionsForm initialOptions={featureData?.data?.options} featureId={id} />
+                    </div>
                 </div>
             </div>
         </div>

@@ -17,6 +17,7 @@ import useProducts from "../../../hooks/useProducts";
 import { Button, Modal } from "react-bootstrap";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import ShortProductsColumns from "../../../components/CustomTable/Columns/ShortProductsColumns";
+import useFeatures from "../../../hooks/useFeatures";
 
 
 
@@ -35,6 +36,11 @@ const ProductsUpdate = () => {
     const [servicesFilters, setServicesFilters] = useState({
         perPage: 200,
         page: 1
+    })
+
+    const [featuresFilters, setFeaturesFilters] = useState({
+        page: 1,
+        perPage: 100
     })
 
     const [productsFilters, setProductsFilters] = useState({
@@ -75,7 +81,8 @@ const ProductsUpdate = () => {
         isReplacement: false,
         _method: 'PUT',
         parentId: [],
-        parent: ''
+        parent: '',
+        productFeatureOptionIds: []
     });
 
     const [imagePreview, setImagePreview] = useState('');
@@ -85,6 +92,8 @@ const ProductsUpdate = () => {
     const [dataSheetPreview, setDataSheetPreview] = useState('');
 
     const [{ providers, total, numberOfPages, size, error, loading }, getProviders] = useProviders({ options: { manual: true, useCache: false } });
+
+    const [{ features, total: featuresTotal, numberOfPages: featuresPages, loading: featuresLoading }, getFeatures] = useFeatures({ options: { manual: true, useCache: false } });
 
     const [{ products, numberOfPages: productsPages, loading: loadingProducts, total: productsTotal }, getProducts] = useProducts({ options: { manual: true, useCache: false } });
 
@@ -101,14 +110,27 @@ const ProductsUpdate = () => {
     useEffect(() => {
         if (product) {
 
-            const { parentId, category, subCategory, certificate, dataSheet, createdAt, id, imagePath, provider, ...rest } = product?.data;
+            const {
+                parentId,
+                features,
+                category,
+                subCategory,
+                certificate,
+                dataSheet,
+                createdAt,
+                id,
+                imagePath,
+                provider,
+                ...rest
+            } = product?.data;
             setData((oldData) => {
                 return {
                     ...oldData,
                     ...rest,
                     categoryId: category?.id || '',
                     subCategoryId: subCategory?.id || '',
-                    parentId: parentId ? [parentId] : []
+                    parentId: parentId ? [parentId] : [],
+                    productFeatureOptionIds: product?.data?.features?.map(feature => feature?.id)
                 }
             });
 
@@ -187,6 +209,14 @@ const ProductsUpdate = () => {
     }, [filters]);
 
     useEffect(() => {
+        getFeatures({
+            params: {
+                ...featuresFilters
+            }
+        });
+    }, [featuresFilters]);
+
+    useEffect(() => {
         getServices({
             params: {
                 ...servicesFilters
@@ -211,7 +241,7 @@ const ProductsUpdate = () => {
 
         const formData = new FormData();
 
-        const { parent, parentId, productVersions, serviceIds, ...rest } = data;
+        const { parent, parentId, productVersions, productFeatureOptionIds, serviceIds, ...rest } = data;
 
         Object.keys(rest).forEach((key, i) => {
             if (key !== 'id') {
@@ -238,6 +268,10 @@ const ProductsUpdate = () => {
         serviceIds?.forEach((serviceId, key) => {
             formData.append(`serviceIds[${key}]`, serviceId);
         });
+
+        productFeatureOptionIds?.forEach((featureId, i) => {
+            formData?.append(`productFeatureOptionIds[${i}]`, featureId);
+        })
 
         if (parentId?.length > 0) {
             formData?.append('parentId', parentId[0]);
@@ -280,9 +314,9 @@ const ProductsUpdate = () => {
 
     const handleChange = (e) => {
         if (e.target.type === 'checkbox') {
-            const value = data[e.target.name]?.includes(e.target.value);
+            const value = data[e.target.name]?.includes(Number(e.target.value));
             if (value) {
-                const newValues = data[e.target.name]?.filter(n => n !== e.target.value);
+                const newValues = data[e.target.name]?.filter(n => n !== Number(e.target.value));
                 setData((oldData) => {
                     return {
                         ...oldData,
@@ -293,7 +327,7 @@ const ProductsUpdate = () => {
                 setData((oldData) => {
                     return {
                         ...oldData,
-                        [e.target.name]: [...data[e.target.name], e.target.value]
+                        [e.target.name]: [...data[e.target.name], Number(e.target.value)]
                     }
                 });
             }
@@ -550,6 +584,55 @@ const ProductsUpdate = () => {
                                         Descripción
                                     </label>
                                     <textarea name="description" onChange={handleChange} value={data?.description} className="form-control" style={{ height: 120 }} rows={8}></textarea>
+                                </div>
+                                <div className="mt-4">
+                                    <h2>
+                                        Caracteristicas
+                                    </h2>
+                                    <div className="row">
+                                        {
+                                            features?.length > 0 ?
+                                                features?.map((feature, i) => {
+                                                    return (
+                                                        <div className="col-md-3" key={i}>
+                                                            <h5>
+                                                                {feature?.name}
+                                                            </h5>
+                                                            <div
+                                                                className="custom-scrollbar scrollbar-primary"
+                                                                style={{ maxHeight: '150px', overflowY: 'auto' }}
+                                                            >
+                                                                {
+                                                                    feature?.options?.map((option, i) => {
+                                                                        return (
+                                                                            <div key={i}>
+                                                                                <input
+                                                                                    value={option?.id}
+                                                                                    type="checkbox"
+                                                                                    name="productFeatureOptionIds"
+                                                                                    style={{ cursor: 'pointer' }}
+                                                                                    checked={data?.productFeatureOptionIds?.includes(option?.id)}
+                                                                                    onChange={handleChange}
+                                                                                    className="mx-2"
+                                                                                    id={`feature-options-${option?.id}`}
+                                                                                />
+                                                                                <label htmlFor={`feature-options-${option?.id}`} style={{ cursor: 'pointer' }}>
+                                                                                    {option?.name}
+                                                                                </label>
+                                                                            </div>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })
+                                                :
+                                                <div className="text-center">
+                                                    No hay Caracteristicas.
+                                                </div>
+                                        }
+                                    </div>
                                 </div>
                                 <div className="form-group mb-3 col-md-12 mt-4">
                                     <h6>Servicios</h6>

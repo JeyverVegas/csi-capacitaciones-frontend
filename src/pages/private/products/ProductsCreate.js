@@ -14,6 +14,8 @@ import useProducts from "../../../hooks/useProducts";
 import { Button, Modal } from "react-bootstrap";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import ShortProductsColumns from "../../../components/CustomTable/Columns/ShortProductsColumns";
+import useFeatures from "../../../hooks/useFeatures";
+import FeatureOptionsContainer from "../../../components/FeaturesComponents/FeatureOptionsContainer";
 
 
 
@@ -38,7 +40,13 @@ const ProductsCreate = () => {
     const [productsFilters, setProductsFilters] = useState({
         perPage: 100,
         page: 1,
-        parentsOnly: true
+        parentsOnly: true,
+        name: ''
+    });
+
+    const [featuresFilters, setFeaturesFilters] = useState({
+        page: 1,
+        perPage: 100
     })
 
     const [categoriesFilters, setCategoriesFilters] = useState({
@@ -70,12 +78,15 @@ const ProductsCreate = () => {
         serviceIds: [],
         isReplacement: false,
         parentId: [],
-        parent: ''
+        parent: '',
+        productFeatureOptionIds: []
     });
 
     const { openMenuToggle, customMenuToggle, sideBarStyle } = useTheme();
 
     const [{ providers, total, numberOfPages, size, error, loading }, getProviders] = useProviders({ options: { manual: true, useCache: false } });
+
+    const [{ features, total: featuresTotal, numberOfPages: featuresPages, loading: featuresLoading }, getFeatures] = useFeatures({ options: { manual: true, useCache: false } });
 
     const [{ products, numberOfPages: productsPages, loading: loadingProducts, total: productsTotal }, getProducts] = useProducts({ options: { manual: true, useCache: false } });
 
@@ -151,6 +162,14 @@ const ProductsCreate = () => {
     }, [createData])
 
     useEffect(() => {
+        getFeatures({
+            params: {
+                ...featuresFilters
+            }
+        });
+    }, [featuresFilters]);
+
+    useEffect(() => {
         getProviders({
             params: {
                 ...filters
@@ -191,7 +210,7 @@ const ProductsCreate = () => {
 
         const formData = new FormData();
 
-        const { parent, parentId, ...rest } = data;
+        const { parent, parentId, productFeatureOptionIds, ...rest } = data;
 
         Object.keys(rest).forEach((key, i) => {
             if (key !== 'id') {
@@ -213,6 +232,10 @@ const ProductsCreate = () => {
                     }
                 }
             }
+        });
+
+        productFeatureOptionIds?.forEach((featureId, i) => {
+            formData?.append(`productFeatureOptionIds[${i}]`, featureId);
         })
 
         if (parentId?.length > 0) {
@@ -239,11 +262,10 @@ const ProductsCreate = () => {
     }
 
     const handleChange = (e) => {
-
         if (e.target.type === 'checkbox') {
-            const value = data[e.target.name]?.includes(e.target.value);
+            const value = data[e.target.name]?.includes(Number(e.target.value));
             if (value) {
-                const newValues = data[e.target.name]?.filter(n => n !== e.target.value);
+                const newValues = data[e.target.name]?.filter(n => n !== Number(e.target.value));
                 setData((oldData) => {
                     return {
                         ...oldData,
@@ -254,7 +276,7 @@ const ProductsCreate = () => {
                 setData((oldData) => {
                     return {
                         ...oldData,
-                        [e.target.name]: [...data[e.target.name], e.target.value]
+                        [e.target.name]: [...data[e.target.name], Number(e.target.value)]
                     }
                 });
             }
@@ -490,6 +512,55 @@ const ProductsCreate = () => {
                                 </label>
                                 <textarea name="description" onChange={handleChange} className="form-control" style={{ height: 120 }} rows={8}></textarea>
                             </div>
+                            <div className="mt-4">
+                                <h2>
+                                    Caracteristicas
+                                </h2>
+                                <div className="row">
+                                    {
+                                        features?.length > 0 ?
+                                            features?.map((feature, i) => {
+                                                return (
+                                                    <div className="col-md-3" key={i}>
+                                                        <h5>
+                                                            {feature?.name}
+                                                        </h5>
+                                                        <div
+                                                            className="custom-scrollbar scrollbar-primary"
+                                                            style={{ maxHeight: '150px', overflowY: 'auto' }}
+                                                        >
+                                                            {
+                                                                feature?.options?.map((option, i) => {
+                                                                    return (
+                                                                        <div key={i}>
+                                                                            <input
+                                                                                value={option?.id}
+                                                                                type="checkbox"
+                                                                                name="productFeatureOptionIds"
+                                                                                style={{ cursor: 'pointer' }}
+                                                                                checked={data?.productFeatureOptionIds?.includes(option?.id)}
+                                                                                onChange={handleChange}
+                                                                                className="mx-2"
+                                                                                id={`feature-options-${option?.id}`}
+                                                                            />
+                                                                            <label htmlFor={`feature-options-${option?.id}`} style={{ cursor: 'pointer' }}>
+                                                                                {option?.name}
+                                                                            </label>
+                                                                        </div>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                            :
+                                            <div className="text-center">
+                                                No hay Caracteristicas.
+                                            </div>
+                                    }
+                                </div>
+                            </div>
                             <div className="form-group mb-3 col-md-12 mt-4">
                                 <h6>Servicios</h6>
                                 <p>Seleccione los servicios a los cuales Pertenece el producto.</p>
@@ -557,6 +628,90 @@ const ProductsCreate = () => {
                     </Button>
                 </Modal.Header>
                 <Modal.Body>
+                    <div className="row">
+                        <div className="col-md-4">
+                            <div>
+                                <label style={{ marginRight: '10px' }}>Nombre:</label>
+                                <input
+                                    placeholder="Escriba el nombre..."
+                                    className="form-control"
+                                    value={productsFilters?.name}
+                                    type="text"
+                                    onChange={(e) => {
+                                        setProductsFilters((oldFilters) => {
+                                            return {
+                                                ...oldFilters,
+                                                name: e.target.value,
+                                                page: 1
+                                            }
+                                        })
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div>
+                                <label>
+                                    Categoria
+                                </label>
+                                <select
+                                    className="form-control"
+                                    disabled={loadingCategories}
+                                    name="categoryId"
+                                    value={productsFilters?.categoryId}
+                                    onChange={(e) => {
+                                        setProductsFilters((oldFilters) => {
+                                            return {
+                                                ...oldFilters,
+                                                [e.target.name]: e.target.value,
+                                                page: 1
+                                            }
+                                        })
+                                    }}
+                                >
+                                    <option value="">
+                                        Seleccione una categoria
+                                    </option>
+                                    {
+                                        categories?.map?.((category, i) => {
+                                            return <option key={i} value={category?.id}>{category?.name}</option>
+                                        })
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div>
+                                <label>
+                                    Sub-Categoria
+                                </label>
+                                <select
+                                    className="form-control"
+                                    disabled={subCategoriesLoading || !productsFilters?.categoryId}
+                                    name="subCategoryId"
+                                    value={filters?.subCategoryId}
+                                    onChange={(e) => {
+                                        setProductsFilters((oldFilters) => {
+                                            return {
+                                                ...oldFilters,
+                                                [e.target.name]: e.target.value,
+                                                page: 1
+                                            }
+                                        })
+                                    }}
+                                >
+                                    <option value="">
+                                        Seleccione una sub categoria
+                                    </option>
+                                    {
+                                        subCategories?.map?.((category, i) => {
+                                            return <option key={i} value={category?.id}>{category?.name}</option>
+                                        })
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <CustomTable
                         onSelectValue={handleProduct}
                         loading={loadingProducts}
