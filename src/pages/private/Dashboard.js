@@ -11,12 +11,6 @@ const Dashboard = () => {
 
     const { chnageSidebarColor, colors, changePrimaryColor, setDemoTheme } = useTheme();
 
-    const [{ categories, total, numberOfPages, size, error, loading }, getCategories] = useCategories();
-
-    useEffect(() => {
-        console.log(categories);
-    }, [categories])
-
     return (
         <div>
             {/* <div>

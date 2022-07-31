@@ -43,7 +43,9 @@ const StepFour = () => {
         price: '',
         page: 1,
         subCategoryId: '',
-        categoryId: ''
+        categoryId: '',
+        parentsOnly: true,
+        withChildren: true
     });
 
     const [categoriesFilters, setCategoriesFilters] = useState({
@@ -331,14 +333,13 @@ const StepFour = () => {
     }
 
     const showProductDetails = (product) => {
-        console.log(product);
         setDetailProduct(product);
         setShowDetails(true);
     }
 
     const handleToggleVersion = (productVersion) => {
 
-        const res = orderHasProduct(productVersion?.code);
+        const res = orderHasProduct(productVersion?.id);
 
         if (res?.have) {
             data?.orderItems?.splice(res?.index, 1);
@@ -364,11 +365,11 @@ const StepFour = () => {
                     orderItems: [
                         ...oldData?.orderItems,
                         {
-                            name: `${detailProduct?.name} ${productVersion?.name}`,
+                            name: `${productVersion?.name}`,
                             quantity: 1,
-                            price: productVersion?.price > 0 ? productVersion?.price : detailProduct?.price,
+                            price: productVersion?.price,
                             code: productVersion?.code,
-                            productType: 'productVersion'
+                            id: productVersion?.id
                         }
                     ]
                 }
@@ -857,23 +858,23 @@ const StepFour = () => {
                             </thead>
                             <tbody>
                                 {
-                                    detailProduct?.productVersions?.length > 0 ?
-                                        detailProduct?.productVersions?.map?.((productVersion, i) => {
+                                    detailProduct?.children?.length > 0 ?
+                                        detailProduct?.children?.map?.((childProduct, i) => {
                                             return (
                                                 <tr key={i}>
                                                     <td>
-                                                        <img style={{ maxWidth: '50px', height: '50px' }} src={`${SystemInfo?.host}${productVersion?.imagePath || notImage}`} />
+                                                        <img style={{ maxWidth: '50px', height: '50px' }} src={`${SystemInfo?.host}${childProduct?.imagePath || notImage}`} />
                                                     </td>
                                                     <td>
-                                                        {productVersion?.name}
+                                                        {childProduct?.name}
                                                     </td>
                                                     <td>
-                                                        {productVersion?.code}
+                                                        {childProduct?.code}
                                                     </td>
                                                     <td>
                                                         <input
-                                                            onChange={() => { handleToggleVersion(productVersion) }}
-                                                            checked={orderHasProduct(productVersion?.id)}
+                                                            onChange={() => { handleToggleVersion(childProduct) }}
+                                                            checked={orderHasProduct(childProduct?.id)}
                                                             type={'checkbox'}
                                                         />
                                                     </td>
