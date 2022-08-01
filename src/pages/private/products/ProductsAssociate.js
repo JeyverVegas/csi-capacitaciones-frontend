@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
+import Toggle from "react-toggle";
 import useAxios from "../../../hooks/useAxios";
 import useServices from "../../../hooks/useServices";
 import alertEmojis from "../../../util/AlertsEmojis";
@@ -10,7 +11,8 @@ const ProductsAssociate = () => {
 
     const [data, setData] = useState({
         serviceIds: [],
-        file: null
+        file: null,
+        action: true
     });
 
     const [productCodes, setProductCodes] = useState({
@@ -110,6 +112,8 @@ const ProductsAssociate = () => {
             formData.append(`serviceIds[${i}]`, serviceId);
         });
 
+        formData?.append('action', data?.action ? 'connect' : 'disconnect');
+
         sendExcel({ data: formData });
     }
 
@@ -124,16 +128,34 @@ const ProductsAssociate = () => {
         });
     }
 
+    const handleAction = () => {
+        setData((oldData) => {
+            return {
+                ...oldData,
+                action: !oldData?.action
+            }
+        });
+    }
+
     return (
         <div>
             <div className="card p-5 text-end">
-                <h3 className="text-start">Archivo excel</h3>
-                <input
-                    name="file"
-                    onChange={handleChange}
-                    type="file"
-                    accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                />
+                <div className="row">
+                    <div className="col-md-6">
+                        <h3 className="text-start">Archivo excel</h3>
+                        <input
+                            name="file"
+                            onChange={handleChange}
+                            type="file"
+                            accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        />
+                    </div>
+                    <div className="col-md-6 text-start">
+                        <h3 className="text-start">Acción: {data?.action ? 'Asociar' : 'Desligar'}</h3>
+
+                        <Toggle onChange={handleAction} checked={data?.action} />
+                    </div>
+                </div>
                 <h3 className="text-start mt-5">Servicios</h3>
                 <div className="text-start">
                     <div className="form-check form-check-inline">
