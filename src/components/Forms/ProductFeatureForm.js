@@ -136,8 +136,8 @@ const ProductFeatureForm = ({
 
     const handleDeleteAll = () => {
         swal({
-            title: "¿Estas Seguro?",
-            text: "¿Deseas eliminar esta caracteristica?",
+            title: "¿Estás Seguro?",
+            text: "¿Deseas eliminar esta característica?",
             icon: "warning",
             buttons: true,
             dangerMode: true,
@@ -179,10 +179,10 @@ const ProductFeatureForm = ({
 
                     {
                         !selectedFeature?.name ?
-                            <span style={{ color: 'red' }}>Seleccione una caracteristica primero.</span>
+                            <span style={{ color: 'red' }}>Seleccione una característica primero.</span>
                             :
                             selectedFeature?.options?.length === 0 ?
-                                <span style={{ color: 'red' }}>Esta caracteristica no tiene valores...</span>
+                                <span style={{ color: 'red' }}>Está característica no tiene valores...</span>
                                 :
                                 selectedFeaturesOptions?.length === 0 ?
                                     <span style={{ color: 'red' }}>Seleccione una opción...</span>

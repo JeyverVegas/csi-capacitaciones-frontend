@@ -50,7 +50,7 @@ const NewOptionRow = ({ defaultDataOption, featureId, onDelete, index, executeSa
             setShowAlert({
                 message: '',
                 severity: 'success',
-                title: 'Accion Exitosa',
+                title: 'Acción Exitosa',
                 show: true
             })
         }
@@ -103,8 +103,8 @@ const NewOptionRow = ({ defaultDataOption, featureId, onDelete, index, executeSa
 
     const handleDeleteValue = () => {
         swal({
-            title: "¿Estas Seguro?",
-            text: "¿Deseas eliminar esta opcion?",
+            title: "¿Estás Seguro?",
+            text: "¿Deseas eliminar esta opción?",
             icon: "warning",
             buttons: true,
             dangerMode: true,

@@ -389,7 +389,7 @@ const StepFour = () => {
 
     const handleBack = () => {
         swal({
-            title: "¿Estas Seguro?",
+            title: "¿Estás Seguro?",
             text: "Esto eliminara todo lo que hicistes hasta ahora.",
             icon: "warning",
             buttons: true,
@@ -559,10 +559,10 @@ const StepFour = () => {
                                                 <input type="number" className="form-control" placeholder="Precio..." name="price" onChange={handleChange} value={filters?.price} />
                                             </div>
                                             <div className="col-md-6 form-group mb-2">
-                                                <label>Categoria</label>
+                                                <label>Categoría</label>
                                                 <select disabled={loadingCategories} className="form-control" onChange={handleChange} value={filters?.categoryId} name="categoryId">
                                                     <option value="">
-                                                        Seleccione una opcion
+                                                        Seleccione una opción
                                                     </option>
                                                     {
                                                         categories?.map((category, i) => {
@@ -576,10 +576,10 @@ const StepFour = () => {
                                                 </select>
                                             </div>
                                             <div className="col-md-6 form-group mb-2">
-                                                <label>Sub - Categorias</label>
+                                                <label>Sub - Categorías</label>
                                                 <select disabled={!filters?.categoryId || loadingSubCategories} className="form-control" name="subCategoryId" value={filters?.subCategoryId} onChange={handleChange}>
                                                     <option value="">
-                                                        Seleccione una opcion
+                                                        Seleccione una opción
                                                     </option>
                                                     {
                                                         subCategories?.map((category, i) => {
@@ -626,7 +626,7 @@ const StepFour = () => {
                                                                         </div>
                                                                         <div>
                                                                             <span>
-                                                                                Categoria: <b>{product?.category?.name}</b>
+                                                                                Categoría: <b>{product?.category?.name}</b>
                                                                             </span>
                                                                         </div>
                                                                         <span>
@@ -738,7 +738,7 @@ const StepFour = () => {
                                             <thead>
                                                 <tr>
                                                     <th></th>
-                                                    <th>Codigo</th>
+                                                    <th>Código</th>
                                                     <th>Item</th>
                                                     <th colSpan={2}>Cantidad</th>
                                                     <th>Precio</th>
@@ -829,7 +829,7 @@ const StepFour = () => {
                                 {detailProduct?.description}
                             </div>
                             <div className="form-group my-2">
-                                <b>Codigo: </b>
+                                <b>Código: </b>
                                 {detailProduct?.code}
                             </div>
                             <div className="form-group my-2">
@@ -837,7 +837,7 @@ const StepFour = () => {
                                 ${detailProduct?.price}
                             </div>
                             <div className="form-group my-2">
-                                <b>Categoria: </b>
+                                <b>Categoría: </b>
                                 {detailProduct?.category?.name}
                             </div>
                         </div>
@@ -852,7 +852,7 @@ const StepFour = () => {
                                 <tr>
                                     <th>imagen</th>
                                     <th>Nombre</th>
-                                    <th>Codigo</th>
+                                    <th>Código</th>
                                     <th>Seleccionar</th>
                                 </tr>
                             </thead>

@@ -18,7 +18,7 @@ const ProductVersionsContainer = ({ initialVersions, productId }) => {
 
     const handleAddVersion = () => {
         swal({
-            title: "¿Estas Seguro?",
+            title: "¿Estás Seguro?",
             text: "¿Quieres agregar una nueva versión de este producto?",
             icon: "warning",
             buttons: true,
@@ -43,7 +43,7 @@ const ProductVersionsContainer = ({ initialVersions, productId }) => {
             <h3>Versiones del producto</h3>
             <div className="d-flex justify-content-end">
                 <button type="button" className="btn btn-primary mx-2" onClick={handleAddVersion}>
-                    Nueva Version
+                    Nueva Versión
                 </button>
             </div>
             {

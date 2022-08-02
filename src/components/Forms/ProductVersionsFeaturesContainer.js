@@ -62,7 +62,7 @@ const ProductVersionsFeaturesContainer = ({ defaultFeatures, productVersionId, s
                 })
             }
             <button onClick={handleAddFeature} className="btn btn-primary btn-sm">
-                Añadir Caracteristica
+                Añadir Característica
             </button>
         </div>
     )

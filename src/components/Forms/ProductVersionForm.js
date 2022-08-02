@@ -54,7 +54,7 @@ const ProductVersionForm = ({ defaultProductVersion, productId, index, onDelete 
             setShowAlert({
                 message: '',
                 severity: 'success',
-                title: 'Accion Exitosa',
+                title: 'Acción Exitosa',
                 show: true
             })
         }
@@ -130,8 +130,8 @@ const ProductVersionForm = ({ defaultProductVersion, productId, index, onDelete 
 
     const handleDeleteVersion = () => {
         swal({
-            title: "¿Estas Seguro?",
-            text: "¿Deseas eliminar esta opcion?",
+            title: "¿Estás Seguro?",
+            text: "¿Deseas eliminar esta opción?",
             icon: "warning",
             buttons: true,
             dangerMode: true,
@@ -213,7 +213,7 @@ const ProductVersionForm = ({ defaultProductVersion, productId, index, onDelete 
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Codigo"
+                                placeholder="Código"
                                 name="code"
                                 value={data?.code}
                                 onChange={handleChange}
@@ -228,7 +228,7 @@ const ProductVersionForm = ({ defaultProductVersion, productId, index, onDelete 
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Nombre de la Version"
+                                placeholder="Nombre de la Versión"
                                 name="name"
                                 value={data?.name}
                                 onChange={handleChange}
@@ -243,7 +243,7 @@ const ProductVersionForm = ({ defaultProductVersion, productId, index, onDelete 
                             <input
                                 type="number"
                                 className="form-control"
-                                placeholder="Precio de la Version"
+                                placeholder="Precio de la Versión"
                                 name="price"
                                 value={data?.price}
                                 onChange={handleChange}

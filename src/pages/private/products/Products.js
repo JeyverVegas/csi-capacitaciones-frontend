@@ -213,10 +213,10 @@ const Products = () => {
                 <div className="col-md-4">
                     <div className="card p-4">
                         <label>
-                            Codigo
+                            Código
                         </label>
                         <input
-                            placeholder="codigo..."
+                            placeholder="código..."
                             type="text"
                             name="code"
                             value={filters?.code}
@@ -228,11 +228,11 @@ const Products = () => {
                 <div className="col-md-4">
                     <div className="card p-4">
                         <label>
-                            Categoria
+                            Categoría
                         </label>
                         <select className="form-control" disabled={loadingCategories} name="categoryId" value={filters?.categoryId} onChange={handleChange}>
                             <option value="">
-                                Seleccione una categoria
+                                Seleccione una categoría
                             </option>
                             {
                                 categories?.map?.((category, i) => {
@@ -245,11 +245,11 @@ const Products = () => {
                 <div className="col-md-4">
                     <div className="card p-4">
                         <label>
-                            Sub-Categoria
+                            Sub-Categoría
                         </label>
                         <select className="form-control" disabled={subCategoriesLoading || !filters?.categoryId} name="subCategoryId" value={filters?.subCategoryId} onChange={handleChange}>
                             <option value="">
-                                Seleccione una sub categoria
+                                Seleccione una sub categoría
                             </option>
                             {
                                 subCategories?.map?.((category, i) => {
