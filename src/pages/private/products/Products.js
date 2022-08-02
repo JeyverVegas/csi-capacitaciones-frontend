@@ -195,6 +195,9 @@ const Products = () => {
                 {
                     permissions?.includes?.(mainPermissions?.products[1]) ?
                         <>
+                            <Link to={"/productos/actualizar-precios"} className="btn btn-primary mx-1">
+                                Actualizar Precios
+                            </Link>
                             <Link to={"/productos/asociar-servicios"} className="btn btn-primary mx-1">
                                 Asociar A los Servicios
                             </Link>
