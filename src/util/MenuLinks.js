@@ -12,6 +12,7 @@ import Products from "../pages/private/products/Products";
 import ProductsAssociate from "../pages/private/products/ProductsAssociate";
 import ProductsCreate from "../pages/private/products/ProductsCreate";
 import ProductsUpdate from "../pages/private/products/ProductsUpdate";
+import ProductsUpdatePrices from "../pages/private/products/ProductsUpdatePrices";
 import Providers from "../pages/private/providers/Providers";
 import ProvidersCreate from "../pages/private/providers/ProvidersCreate";
 import ProvidersUpdate from "../pages/private/providers/ProvidersUpdate";
@@ -57,6 +58,7 @@ const MenuLinks = [
     createLink('Productos', null, null, 'flaticon-381-tab', '/productos', mainPermissions?.products, [
         createLink('Crear Producto', null, <ProductsCreate />, '', '/productos/crear', mainPermissions?.products[1]),
         createLink('Asociar Productos', true, <ProductsAssociate />, '', '/productos/asociar-servicios', mainPermissions?.products[1]),
+        createLink('Actualizar precios', true, <ProductsUpdatePrices />, '', '/productos/actualizar-precios', mainPermissions?.products[1]),
         createLink('Listar Productos', null, <Products />, '', '/productos', mainPermissions?.products[0]),
         createLink('Actualizar Productos', true, <ProductsUpdate />, '', '/productos/:id', mainPermissions?.products[2]),
         createLink('Crear Categoria', null, <CategoriesCreate />, '', '/categorias/crear', mainPermissions?.categories[1]),

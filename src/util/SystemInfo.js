@@ -8,8 +8,8 @@ const SystemInfo = {
     logo: logo,
     logoBlanco: logoBlanco,
     logoShort: logoShort,
-    host: 'http://csipedidos.test/',
-    api: 'http://csipedidos.test/api',
+    host: 'http://pedidos.test/',
+    api: 'http://pedidos.test/api',
     systemCode: 'sys-002',
     AUTO_SAVE_KEY: `sys-002-order_create`
 }
