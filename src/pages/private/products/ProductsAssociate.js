@@ -151,7 +151,7 @@ const ProductsAssociate = () => {
                         />
                     </div>
                     <div className="col-md-6 text-start">
-                        <h3 className="text-start">Acción: {data?.action ? 'Asociar' : 'Desligar'}</h3>
+                        <h3 className="text-start">Acción: {data?.action ? 'Vincular' : 'Desvincular'}</h3>
 
                         <Toggle onChange={handleAction} checked={data?.action} />
                     </div>
@@ -221,7 +221,7 @@ const ProductsAssociate = () => {
                     {
                         productCodes?.invalidCodes?.length > 0 ?
                             <>
-                                <h3 className="mt-5">Codigos No encontrados</h3>
+                                <h3 className="mt-5">Códigos No encontrados</h3>
                                 {
                                     productCodes?.invalidCodes?.map((message, i) => {
                                         return (
@@ -232,7 +232,7 @@ const ProductsAssociate = () => {
                                             >
                                                 <div>
                                                     {alertEmojis?.error}
-                                                    <strong>Codigo "{message}" no encontrado.</strong>
+                                                    <strong>Código "{message}" no encontrado.</strong>
                                                 </div>
                                                 <button onClick={() => handleRemoveMessage('invalidCodes', i)} title="Cerrar" className={`btn btn-${'danger'}`}>X</button>
                                             </Alert>
@@ -247,7 +247,7 @@ const ProductsAssociate = () => {
                     {
                         productCodes?.validCodes?.length > 0 ?
                             <>
-                                <h3 className="mt-5">Codigos encontrados</h3>
+                                <h3 className="mt-5">Códigos encontrados</h3>
                                 {
                                     productCodes?.validCodes?.map((message, i) => {
                                         return (
@@ -258,7 +258,7 @@ const ProductsAssociate = () => {
                                             >
                                                 <div>
                                                     {alertEmojis?.success}
-                                                    <strong>Codigo "{message}" encontrado.</strong>
+                                                    <strong>Código "{message}" encontrado.</strong>
                                                 </div>
                                                 <button onClick={() => handleRemoveMessage('validCodes', i)} title="Cerrar" className={`btn btn-${'success'}`}>X</button>
                                             </Alert>

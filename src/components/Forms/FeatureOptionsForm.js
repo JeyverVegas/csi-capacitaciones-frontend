@@ -82,7 +82,7 @@ const FeatureOptionsForm = ({ initialOptions, featureId }) => {
 
     return (
         <div className="animate__animated animate__fadeInRight">
-            <h4>Valores de la caracteristica</h4>
+            <h4>Valores de la característica</h4>
             <div className="row">
                 {
                     options?.map((option, i) => {
