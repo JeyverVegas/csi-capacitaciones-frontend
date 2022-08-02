@@ -141,8 +141,8 @@ const ProductsAssociate = () => {
         <div>
             <div className="card p-5 text-end">
                 <div className="row">
-                    <div className="col-md-6">
-                        <h3 className="text-start">Archivo excel</h3>
+                    <div className="col-md-6 text-start">
+                        <h3>Archivo excel</h3>
                         <input
                             name="file"
                             onChange={handleChange}
@@ -151,8 +151,7 @@ const ProductsAssociate = () => {
                         />
                     </div>
                     <div className="col-md-6 text-start">
-                        <h3 className="text-start">Acción: {data?.action ? 'Vincular' : 'Desvincular'}</h3>
-
+                        <h3>Acción: {data?.action ? 'Vincular' : 'Desvincular'}</h3>
                         <Toggle onChange={handleAction} checked={data?.action} />
                     </div>
                 </div>
@@ -170,25 +169,29 @@ const ProductsAssociate = () => {
                             Seleccionar todos
                         </label>
                     </div>
-                    {
-                        services?.map((service, i) => {
-                            return (
-                                <div className="form-check form-check-inline" key={i}>
-                                    <label className="form-check-label">
-                                        <input
-                                            type="checkbox"
-                                            className="form-check-input"
-                                            name="serviceIds"
-                                            value={service?.id}
-                                            checked={data?.serviceIds?.includes(service?.id)}
-                                            onChange={() => { handleChange({ target: { name: 'serviceIds', value: Number(service?.id), type: 'checkbox' } }) }}
-                                        />
-                                        {service?.name}
-                                    </label>
-                                </div>
-                            )
-                        })
-                    }
+                    <div className="row">
+                        {
+                            services?.map((service, i) => {
+                                return (
+                                    <div className="col-md-3">
+                                        <div className="form-check form-check-inline" key={i}>
+                                            <label className="form-check-label">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-check-input"
+                                                    name="serviceIds"
+                                                    value={service?.id}
+                                                    checked={data?.serviceIds?.includes(service?.id)}
+                                                    onChange={() => { handleChange({ target: { name: 'serviceIds', value: Number(service?.id), type: 'checkbox' } }) }}
+                                                />
+                                                {service?.name}
+                                            </label>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
                 <div className="text-end">
                     <button onClick={handleSubmit} className="btn btn-primary" disabled={!data?.file || loading || data?.serviceIds?.length === 0}>
