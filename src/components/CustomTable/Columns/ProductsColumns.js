@@ -22,6 +22,10 @@ const ProductsColumns = [
         Component: ImageAndName
     },
     {
+        Label: () => 'Precio',
+        Component: ({ value }) => `$${value?.price}`
+    },
+    {
         Label: () => 'Categoria',
         Component: ({ categoryName }) => categoryName
     },
