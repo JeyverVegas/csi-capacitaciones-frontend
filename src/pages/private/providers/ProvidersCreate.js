@@ -175,18 +175,18 @@ const ProvidersCreate = () => {
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Ingrese una direccion"
+                                        placeholder="Ingrese una dirección"
                                         name="address"
                                         value={data?.address}
                                         onChange={handleChange}
                                     />
                                 </div>
                                 <div className="form-group mb-3 col-md-6">
-                                    <label>Numero de telefono</label>
+                                    <label>Numero de teléfono</label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Ingrese un numero telefonico"
+                                        placeholder="Ingrese un numero teléfonico"
                                         name="phoneNumber"
                                         value={data?.phoneNumber}
                                         onChange={handleChange}

@@ -14,7 +14,7 @@ const ProductsColumns = [
         accessor: 'id'
     },
     {
-        Label: () => 'Codigo',
+        Label: () => 'Código',
         Component: ({ value }) => `${value?.code ?? '--'}`
     },
     {
@@ -26,7 +26,7 @@ const ProductsColumns = [
         Component: ({ value }) => `$${value?.price}`
     },
     {
-        Label: () => 'Categoria',
+        Label: () => 'Categoría',
         Component: ({ categoryName }) => categoryName
     },
     {
@@ -34,7 +34,7 @@ const ProductsColumns = [
         Component: ({ provider }) => provider?.name
     },
     {
-        Label: () => 'Version',
+        Label: () => 'Versión',
         Component: ({ value }) => <span style={{ fontSize: '25px' }}>{value?.parentId ? '✔️' : '🚫'}</span>
     },
     {

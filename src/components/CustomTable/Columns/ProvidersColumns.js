@@ -23,7 +23,7 @@ const ProvidersColumns = [
         Component: DocumentNumber
     },
     {
-        Label: () => 'Telefono',
+        Label: () => 'Teléfono',
         accessor: 'phoneNumber'
     },
     {

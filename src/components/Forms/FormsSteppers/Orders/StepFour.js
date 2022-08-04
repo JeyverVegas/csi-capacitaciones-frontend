@@ -520,7 +520,7 @@ const StepFour = () => {
                                         <input value={newItemData?.providerName} type="text" className="form-control" name="providerName" onChange={handleNewItemChange} />
                                     </div>
                                     <div className="col-md-12 form-group mb-2">
-                                        <label>Descripcion</label>
+                                        <label>Descripción</label>
                                         <textarea
                                             rows={4}
                                             value={newItemData?.description}
@@ -769,8 +769,8 @@ const StepFour = () => {
                                                                             color: background?.value === 'light' ? 'black' : 'white'
                                                                         }} name="quantity" value={item?.quantity} onChange={(e) => { handleArrayChange(e, i, 'orderItems') }} />
                                                                     </td>
-                                                                    <td>{item?.price}$</td>
-                                                                    <td>{item?.price * item?.quantity}$</td>
+                                                                    <td>$ {item?.price}</td>
+                                                                    <td>$ {item?.price * item?.quantity}</td>
                                                                 </tr>
                                                             )
                                                         })
@@ -786,7 +786,7 @@ const StepFour = () => {
                                                         <h3>Total:</h3>
                                                     </td>
                                                     <td colSpan={2}>
-                                                        <h3>{total}$</h3>
+                                                        <h3>$ {total}</h3>
                                                     </td>
                                                 </tr>
                                             </tbody>

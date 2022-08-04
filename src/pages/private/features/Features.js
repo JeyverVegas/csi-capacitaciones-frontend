@@ -33,7 +33,7 @@ const Features = () => {
     useEffect(() => {
         setLoading?.({
             show: deleteLoading,
-            message: 'Eliminando Caracteristicas'
+            message: 'Eliminando Características'
         })
     }, [deleteLoading])
 
@@ -51,7 +51,7 @@ const Features = () => {
             setCustomAlert({
                 title: 'error',
                 severity: 'danger',
-                message: 'Ha ocurrido un error al obtener las caracteristicas.',
+                message: 'Ha ocurrido un error al obtener las características.',
                 show: true
             });
         }
@@ -70,7 +70,7 @@ const Features = () => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
-                message: 'La caracteristica ha sido eliminada exitosamente.',
+                message: 'La característica ha sido eliminada exitosamente.',
                 show: true
             });
             getFeatures();
@@ -107,7 +107,7 @@ const Features = () => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
-                message: 'Las caracteristicas han sido eliminadas exitosamente.',
+                message: 'Las características han sido eliminadas exitosamente.',
                 show: true
             })
             setSelectedValues([]);
@@ -121,7 +121,7 @@ const Features = () => {
                 permissions?.includes?.(mainPermissions?.features[1]) ?
                     <div className="my-4 justify-content-end d-flex">
                         <Link to={"/caracteristicas/crear"} className="btn btn-primary">
-                            Crear Caracteristica
+                            Crear Característica
                         </Link>
                     </div>
                     :
@@ -133,8 +133,8 @@ const Features = () => {
                 onSelectAll={handleSelectALL}
                 selectAll={selectAll}
                 loading={featuresLoading}
-                title={'Caracteristicas'}
-                updatePath={"/caracteristicas"}
+                title={'Características'}
+                updatePath={"/características"}
                 onDelete={handleDelete}
                 selectedValues={selectedValues}
                 pages={numberOfPages}

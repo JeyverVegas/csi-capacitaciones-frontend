@@ -78,7 +78,7 @@ const CustomTable = ({
                     {
                         !withoutGlobalActions &&
                         <div>
-                            <h5>Global Actions:</h5>
+                            <h5>Global Acción:</h5>
                             {
                                 selectedValues?.length > 0 ?
                                     <ActionDropdown withOutUpdate onDelete={handleDeleteSelected} />

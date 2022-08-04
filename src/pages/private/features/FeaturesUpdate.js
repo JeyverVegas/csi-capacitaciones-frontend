@@ -34,7 +34,7 @@ const FeaturesUpdate = () => {
     useEffect(() => {
         setLoading?.({
             show: updateLoading,
-            message: `'Actualizando Caracteristica`
+            message: `'Actualizando Característica`
         });
     }, [updateLoading]);
 
@@ -50,7 +50,7 @@ const FeaturesUpdate = () => {
             setCustomAlert({
                 title: '¡Operacion Exitosa!',
                 severity: 'success',
-                message: `La caracteristica fue actualizada exitosamente.`,
+                message: `La característica fue actualizada exitosamente.`,
                 show: true
             });
         }

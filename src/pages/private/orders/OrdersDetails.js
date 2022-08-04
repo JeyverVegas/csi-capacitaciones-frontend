@@ -85,7 +85,7 @@ const OrdersDetails = () => {
 
     const handleStatusChange = (statusCode) => {
         swal({
-            title: "¿Estas Seguro?",
+            title: "¿Estás Seguro?",
             text: "Esta acción es irreversible",
             icon: "warning",
             buttons: true,
@@ -103,7 +103,7 @@ const OrdersDetails = () => {
 
     const handleDelete = () => {
         swal({
-            title: "¿Estas Seguro?",
+            title: "¿Estás Seguro?",
             text: "Esta acción es irreversible",
             icon: "warning",
             buttons: true,
@@ -266,7 +266,7 @@ const OrdersDetails = () => {
                                                 #
                                             </th>
                                             <th>
-                                                Codigo
+                                                Código
                                             </th>
                                             <th>
                                                 imagen
@@ -310,8 +310,8 @@ const OrdersDetails = () => {
                                                         </td>
                                                         <td>{item?.name}</td>
                                                         <td>{item?.quantity}</td>
-                                                        <td>${item?.price}</td>
-                                                        <td>${item?.price * item?.quantity}</td>
+                                                        <td>$ {item?.price}</td>
+                                                        <td>$ {item?.price * item?.quantity}</td>
                                                     </tr>
                                                 )
                                             })
@@ -407,7 +407,7 @@ const OrdersDetails = () => {
                                 {
                                     currentOrderDetails?.trakingFile ?
                                         <a href={`${SystemInfo?.host}${currentOrderDetails?.trakingFile}`} target="_blank" className="btn btn-block btn-dark">
-                                            Descargar guia de despacho
+                                            Descargar guía de despacho
                                         </a>
                                         :
                                         null
@@ -476,7 +476,7 @@ const OrdersDetails = () => {
                             <div className="mb-4">
 
                                 <p htmlFor="trakingInput">
-                                    Guia de despacho
+                                    Guía de despacho
                                 </p>
                                 <input
                                     id="trakingInput"
@@ -527,7 +527,11 @@ const OrdersDetails = () => {
                     </Button>
                 </Modal.Header>
                 <Modal.Body>
-                    <img src={showModalImagePreview?.imagePath} />
+
+                    <div className="text-center">
+                        <img style={{ width: '40vw' }} src={showModalImagePreview?.imagePath} />
+                    </div>
+
                 </Modal.Body>
             </Modal>
         </div>

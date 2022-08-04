@@ -207,7 +207,7 @@ const ProductVersionForm = ({ defaultProductVersion, productId, index, onDelete 
                         <div className="mx-2">
                             <label>
                                 <p>
-                                    Codigo
+                                    Código
                                 </p>
                             </label>
                             <input
@@ -222,7 +222,7 @@ const ProductVersionForm = ({ defaultProductVersion, productId, index, onDelete 
                         <div className="mx-2">
                             <label>
                                 <p>
-                                    Nombre de la Version
+                                    Nombre de la Versión
                                 </p>
                             </label>
                             <input

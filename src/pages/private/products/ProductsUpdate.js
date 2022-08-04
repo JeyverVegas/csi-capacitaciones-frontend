@@ -199,14 +199,14 @@ const ProductsUpdate = () => {
     useEffect(() => {
         setLoading?.({
             show: productLoading,
-            message: `Obteniendo informacion`
+            message: `Obteniendo información`
         });
     }, [productLoading])
 
     useEffect(() => {
         if (updateData) {
             setCustomAlert({
-                title: '¡Operacion Exitosa!',
+                title: '¡Operación Exitosa!',
                 severity: 'success',
                 message: `El producto fue actualizado exitosamente.`,
                 show: true
@@ -435,7 +435,7 @@ const ProductsUpdate = () => {
                                                 !data?.parent &&
                                                 <>
                                                     <span>
-                                                        Escoja un producto padre si este es una version de otro producto.
+                                                        Escoja un producto padre si este es una versión de otro producto.
                                                     </span>
                                                     <br />
                                                 </>
@@ -474,7 +474,7 @@ const ProductsUpdate = () => {
                                         <input
                                             type="text"
                                             className="form-control"
-                                            placeholder="Codigo"
+                                            placeholder="Código"
                                             name="code"
                                             value={data?.code}
                                             onChange={handleChange}
@@ -523,12 +523,12 @@ const ProductsUpdate = () => {
                                     />
                                     <div className="text-center mt-4 row">
                                         <div className="col-md-6">
-                                            <a href={dataSheetPreview} target="_blank" style={{ margin: 0 }}>Mostrar Ficha Tecnica</a>
+                                            <a href={dataSheetPreview} target="_blank" style={{ margin: 0 }}>Mostrar Ficha Técnica</a>
                                             <label className={clsx(['btn'], {
                                                 "btn-primary": !dataSheetPreview,
                                                 "btn-success": dataSheetPreview,
                                             })} htmlFor="datasheet-input">
-                                                Ficha tecnica
+                                                Ficha técnica
                                             </label>
                                             <input type="file" hidden name="dataSheet" onChange={handleChange} id="datasheet-input" />
                                         </div>
@@ -547,11 +547,11 @@ const ProductsUpdate = () => {
                                 <div className="col-md-6">
                                     <div>
                                         <label>
-                                            Categoria
+                                            Categoría
                                         </label>
                                         <select className="form-control" disabled={loadingCategories} name="categoryId" value={data?.categoryId} onChange={handleChange}>
                                             <option value="">
-                                                Seleccione una categoria
+                                                Seleccione una categoría
                                             </option>
                                             {
                                                 categories?.map?.((category, i) => {
@@ -564,11 +564,11 @@ const ProductsUpdate = () => {
                                 <div className="col-md-6">
                                     <div>
                                         <label>
-                                            Sub-Categoria
+                                            Sub-Categoría
                                         </label>
                                         <select className="form-control" disabled={subCategoriesLoading || !data?.categoryId} name="subCategoryId" value={data?.subCategoryId} onChange={handleChange}>
                                             <option value="">
-                                                Seleccione una sub categoria
+                                                Seleccione una sub categoría
                                             </option>
                                             {
                                                 subCategories?.map?.((category, i) => {
@@ -601,7 +601,7 @@ const ProductsUpdate = () => {
                                 </div>
                                 <div className="mt-4">
                                     <h2>
-                                        Caracteristicas
+                                        Características
                                     </h2>
                                     <div className="row">
                                         {
@@ -643,7 +643,7 @@ const ProductsUpdate = () => {
                                                 })
                                                 :
                                                 <div className="text-center">
-                                                    No hay Caracteristicas.
+                                                    No hay Características.
                                                 </div>
                                         }
                                     </div>
@@ -706,7 +706,7 @@ const ProductsUpdate = () => {
                                 </div>
                                 <div className="col-md-6 text-end">
                                     <a style={{ marginLeft: 'auto' }} className="btn btn-primary" href={`/productos/crear?parentId=${product?.data?.id}`}>
-                                        Añadir version
+                                        Añadir versión
                                     </a>
                                 </div>
                             </div>
@@ -796,7 +796,7 @@ const ProductsUpdate = () => {
                         <div className="col-md-4">
                             <div>
                                 <label>
-                                    Categoria
+                                    Categoría
                                 </label>
                                 <select
                                     className="form-control"
@@ -814,7 +814,7 @@ const ProductsUpdate = () => {
                                     }}
                                 >
                                     <option value="">
-                                        Seleccione una categoria
+                                        Seleccione una categoría
                                     </option>
                                     {
                                         categories?.map?.((category, i) => {
@@ -827,7 +827,7 @@ const ProductsUpdate = () => {
                         <div className="col-md-4">
                             <div>
                                 <label>
-                                    Sub-Categoria
+                                    Sub-Categoría
                                 </label>
                                 <select
                                     className="form-control"
@@ -845,7 +845,7 @@ const ProductsUpdate = () => {
                                     }}
                                 >
                                     <option value="">
-                                        Seleccione una sub categoria
+                                        Seleccione una sub categoría
                                     </option>
                                     {
                                         modalSubCategories?.map?.((category, i) => {

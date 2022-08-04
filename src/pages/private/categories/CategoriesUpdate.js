@@ -65,7 +65,7 @@ const CategoriesUpdate = () => {
     useEffect(() => {
         setLoading({
             show: firstLoading,
-            message: 'Obteniendo informacion'
+            message: 'Obteniendo información'
         });
     }, [firstLoading])
 
@@ -74,7 +74,7 @@ const CategoriesUpdate = () => {
             setCustomAlert({
                 title: '¡Operacion Exitosa!',
                 severity: 'success',
-                message: 'La categoria fue actualizada exitosamente.',
+                message: 'La categoría fue actualizada exitosamente.',
                 show: true
             });
 
@@ -96,7 +96,7 @@ const CategoriesUpdate = () => {
             setCustomAlert({
                 title: 'Error',
                 severity: 'danger',
-                message: 'Ha ocurrido un error al obtener las categorias.',
+                message: 'Ha ocurrido un error al obtener las categorías.',
                 show: true
             });
         }
@@ -105,7 +105,7 @@ const CategoriesUpdate = () => {
             setCustomAlert({
                 title: 'Error',
                 severity: 'danger',
-                message: 'Ha ocurrido un error al obtener la categoria.',
+                message: 'Ha ocurrido un error al obtener la categoría.',
                 show: true
             });
         }
@@ -159,7 +159,7 @@ const CategoriesUpdate = () => {
         <div>
             <div className="card">
                 <div className="card-header">
-                    <h4 className="card-title">Crear Categoria</h4>
+                    <h4 className="card-title">Crear Categoría</h4>
                 </div>
                 <div className="card-body">
                     <div className="basic-form">
@@ -192,7 +192,7 @@ const CategoriesUpdate = () => {
                                     />
                                 </div>
                                 <div className="form-group mb-3 col-md-12">
-                                    <label>Descripcion</label>
+                                    <label>Descripción</label>
                                     <input
                                         type="text"
                                         className="form-control"

@@ -71,7 +71,7 @@ const ProductsUpdatePrices = () => {
                         />
                     </div>
                 </div>
-                
+
                 <div className="text-end">
                     <button onClick={handleSubmit} className="btn btn-primary" disabled={!data?.file || loading}>
                         {
@@ -103,7 +103,7 @@ const ProductsUpdatePrices = () => {
                     {
                         productCodes?.invalidCodes?.length > 0 ?
                             <>
-                                <h3 className="mt-5">Codigos No encontrados</h3>
+                                <h3 className="mt-5">Códigos No encontrados</h3>
                                 {
                                     productCodes?.invalidCodes?.map((message, i) => {
                                         return (
@@ -129,7 +129,7 @@ const ProductsUpdatePrices = () => {
                     {
                         productCodes?.validCodes?.length > 0 ?
                             <>
-                                <h3 className="mt-5">Codigos encontrados</h3>
+                                <h3 className="mt-5">Códigos encontrados</h3>
                                 {
                                     productCodes?.validCodes?.map((message, i) => {
                                         return (
@@ -140,7 +140,7 @@ const ProductsUpdatePrices = () => {
                                             >
                                                 <div>
                                                     {alertEmojis?.success}
-                                                    <strong>Codigo "{message}" encontrado.</strong>
+                                                    <strong>Código "{message}" encontrado.</strong>
                                                 </div>
                                                 <button onClick={() => handleRemoveMessage('validCodes', i)} title="Cerrar" className={`btn btn-${'success'}`}>X</button>
                                             </Alert>

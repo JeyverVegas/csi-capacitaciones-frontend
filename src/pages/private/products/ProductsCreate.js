@@ -411,12 +411,12 @@ const ProductsCreate = () => {
                                 </div>
                                 <div className="mb-4">
                                     <label>
-                                        Codigo
+                                        Código
                                     </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Codigo"
+                                        placeholder="Código"
                                         name="code"
                                         value={data?.code}
                                         onChange={handleChange}
@@ -467,7 +467,7 @@ const ProductsCreate = () => {
                                         "btn-primary": !data?.dataSheet,
                                         "btn-success": data?.dataSheet,
                                     })} htmlFor="datasheet-input">
-                                        Ficha tecnica
+                                        Ficha técnica
                                     </label>
                                     <input type="file" hidden name="dataSheet" onChange={handleChange} id="datasheet-input" />
                                     <label className={clsx(['btn mx-1'], {
@@ -482,11 +482,11 @@ const ProductsCreate = () => {
                             <div className="col-md-6">
                                 <div>
                                     <label>
-                                        Categoria
+                                        Categoría
                                     </label>
                                     <select className="form-control" disabled={loadingCategories} name="categoryId" value={data?.categoryId} onChange={handleChange}>
                                         <option value="">
-                                            Seleccione una categoria
+                                            Seleccione una categoría
                                         </option>
                                         {
                                             categories?.map?.((category, i) => {
@@ -499,11 +499,11 @@ const ProductsCreate = () => {
                             <div className="col-md-6">
                                 <div>
                                     <label>
-                                        Sub-Categoria
+                                        Sub-Categoría
                                     </label>
                                     <select className="form-control" disabled={subCategoriesLoading || !data?.categoryId} name="subCategoryId" value={data?.subCategoryId} onChange={handleChange}>
                                         <option value="">
-                                            Seleccione una sub categoria
+                                            Seleccione una sub categoría
                                         </option>
                                         {
                                             subCategories?.map?.((category, i) => {
@@ -536,7 +536,7 @@ const ProductsCreate = () => {
                             </div>
                             <div className="mt-4">
                                 <h2>
-                                    Caracteristicas
+                                    Características
                                 </h2>
                                 <div className="row">
                                     {
@@ -578,7 +578,7 @@ const ProductsCreate = () => {
                                             })
                                             :
                                             <div className="text-center">
-                                                No hay Caracteristicas.
+                                                No hay Características.
                                             </div>
                                     }
                                 </div>
@@ -674,7 +674,7 @@ const ProductsCreate = () => {
                         <div className="col-md-4">
                             <div>
                                 <label>
-                                    Categoria
+                                    Categoría
                                 </label>
                                 <select
                                     className="form-control"
@@ -692,7 +692,7 @@ const ProductsCreate = () => {
                                     }}
                                 >
                                     <option value="">
-                                        Seleccione una categoria
+                                        Seleccione una categoría
                                     </option>
                                     {
                                         categories?.map?.((category, i) => {
@@ -705,7 +705,7 @@ const ProductsCreate = () => {
                         <div className="col-md-4">
                             <div>
                                 <label>
-                                    Sub-Categoria
+                                    Sub-Categoría
                                 </label>
                                 <select
                                     className="form-control"
@@ -723,7 +723,7 @@ const ProductsCreate = () => {
                                     }}
                                 >
                                     <option value="">
-                                        Seleccione una sub categoria
+                                        Seleccione una sub categoría
                                     </option>
                                     {
                                         modalSubCategories?.map?.((category, i) => {

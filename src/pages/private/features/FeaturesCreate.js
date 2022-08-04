@@ -18,7 +18,7 @@ const FeaturesCreate = () => {
     useEffect(() => {
         setLoading?.({
             show: createLoading,
-            message: `'Creando Caracteristica`
+            message: `'Creando Característica`
         });
     }, [createLoading])
 
@@ -27,7 +27,7 @@ const FeaturesCreate = () => {
             setCustomAlert({
                 title: '¡Operacion Exitosa!',
                 severity: 'success',
-                message: `La caracteristica fue creada exitosamente.`,
+                message: `La característica fue creada exitosamente.`,
                 show: true
             });
             navigate?.(`/caracteristicas/${createData?.data?.id}?name=${createData?.data?.name}`);

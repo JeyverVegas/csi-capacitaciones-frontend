@@ -159,7 +159,7 @@ const ProductFeatureForm = ({
         <div className="mb-3">
             <form className="row align-items-end" onSubmit={handleSubmit}>
                 <div className="col-md-3">
-                    <div>Caracteristica</div>
+                    <div>Característica</div>
                     {
                         selectedFeature &&
                         <strong>{selectedFeature?.name}</strong>
