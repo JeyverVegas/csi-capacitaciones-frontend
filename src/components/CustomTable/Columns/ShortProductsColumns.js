@@ -7,7 +7,7 @@ const ShortProductsColumns = [
         Component: TableCheck
     },
     {
-        Label: () => 'Codigo',
+        Label: () => 'Código',
         accessor: 'code'
     },
     {
@@ -15,7 +15,7 @@ const ShortProductsColumns = [
         Component: ImageAndName
     },
     {
-        Label: () => 'Categoria',
+        Label: () => 'Categoría',
         Component: ({ value }) => `${value?.category ? value?.category?.name : '--'}`
     }
 ];

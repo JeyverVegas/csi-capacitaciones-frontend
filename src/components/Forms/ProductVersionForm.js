@@ -237,7 +237,7 @@ const ProductVersionForm = ({ defaultProductVersion, productId, index, onDelete 
                         <div className="mx-2">
                             <label>
                                 <p>
-                                    Precio de la Version
+                                    Precio de la Versión
                                 </p>
                             </label>
                             <input

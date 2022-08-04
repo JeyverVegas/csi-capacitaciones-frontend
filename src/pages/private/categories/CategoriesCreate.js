@@ -33,7 +33,7 @@ const CategoriesCreate = () => {
             setCustomAlert({
                 title: '¡Operacion Exitosa!',
                 severity: 'success',
-                message: 'La categoria fue creada exitosamente.',
+                message: 'La categorías fue creada exitosamente.',
                 show: true
             });
             navigate('/categorias');
@@ -54,7 +54,7 @@ const CategoriesCreate = () => {
             setCustomAlert({
                 title: 'Error',
                 severity: 'danger',
-                message: 'Ha ocurrido un error al obtener las categorias.',
+                message: 'Ha ocurrido un error al obtener las categorías.',
                 show: true
             });
         }
@@ -111,7 +111,7 @@ const CategoriesCreate = () => {
         <div>
             <div className="card">
                 <div className="card-header">
-                    <h4 className="card-title">Crear Categoria</h4>
+                    <h4 className="card-title">Crear Categoría</h4>
                 </div>
                 <div className="card-body">
                     <div className="basic-form">
@@ -129,7 +129,7 @@ const CategoriesCreate = () => {
                                     />
                                 </div>
                                 <div className="form-group mb-3 col-md-6">
-                                    <label>Categoria padre</label>
+                                    <label>Categoría padre</label>
                                     {
 
                                     }
@@ -144,7 +144,7 @@ const CategoriesCreate = () => {
                                     />
                                 </div>
                                 <div className="form-group mb-3 col-md-12">
-                                    <label>Descripcion</label>
+                                    <label>Descripción</label>
                                     <input
                                         type="text"
                                         className="form-control"

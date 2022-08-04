@@ -38,7 +38,7 @@ const Categories = () => {
     useEffect(() => {
         setLoading?.({
             show: deleteLoading,
-            message: 'Eliminando categorias'
+            message: 'Eliminando categorías'
         })
     }, [deleteLoading])
 
@@ -56,7 +56,7 @@ const Categories = () => {
             setCustomAlert({
                 title: 'error',
                 severity: 'danger',
-                message: 'Ha ocurrido un error al obtener las categorias.',
+                message: 'Ha ocurrido un error al obtener las categorías.',
                 show: true
             });
         }
@@ -75,7 +75,7 @@ const Categories = () => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
-                message: 'La categoria ha sido eliminada exitosamente.',
+                message: 'La categoría ha sido eliminada exitosamente.',
                 show: true
             });
             getCategories();
@@ -112,7 +112,7 @@ const Categories = () => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
-                message: 'Las categorias han sido eliminadas exitosamente.',
+                message: 'Las categorías han sido eliminadas exitosamente.',
                 show: true
             });
             setSelectedValues([]);

@@ -19,7 +19,7 @@ const CategoriesColumns = [
         accessor: 'name'
     },
     {
-        Label: () => 'Categoria Padre',
+        Label: () => 'Categoría Padre',
         Component: ({ parentCategory }) => parentCategory?.name ? parentCategory?.name : 'No tiene.'
     },
     {
