@@ -8,6 +8,7 @@ import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useOrderStatuses from "../../../hooks/useOrderStatuses";
 import SystemInfo from "../../../util/SystemInfo";
+import useProviders from "../../../hooks/useProviders";
 
 const OrdersDetails = () => {
 
@@ -245,7 +246,7 @@ const OrdersDetails = () => {
                                     <RenderStatus hiddenBar styles={{ marginBottom: '10px' }} value={currentOrderDetails} />
                                 </div>
                                 <div className="col-md-12 my-4">
-                                    <b>Elaborado Por:  </b> {currentOrderDetails?.user?.name}
+                                    <b>Gestionado Por:  </b> {currentOrderDetails?.user?.name}
                                 </div>
                                 {
                                     currentOrderDetails?.receiptObservation || currentOrderDetails?.rejectionObservation ?
@@ -275,10 +276,13 @@ const OrdersDetails = () => {
                                                 Nombre
                                             </th>
                                             <th>
+                                                Proveedor
+                                            </th>
+                                            <th>
                                                 Cantidad
                                             </th>
                                             <th>
-                                                Precio Unitario
+                                                P.U
                                             </th>
                                             <th>
                                                 Total
@@ -309,6 +313,7 @@ const OrdersDetails = () => {
                                                             />
                                                         </td>
                                                         <td>{item?.name}</td>
+                                                        <td>{item?.providerName}</td>
                                                         <td>{item?.quantity}</td>
                                                         <td>$ {item?.price}</td>
                                                         <td>$ {item?.price * item?.quantity}</td>
