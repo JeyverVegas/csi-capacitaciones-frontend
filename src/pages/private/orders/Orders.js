@@ -135,7 +135,7 @@ const Orders = () => {
     return (
         <div>
             {
-                permissions?.includes?.(mainPermissions?.products[1]) ?
+                permissions?.includes?.(mainPermissions?.orders[1]) ?
                     <div className="my-4 justify-content-end d-flex">
                         <Link to={"/pedidos/crear"} className="btn btn-primary">
                             Crear Pedido
@@ -174,6 +174,7 @@ const Orders = () => {
                 selectAll={selectAll}
                 title={'Pedidos'}
                 updatePath={"/pedidos/detalles"}
+                entity={"orders"}
                 updateOptionString={'Ver Detalles'}
                 onDelete={handleDelete}
                 selectedValues={selectedValues}

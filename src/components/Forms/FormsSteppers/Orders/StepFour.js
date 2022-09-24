@@ -618,7 +618,11 @@ const StepFour = () => {
                                                                 className="col-md-4 animate__animated animate__fadeIn"
                                                             >
                                                                 <div className="rounded" style={{ overflow: 'hidden', background: background?.value === 'light' ? 'white' : '#171622' }}>
-                                                                    <img src={`${SystemInfo?.host}${product?.imagePath || notImage}`} style={{ maxWidth: '100%' }} alt="" />
+                                                                    <img
+                                                                        src={`${SystemInfo?.host}${product?.imagePath || notImage}`}
+                                                                        style={{ maxWidth: '100%' }}
+                                                                        alt=""
+                                                                    />
                                                                     <div className="p-3">
                                                                         <div className="d-flex justify-content-between">
                                                                             <h5>{cutString(product?.name, 10, 0, '...')}</h5>
@@ -626,11 +630,16 @@ const StepFour = () => {
                                                                         </div>
                                                                         <div>
                                                                             <span>
-                                                                                Categoría: <b>{product?.category?.name}</b>
+                                                                                Categoría: <b>{product?.category?.name || '--'}</b>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div>
+                                                                            <span>
+                                                                                Sub Categoría: <b>{product?.subCategory?.name || '--'}</b>
                                                                             </span>
                                                                         </div>
                                                                         <span>
-                                                                            Proveedor: <b>{product?.provider?.name}</b>
+                                                                            Proveedor: <b>{product?.provider?.name || '--'}</b>
                                                                         </span>
                                                                         <div className="text-center mt-2">
                                                                             <button onClick={() => { showProductDetails(product) }} className="btn btn-primary btn-xs">

@@ -1,5 +1,7 @@
 import { Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { mainPermissions } from "../util/MenuLinks";
 
 const ActionDropdown = ({
     updateOptionString = 'Actualizar',
@@ -8,8 +10,11 @@ const ActionDropdown = ({
     onDelete,
     withOutUpdate,
     roleDisplayText,
-    value
+    value,
+    entity
 }) => {
+
+    const { permissions } = useAuth();
 
     let navigate = useNavigate();
 
@@ -48,7 +53,12 @@ const ActionDropdown = ({
                 </svg>
             </Dropdown.Toggle>
             <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
-                <Dropdown.Item onClick={handleDelete}>Eliminar</Dropdown.Item>
+                {
+                    permissions?.includes?.(mainPermissions?.[entity]?.[3]) ?
+                        <Dropdown.Item onClick={handleDelete}>Eliminar</Dropdown.Item>
+                        :
+                        null
+                }
                 {
                     !withOutUpdate ?
                         <Dropdown.Item onClick={handleUpdate}>

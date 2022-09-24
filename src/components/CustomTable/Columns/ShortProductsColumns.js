@@ -17,6 +17,10 @@ const ShortProductsColumns = [
     {
         Label: () => 'Categoría',
         Component: ({ value }) => `${value?.category ? value?.category?.name : '--'}`
+    },
+    {
+        Label: () => 'Sub Categoría',
+        Component: ({ value }) => `${value?.subCategory ? value?.subCategory?.name : '--'}`
     }
 ];
 

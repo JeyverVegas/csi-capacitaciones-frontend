@@ -43,10 +43,10 @@ export const mainPermissions = {
 const MenuLinks = [
     createLink('DashBoard', null, <Dashboard />, 'flaticon-025-dashboard', '/dashboard', mainPermissions?.dashboard[0]),
 
-    createLink('Pedidos', null, null, 'flaticon-381-list', '/pedidos', mainPermissions?.products, [
-        createLink('Crear Pedido', null, <OrdersCreate />, '', '/pedidos/crear', mainPermissions?.products[1]),
-        createLink('Listar Pedidos', null, <Orders />, '', '/pedidos', mainPermissions?.products[0]),
-        createLink('Actualizar Pedido', true, <OrdersDetails />, '', '/pedidos/detalles/:id', mainPermissions?.products[2]),
+    createLink('Pedidos', null, null, 'flaticon-381-list', '/pedidos', mainPermissions?.orders, [
+        createLink('Crear Pedido', null, <OrdersCreate />, '', '/pedidos/crear', mainPermissions?.orders[1]),
+        createLink('Listar Pedidos', null, <Orders />, '', '/pedidos', mainPermissions?.orders[0]),
+        createLink('Actualizar Pedido', true, <OrdersDetails />, '', '/pedidos/detalles/:id', null),
     ]),
 
     createLink('Proveedores', null, null, 'flaticon-052-inside', '/proveedores', mainPermissions?.providers, [

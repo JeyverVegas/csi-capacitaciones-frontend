@@ -361,7 +361,7 @@ const OrdersDetails = () => {
                                     </div>
                                     :
                                     <p>
-                                        Ya no hay mas estatus para cambiar.
+                                        --
                                     </p>
                             }
                             <br />

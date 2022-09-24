@@ -7,7 +7,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 
 /// Link
 import { Link, useLocation } from "react-router-dom";
-import useScrollPosition from "use-scroll-position";
+import { useScrollPosition } from 'react-use-scroll-position';
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import MenuLinks from "../../util/MenuLinks";
@@ -69,7 +69,7 @@ const SideBar = () => {
             className={`deznav ${iconHover} ${sidebarposition.value === "fixed" &&
                 sidebarLayout.value === "horizontal" &&
                 headerposition.value === "static"
-                ? scrollPosition > 120
+                ? scrollPosition?.y > 120
                     ? "fixed"
                     : ""
                 : ""

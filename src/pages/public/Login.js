@@ -120,7 +120,7 @@ const Login = () => {
                                             </div>
                                         </div> */}
                                         <div className='text-center my-4'>
-                                            <Link className="text-center" to='/recuperar-contraseña'>¿Olvidastes tu contraseña?</Link>
+                                            <Link className="text-center" to='/recuperar-contrasena'>¿Olvidastes tu contraseña?</Link>
                                         </div>
                                         <div className="text-center form-group mb-3">
                                             <button type="submit" className="btn btn-primary btn-block">

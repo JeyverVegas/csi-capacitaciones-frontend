@@ -67,7 +67,11 @@ const handleResponseError = (error) => {
     }
 
     if (status === 403) {
-      toast.error(`No tienes permisos para este recurso.`, defaultOpts)
+      if (data?.message === 'Your email address is not verified.') {
+        window.location.pathname = '/email/no-verificado';
+      } else {
+        toast.error(`Error 403: No tienes permisos para este recurso.`, defaultOpts)
+      }
     }
 
     if (status === 404) {

@@ -25,7 +25,8 @@ const CustomTable = ({
     updateParamAccesor = 'id',
     withoutGlobalActions,
     variant = 'card',
-    hideSelectAll
+    hideSelectAll,
+    entity
 }) => {
 
     const { setCustomAlertDialog } = useFeedBack();
@@ -142,6 +143,7 @@ const CustomTable = ({
                                                                             {
                                                                                 Component ?
                                                                                     <Component
+                                                                                        entity={entity}
                                                                                         id={value?.id}
                                                                                         updatePath={updatePath}
                                                                                         positionName={value?.position?.name}

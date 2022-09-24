@@ -10,6 +10,7 @@ const SystemInfo = {
     logoShort: logoShort,
     host: 'http://csipedidos.test/',
     api: 'http://csipedidos.test/api',
+    usersApi: 'http://csiusers.test/api',
     systemCode: 'sys-002',
     AUTO_SAVE_KEY: `sys-002-order_create`
 }

@@ -7,6 +7,8 @@ import RequireAuth from '../components/Auth/RequireAuth';
 import MenuLinks from '../util/MenuLinks';
 import { useEffect } from 'react';
 import { useFeedBack } from '../context/FeedBackContext';
+import NotVerified from '../pages/public/email-verification/NotVerified';
+import Verify from '../pages/public/email-verification/Verify';
 
 const RoutesLinks = () => {
 
@@ -22,7 +24,10 @@ const RoutesLinks = () => {
         <Routes>
             <Route path="/" element={<Navigate to="/iniciar-sesion" />} />
             <Route path="/iniciar-sesion" element={<NonRequireAuth><Login /></NonRequireAuth>} />
-            <Route path="/recuperar-contraseña" element={<NonRequireAuth><ForgotPassword /></NonRequireAuth>} />
+            <Route path="/recuperar-contrasena" element={<NonRequireAuth><ForgotPassword /></NonRequireAuth>} />
+
+            <Route path="/email/verificar/:id/:hash" element={<Verify />} />
+            <Route path="/email/no-verificado" element={<NotVerified />} />
 
             <Route element={<SystemLayout />}>
                 {
