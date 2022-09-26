@@ -5,9 +5,11 @@ import Dashboard from "../pages/private/Dashboard";
 import Features from "../pages/private/features/Features";
 import FeaturesCreate from "../pages/private/features/FeaturesCreate";
 import FeaturesUpdate from "../pages/private/features/FeaturesUpdate";
+import MyOrders from "../pages/private/orders/MyOrders";
 import Orders from "../pages/private/orders/Orders";
 import OrdersCreate from "../pages/private/orders/OrdersCreate";
 import OrdersDetails from "../pages/private/orders/OrdersDetails";
+import OrdersDetailsUser from "../pages/private/orders/OrdersDetailsUser";
 import Products from "../pages/private/products/Products";
 import ProductsAssociate from "../pages/private/products/ProductsAssociate";
 import ProductsCreate from "../pages/private/products/ProductsCreate";
@@ -46,7 +48,9 @@ const MenuLinks = [
     createLink('Pedidos', null, null, 'flaticon-381-list', '/pedidos', mainPermissions?.orders, [
         createLink('Crear Pedido', null, <OrdersCreate />, '', '/pedidos/crear', mainPermissions?.orders[1]),
         createLink('Listar Pedidos', null, <Orders />, '', '/pedidos', mainPermissions?.orders[0]),
+        createLink('Mis Pedidos', null, <MyOrders />, '', '/mis-pedidos', null),
         createLink('Actualizar Pedido', true, <OrdersDetails />, '', '/pedidos/detalles/:id', null),
+        createLink('Ver Pedido', true, <OrdersDetailsUser />, '', '/mis-pedidos/:id', null)
     ]),
 
     createLink('Proveedores', null, null, 'flaticon-052-inside', '/proveedores', mainPermissions?.providers, [

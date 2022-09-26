@@ -191,7 +191,7 @@ const StepFour = () => {
                 show: true
             });
             localStorage.removeItem(SystemInfo?.AUTO_SAVE_KEY);
-            navigate('/pedidos');
+            navigate('/mis-pedidos');
         }
     }, [createData]);
 

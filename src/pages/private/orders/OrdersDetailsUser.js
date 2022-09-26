@@ -3,14 +3,13 @@ import { useEffect, useState } from "react";
 import { Button, Modal, ProgressBar } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
-import OrderItemRow from "../../../components/OrderItemRow";
 import RenderStatus from "../../../components/RenderStatus";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import SystemInfo from "../../../util/SystemInfo";
+import OrderItemRow from "../../../components/OrderItemRow";
 
-
-const OrdersDetails = () => {
+const OrdersDetailsUser = () => {
 
     const { id } = useParams();
 
@@ -32,11 +31,11 @@ const OrdersDetails = () => {
 
     const [template, setTemplate] = useState(null);
 
-    const [{ data: orderDetails, loading: loadingOrderDetails }] = useAxios({ url: `/orders/${id}` }, { useCache: false });
+    const [{ data: orderDetails, loading: loadingOrderDetails }] = useAxios({ url: `/user/orders/${id}` }, { useCache: false });
 
-    const [{ loading: changeStatusLoading }, changeStatus] = useAxios({ url: `/orders/${id}/status`, method: 'PUT' }, { useCache: false, manual: true });
+    const [{ data: changeStatusData, loading: changeStatusLoading }, changeStatus] = useAxios({ url: `/orders/${id}/status`, method: 'PUT' }, { useCache: false, manual: true });
 
-    const [{ loading: deleteLoading }, deleteOrder] = useAxios({ url: `/orders/${id}`, method: 'DELETE' }, { useCache: false, manual: true });
+    const [{ data: deleteData, loading: deleteLoading }, deleteOrder] = useAxios({ url: `/orders/${id}`, method: 'DELETE' }, { useCache: false, manual: true });
 
     const [{ data: createTemplateData, loading: createTemplateLoading }, createTemplate] = useAxios({ url: `/orders-templates`, method: 'POST' }, { useCache: false, manual: true });
 
@@ -197,7 +196,7 @@ const OrdersDetails = () => {
     return (
         <div>
             <div className="text-end my-4">
-                <Link to="/pedidos" className="mx-4 btn btn-primary">
+                <Link to="/mis-pedidos" className="mx-4 btn btn-primary">
                     Volver Al listado
                 </Link>
                 <Link to="/pedidos/crear" className="mx-4 btn btn-primary">
@@ -503,4 +502,4 @@ const OrdersDetails = () => {
     )
 }
 
-export default OrdersDetails;
+export default OrdersDetailsUser;

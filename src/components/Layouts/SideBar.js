@@ -96,12 +96,15 @@ const SideBar = () => {
                                                 {
                                                     menuLink?.children?.map?.((childrenMenu, i2) => {
                                                         return (
-                                                            permissions?.includes?.(childrenMenu?.permissions) && !childrenMenu.hidden ?
-                                                                <li key={`${i}-${i2}`}>
-                                                                    <Link className={`${path === childrenMenu?.path ? "mm-active" : ""}`} to={childrenMenu?.path}>
-                                                                        {childrenMenu?.title}
-                                                                    </Link>
-                                                                </li>
+                                                            !childrenMenu?.permissions || permissions?.includes?.(childrenMenu?.permissions) ?
+                                                                !childrenMenu.hidden ?
+                                                                    <li key={`${i}-${i2}`}>
+                                                                        <Link className={`${path === childrenMenu?.path ? "mm-active" : ""}`} to={childrenMenu?.path}>
+                                                                            {childrenMenu?.title}
+                                                                        </Link>
+                                                                    </li>
+                                                                    :
+                                                                    null
                                                                 :
                                                                 null
                                                         )

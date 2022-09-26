@@ -26,7 +26,8 @@ const CustomTable = ({
     withoutGlobalActions,
     variant = 'card',
     hideSelectAll,
-    entity
+    entity,
+    updateOptionString
 }) => {
 
     const { setCustomAlertDialog } = useFeedBack();
@@ -143,6 +144,7 @@ const CustomTable = ({
                                                                             {
                                                                                 Component ?
                                                                                     <Component
+                                                                                        updateOptionString={updateOptionString}
                                                                                         entity={entity}
                                                                                         id={value?.id}
                                                                                         updatePath={updatePath}

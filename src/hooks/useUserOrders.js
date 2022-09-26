@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import useAxios from './useAxios';
 
-const useOrders = ({ options, ...axiosConfig } = {}) => {
+const useUserOrders = ({ options, ...axiosConfig } = {}) => {
 
-  const [{ data, error, loading }, getOrders] = useAxios({ url: '/orders', ...axiosConfig }, options);
+  const [{ data, error, loading }, getOrders] = useAxios({ url: '/user/orders', ...axiosConfig }, options);
 
   const [orders, setOrders] = useState([]);
 
@@ -26,4 +26,4 @@ const useOrders = ({ options, ...axiosConfig } = {}) => {
   return [{ orders, total, numberOfPages, size, error, loading }, getOrders];
 };
 
-export default useOrders;
+export default useUserOrders;

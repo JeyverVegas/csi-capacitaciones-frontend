@@ -28,6 +28,14 @@ const OrdersColumns = [
         Component: ({ value }) => value?.service?.name || '--'
     },
     {
+        Label: () => 'Jefe Del Servicio',
+        Component: ({ value }) => `${!value?.isReplacement ? value?.service?.ordersBoss?.name || '--' : value?.service?.ordersReplacementBoss?.name || '--'}`
+    },
+    {
+        Label: () => 'Enc. Adquisiciones',
+        Component: ({ value }) => `${!value?.isReplacement ? value?.service?.adquisicionUser?.name || '--' : value?.service?.adquisicionReplacementUser?.name || '--'}`
+    },
+    {
         Label: () => '¿Repuestos?',
         Component: ({ value }) => `${value?.isReplacement ? 'SI' : 'NO'}`
     },
