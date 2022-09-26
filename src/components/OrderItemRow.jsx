@@ -71,8 +71,10 @@ const OrderItemRow = ({ orderItem, index, canUpdateStatus }) => {
                         src={`${SystemInfo?.host}${currentItem?.imagePath}`}
                         alt=""
                     />
+                    <br></br>
+
+                    {currentItem?.name}
                 </td>
-                <td>{currentItem?.name}</td>
                 <td>{currentItem?.providerName}</td>
                 <td>
                     <div className="basic-dropdown">

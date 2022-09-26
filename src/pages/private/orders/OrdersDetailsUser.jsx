@@ -3,15 +3,15 @@ import { useEffect, useState } from "react";
 import { Button, Modal, ProgressBar } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
-import OrderItemRow from "../../../components/OrderItemRow";
 import RenderStatus from "../../../components/RenderStatus";
-import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import SystemInfo from "../../../util/SystemInfo";
+import OrderItemRow from "../../../components/OrderItemRow";
+import { useAuth } from "../../../context/AuthContext";
+import ObservationsForm from "../../../components/Observations/ObservationsForm";
 
-
-const OrdersDetails = () => {
+const OrdersDetailsUser = () => {
 
     const { user } = useAuth();
 
@@ -35,11 +35,11 @@ const OrdersDetails = () => {
 
     const [template, setTemplate] = useState(null);
 
-    const [{ data: orderDetails, loading: loadingOrderDetails }] = useAxios({ url: `/orders/${id}` }, { useCache: false });
+    const [{ data: orderDetails, loading: loadingOrderDetails }] = useAxios({ url: `/user/orders/${id}` }, { useCache: false });
 
-    const [{ loading: changeStatusLoading }, changeStatus] = useAxios({ url: `/orders/${id}/status`, method: 'PUT' }, { useCache: false, manual: true });
+    const [{ data: changeStatusData, loading: changeStatusLoading }, changeStatus] = useAxios({ url: `/orders/${id}/status`, method: 'PUT' }, { useCache: false, manual: true });
 
-    const [{ loading: deleteLoading }, deleteOrder] = useAxios({ url: `/orders/${id}`, method: 'DELETE' }, { useCache: false, manual: true });
+    const [{ data: deleteData, loading: deleteLoading }, deleteOrder] = useAxios({ url: `/orders/${id}`, method: 'DELETE' }, { useCache: false, manual: true });
 
     const [{ data: createTemplateData, loading: createTemplateLoading }, createTemplate] = useAxios({ url: `/orders-templates`, method: 'POST' }, { useCache: false, manual: true });
 
@@ -194,7 +194,6 @@ const OrdersDetails = () => {
 
     const handleGenerate = (fileType) => {
         generateFile({ url: `${SystemInfo?.api}/orders/${id}/${fileType}` });
-
     }
 
     const canUpdateStatus = () => {
@@ -206,10 +205,14 @@ const OrdersDetails = () => {
         return true;
     }
 
+    const handleFile = (e) => {
+        console.log(e.target.files[0]);
+    }
+
     return (
         <div>
             <div className="text-end my-4">
-                <Link to="/pedidos" className="mx-4 btn btn-primary">
+                <Link to="/mis-pedidos" className="mx-4 btn btn-primary">
                     Volver Al listado
                 </Link>
                 <Link to="/pedidos/crear" className="mx-4 btn btn-primary">
@@ -259,15 +262,6 @@ const OrdersDetails = () => {
                                 <div className="col-md-4 my-4">
                                     <b>Enc. de Adquisiciones:  </b> {!currentOrderDetails?.isReplacement ? currentOrderDetails?.service?.adquisicionUser?.name || '--' : currentOrderDetails?.service?.adquisicionReplacementUser?.name || '--'}
                                 </div>
-                                {
-                                    currentOrderDetails?.receiptObservation || currentOrderDetails?.rejectionObservation ?
-                                        <div className="col-md-12">
-                                            <b>Observaciones:  </b> {currentOrderDetails?.receiptObservation?.content || ''} {currentOrderDetails?.rejectionObservation?.content || ''}
-                                        </div>
-                                        :
-                                        null
-                                }
-
                             </div>
                             <h3 className="text-center">Productos</h3>
                             <div className="table-responsive">
@@ -279,9 +273,6 @@ const OrdersDetails = () => {
                                             </th>
                                             <th>
                                                 Código
-                                            </th>
-                                            <th>
-                                                imagen
                                             </th>
                                             <th>
                                                 Nombre
@@ -300,7 +291,6 @@ const OrdersDetails = () => {
                                             </th>
                                             <th>
                                                 Total
-                                                {canUpdateStatus() ? 'si' : 'no'}
                                             </th>
                                         </tr>
                                     </thead>
@@ -313,16 +303,21 @@ const OrdersDetails = () => {
                                             })
                                         }
                                         <tr>
-                                            <td colSpan={4}>
+                                            <td colSpan={5}>
                                                 <h3>Total</h3>
                                             </td>
-                                            <td colSpan={4} className="text-end">
+                                            <td colSpan={5} className="text-end">
                                                 <h3>${currentOrderDetails?.total}</h3>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
+                            <br />
+                            <ObservationsForm
+                                defaultObservations={currentOrderDetails?.observations}
+                                orderId={currentOrderDetails?.id}
+                            />
                         </div>
                     </div>
                 </div>
@@ -401,10 +396,29 @@ const OrdersDetails = () => {
                                 }
                                 <br />
                                 {
-                                    currentOrderDetails?.trakingFile ?
-                                        <a href={`${SystemInfo?.host}${currentOrderDetails?.trakingFile}`} target="_blank" className="btn btn-block btn-dark">
-                                            Descargar guía de despacho
-                                        </a>
+                                    currentOrderDetails?.isReplacement ?
+                                        currentOrderDetails?.service?.adquisicionReplacementUser?.id === user?.id ?
+                                            <label className="btn btn-block btn-warning">
+                                                Adjuntar Guia de  Despacho
+                                                <input type="file" style={{ display: 'none' }} onChange={handleFile} />
+                                            </label>
+                                            :
+                                            null
+                                        :
+                                        currentOrderDetails?.service?.adquisicionUser?.id === user?.id ?
+                                            <label className="btn btn-block btn-warning">
+                                                Adjuntar Guia de  Despacho
+                                                <input type="file" style={{ display: 'none' }} onChange={handleFile} />
+                                            </label>
+                                            :
+                                            null
+                                }
+                                <br />
+                                {
+                                    currentOrderDetails?.files?.length > 0 ?
+                                        <button className="btn btn-block btn-dark">
+                                            Mostrar Guias de Despacho ({currentOrderDetails?.files?.length})
+                                        </button>
                                         :
                                         null
                                 }
@@ -512,8 +526,8 @@ const OrdersDetails = () => {
                     </div>
                 </Modal.Footer>
             </Modal>
-        </div>
+        </div >
     )
 }
 
-export default OrdersDetails;
+export default OrdersDetailsUser;

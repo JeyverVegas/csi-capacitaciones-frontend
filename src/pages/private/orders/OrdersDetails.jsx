@@ -3,16 +3,19 @@ import { useEffect, useState } from "react";
 import { Button, Modal, ProgressBar } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
+import ObservationsForm from "../../../components/Observations/ObservationsForm";
+import OrderItemRow from "../../../components/OrderItemRow";
 import RenderStatus from "../../../components/RenderStatus";
+import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
+import { mainPermissions } from "../../../util/MenuLinks";
 import SystemInfo from "../../../util/SystemInfo";
-import OrderItemRow from "../../../components/OrderItemRow";
-import { useAuth } from "../../../context/AuthContext";
 
-const OrdersDetailsUser = () => {
 
-    const { user } = useAuth();
+const OrdersDetails = () => {
+
+    const { user, permissions } = useAuth();
 
     const { id } = useParams();
 
@@ -22,29 +25,32 @@ const OrdersDetailsUser = () => {
 
     const [currentOrderDetails, setCurrentOrderDetails] = useState(null);
 
-    const [observationText, setObservationText] = useState('');
-
     const [showModalTemplateName, setShowModalTemplateName] = useState(false);
 
     const [templateName, setTemplateName] = useState('');
-
-    const [showObservationModal, setShowObservationModal] = useState(false);
 
     const [trakingFile, setTrakingFile] = useState(null);
 
     const [template, setTemplate] = useState(null);
 
-    const [{ data: orderDetails, loading: loadingOrderDetails }] = useAxios({ url: `/user/orders/${id}` }, { useCache: false });
+    const [{ data: orderDetails, loading: loadingOrderDetails }] = useAxios({ url: `/orders/${id}` }, { useCache: false });
 
-    const [{ data: changeStatusData, loading: changeStatusLoading }, changeStatus] = useAxios({ url: `/orders/${id}/status`, method: 'PUT' }, { useCache: false, manual: true });
+    const [{ loading: changeStatusLoading }, changeStatus] = useAxios({ url: `/orders/${id}/status`, method: 'PUT' }, { useCache: false, manual: true });
 
-    const [{ data: deleteData, loading: deleteLoading }, deleteOrder] = useAxios({ url: `/orders/${id}`, method: 'DELETE' }, { useCache: false, manual: true });
+    const [{ loading: deleteLoading }, deleteOrder] = useAxios({ url: `/orders/${id}`, method: 'DELETE' }, { useCache: false, manual: true });
 
     const [{ data: createTemplateData, loading: createTemplateLoading }, createTemplate] = useAxios({ url: `/orders-templates`, method: 'POST' }, { useCache: false, manual: true });
 
     const [{ data: generateFileData }, generateFile] = useAxios({ useCache: false, manual: true });
 
     const [{ loading: deleteTemplateLoading }, deleteTemplate] = useAxios({ method: 'DELETE' }, { useCache: false, manual: true });
+
+    useEffect(() => {
+        setLoading?.({
+            show: changeStatusLoading,
+            message: 'Cambiando Estatus'
+        });
+    }, [changeStatusLoading]);
 
     useEffect(() => {
         if (generateFileData) {
@@ -93,10 +99,6 @@ const OrdersDetailsUser = () => {
         });
     }
 
-    const handleAcceptChangeStatus = (newStatusCode) => {
-        setShowObservationModal({ show: false, statusCode: newStatusCode });
-    };
-
     const handleDelete = () => {
         swal({
             title: "¿Estás Seguro?",
@@ -119,24 +121,11 @@ const OrdersDetailsUser = () => {
         });
     }
 
-    const handleAccepChangeStatus = () => {
-
-        var dataToSend = {
-            order_status_code: showObservationModal?.statusCode,
-            observation: observationText || 'Ninguna...'
-        };
-
-        const formData = new FormData();
-
-        if (showObservationModal?.statusCode === 'ors-004') {
-            formData.append('order_status_code', showObservationModal?.statusCode);
-            formData.append('observation', observationText || 'Ninguna...');
-            formData.append('traking_file', trakingFile, trakingFile?.name);
-        }
-
-
+    const handleAcceptChangeStatus = (statusCode) => {
         changeStatus({
-            data: showObservationModal?.statusCode === 'ors-004' ? formData : dataToSend,
+            data: {
+                order_status_code: statusCode
+            },
             method: 'POST'
         }).then((response) => {
             setCustomAlert({
@@ -150,16 +139,9 @@ const OrdersDetailsUser = () => {
                     ...oldOrdersDetails,
                     allowedStatuses: response?.data?.data?.allowedStatuses,
                     orderStatus: response?.data?.data?.orderStatus,
-                    receiptObservation: response?.data?.data?.receiptObservation,
-                    rejectionObservation: response?.data?.data?.rejectionObservation,
-                    trakingFile: response?.data?.data?.trakingFile
                 }
             });
-        }).finally(() => {
-            setShowObservationModal(false);
-            setObservationText('');
         });
-
     }
 
     const handleCreateTemplate = (e) => {
@@ -174,7 +156,6 @@ const OrdersDetailsUser = () => {
             }).then((response) => {
                 setShowModalTemplateName(false);
                 setTemplateName('');
-
             })
         }
     }
@@ -193,6 +174,7 @@ const OrdersDetailsUser = () => {
 
     const handleGenerate = (fileType) => {
         generateFile({ url: `${SystemInfo?.api}/orders/${id}/${fileType}` });
+
     }
 
     const canUpdateStatus = () => {
@@ -204,10 +186,14 @@ const OrdersDetailsUser = () => {
         return true;
     }
 
+    const handleFile = (e) => {
+        console.log(e.target.files[0]);
+    }
+
     return (
         <div>
             <div className="text-end my-4">
-                <Link to="/mis-pedidos" className="mx-4 btn btn-primary">
+                <Link to="/pedidos" className="mx-4 btn btn-primary">
                     Volver Al listado
                 </Link>
                 <Link to="/pedidos/crear" className="mx-4 btn btn-primary">
@@ -257,15 +243,6 @@ const OrdersDetailsUser = () => {
                                 <div className="col-md-4 my-4">
                                     <b>Enc. de Adquisiciones:  </b> {!currentOrderDetails?.isReplacement ? currentOrderDetails?.service?.adquisicionUser?.name || '--' : currentOrderDetails?.service?.adquisicionReplacementUser?.name || '--'}
                                 </div>
-                                {
-                                    currentOrderDetails?.receiptObservation || currentOrderDetails?.rejectionObservation ?
-                                        <div className="col-md-12">
-                                            <b>Observaciones:  </b> {currentOrderDetails?.receiptObservation?.content || ''} {currentOrderDetails?.rejectionObservation?.content || ''}
-                                        </div>
-                                        :
-                                        null
-                                }
-
                             </div>
                             <h3 className="text-center">Productos</h3>
                             <div className="table-responsive">
@@ -277,9 +254,6 @@ const OrdersDetailsUser = () => {
                                             </th>
                                             <th>
                                                 Código
-                                            </th>
-                                            <th>
-                                                imagen
                                             </th>
                                             <th>
                                                 Nombre
@@ -320,6 +294,11 @@ const OrdersDetailsUser = () => {
                                     </tbody>
                                 </table>
                             </div>
+                            <br />
+                            <ObservationsForm
+                                defaultObservations={currentOrderDetails?.observations}
+                                orderId={currentOrderDetails?.id}
+                            />
                         </div>
                     </div>
                 </div>
@@ -367,11 +346,14 @@ const OrdersDetailsUser = () => {
                             <br />
                             <div>
                                 <h4>Acciones</h4>
-                                <button disabled={deleteLoading} onClick={handleDelete} className="btn btn-block btn-danger">
-                                    {
-                                        deleteLoading ? 'Cargando' : 'Eliminar'
-                                    }
-                                </button>
+                                {
+                                    permissions?.includes(mainPermissions?.orders?.[3]) &&
+                                    <button disabled={deleteLoading} onClick={handleDelete} className="btn btn-block btn-danger">
+                                        {
+                                            deleteLoading ? 'Cargando' : 'Eliminar'
+                                        }
+                                    </button>
+                                }
                                 <br />
                                 {
                                     currentOrderDetails?.orderTypeId !== 3 ?
@@ -398,17 +380,34 @@ const OrdersDetailsUser = () => {
                                 }
                                 <br />
                                 {
-                                    currentOrderDetails?.trakingFile ?
-                                        <a href={`${SystemInfo?.host}${currentOrderDetails?.trakingFile}`} target="_blank" className="btn btn-block btn-dark">
-                                            Descargar guía de despacho
-                                        </a>
+                                    currentOrderDetails?.isReplacement ?
+                                        currentOrderDetails?.service?.adquisicionReplacementUser?.id === user?.id ?
+                                            <label className="btn btn-block btn-warning">
+                                                Adjuntar Guia de  Despacho
+                                                <input type="file" style={{ display: 'none' }} onChange={handleFile} />
+                                            </label>
+                                            :
+                                            null
+                                        :
+                                        currentOrderDetails?.service?.adquisicionUser?.id === user?.id ?
+                                            <label className="btn btn-block btn-warning">
+                                                Adjuntar Guia de  Despacho
+                                                <input type="file" style={{ display: 'none' }} onChange={handleFile} />
+                                            </label>
+                                            :
+                                            null
+                                }
+                                <br />
+                                {
+                                    currentOrderDetails?.files?.length > 0 ?
+                                        <button className="btn btn-block btn-dark">
+                                            Mostrar Guias de Despacho
+                                        </button>
                                         :
                                         null
                                 }
                             </div>
-
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -453,64 +452,8 @@ const OrdersDetailsUser = () => {
                     </Modal.Footer>
                 </form>
             </Modal>
-            <Modal size="lg" className="fade" show={showObservationModal}>
-                <Modal.Header>
-                    <Modal.Title>Observaciones:</Modal.Title>
-                    <Button
-                        variant=""
-                        className="btn-close"
-                        onClick={() => setShowObservationModal(false)}
-                    >
-                    </Button>
-                </Modal.Header>
-                <Modal.Body>
-                    {
-                        showObservationModal?.statusCode === 'ors-004' ?
-                            <div className="mb-4">
-
-                                <p htmlFor="trakingInput">
-                                    Guía de despacho
-                                </p>
-                                <input
-                                    id="trakingInput"
-                                    onChange={(e) => { setTrakingFile(e.target.files[0]) }}
-                                    type="file"
-                                    accept="application/pdf,application/vnd.ms-excel"
-                                />
-                            </div>
-                            :
-                            null
-                    }
-
-                    <p>Por favor indique las observaciones en caso de que hubiera de lo contrario coloque la palabra <b>"Ninguna"</b>.</p>
-                    <textarea
-                        style={{
-                            minHeight: '200px'
-                        }}
-                        value={observationText}
-                        onChange={(e) => setObservationText(e.target.value)}
-                        className="form-control"
-                        cols="30"
-                        placeholder="Ingrese el texto..."
-                        rows="10"></textarea>
-                </Modal.Body>
-                <Modal.Footer>
-                    <div className="row">
-                        <div className="col-md-6">
-                            <button onClick={() => setShowObservationModal(false)} className="btn btn-danger btn-block">
-                                Cancelar
-                            </button>
-                        </div>
-                        <div className="col-md-6">
-                            <button disabled={changeStatusLoading} onClick={handleAccepChangeStatus} className="btn btn-success btn-block">
-                                Aceptar
-                            </button>
-                        </div>
-                    </div>
-                </Modal.Footer>
-            </Modal>
         </div>
     )
 }
 
-export default OrdersDetailsUser;
+export default OrdersDetails;
