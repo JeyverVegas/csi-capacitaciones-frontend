@@ -8,8 +8,11 @@ import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import SystemInfo from "../../../util/SystemInfo";
 import OrderItemRow from "../../../components/OrderItemRow";
+import { useAuth } from "../../../context/AuthContext";
 
 const OrdersDetailsUser = () => {
+
+    const { user } = useAuth();
 
     const { id } = useParams();
 
@@ -190,7 +193,15 @@ const OrdersDetailsUser = () => {
 
     const handleGenerate = (fileType) => {
         generateFile({ url: `${SystemInfo?.api}/orders/${id}/${fileType}` });
+    }
 
+    const canUpdateStatus = () => {
+        if (currentOrderDetails?.isReplacement) {
+            if (currentOrderDetails?.service?.adquisicionReplacementUser?.id != user?.id) return false;
+        } else {
+            if (currentOrderDetails?.service?.adquisicionUser?.id != user?.id) return false;
+        }
+        return true;
     }
 
     return (
@@ -294,7 +305,7 @@ const OrdersDetailsUser = () => {
                                         {
                                             currentOrderDetails?.orderItems?.map((item, i) => {
                                                 return (
-                                                    <OrderItemRow orderItem={item} key={i} index={i} />
+                                                    <OrderItemRow canUpdateStatus={canUpdateStatus()} orderItem={item} key={i} index={i} />
                                                 )
                                             })
                                         }

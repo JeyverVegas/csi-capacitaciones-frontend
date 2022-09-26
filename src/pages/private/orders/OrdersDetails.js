@@ -5,12 +5,15 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
 import OrderItemRow from "../../../components/OrderItemRow";
 import RenderStatus from "../../../components/RenderStatus";
+import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import SystemInfo from "../../../util/SystemInfo";
 
 
 const OrdersDetails = () => {
+
+    const { user } = useAuth();
 
     const { id } = useParams();
 
@@ -194,6 +197,15 @@ const OrdersDetails = () => {
 
     }
 
+    const canUpdateStatus = () => {
+        if (currentOrderDetails?.isReplacement) {
+            if (currentOrderDetails?.service?.adquisicionReplacementUser?.id != user?.id) return false;
+        } else {
+            if (currentOrderDetails?.service?.adquisicionUser?.id != user?.id) return false;
+        }
+        return true;
+    }
+
     return (
         <div>
             <div className="text-end my-4">
@@ -288,6 +300,7 @@ const OrdersDetails = () => {
                                             </th>
                                             <th>
                                                 Total
+                                                {canUpdateStatus() ? 'si' : 'no'}
                                             </th>
                                         </tr>
                                     </thead>
@@ -295,7 +308,7 @@ const OrdersDetails = () => {
                                         {
                                             currentOrderDetails?.orderItems?.map((item, i) => {
                                                 return (
-                                                    <OrderItemRow orderItem={item} key={i} index={i} />
+                                                    <OrderItemRow canUpdateStatus={canUpdateStatus()} orderItem={item} key={i} index={i} />
                                                 )
                                             })
                                         }

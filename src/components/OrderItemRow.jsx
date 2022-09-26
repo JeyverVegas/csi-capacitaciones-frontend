@@ -5,7 +5,7 @@ import useAxios from "../hooks/useAxios";
 import useOrderStatuses from "../hooks/useOrderStatuses";
 import SystemInfo from "../util/SystemInfo";
 
-const OrderItemRow = ({ orderItem, index }) => {
+const OrderItemRow = ({ orderItem, index, canUpdateStatus }) => {
 
     const [orderStatusesFilter, setOrderStatusesFilter] = useState({
         page: 1,
@@ -87,20 +87,25 @@ const OrderItemRow = ({ orderItem, index }) => {
                                         {currentItem?.status?.name}
                                     </Dropdown.Toggle>
                             }
-                            <Dropdown.Menu>
-                                {
-                                    loading ?
-                                        <Dropdown.Item href="#">Cargando...</Dropdown.Item>
-                                        :
-                                        orderStatuses?.map((status, i) => {
-                                            return (
-                                                <Dropdown.Item onClick={() => handleStatusCode(status?.code)} href="#" key={i}>
-                                                    {status?.name}
-                                                </Dropdown.Item>
-                                            )
-                                        })
-                                }
-                            </Dropdown.Menu>
+                            {
+                                canUpdateStatus ?
+                                    <Dropdown.Menu>
+                                        {
+                                            loading ?
+                                                <Dropdown.Item href="#">Cargando...</Dropdown.Item>
+                                                :
+                                                orderStatuses?.map((status, i) => {
+                                                    return (
+                                                        <Dropdown.Item onClick={() => handleStatusCode(status?.code)} href="#" key={i}>
+                                                            {status?.name}
+                                                        </Dropdown.Item>
+                                                    )
+                                                })
+                                        }
+                                    </Dropdown.Menu>
+                                    :
+                                    null
+                            }
                         </Dropdown>
                     </div>
                 </td>
