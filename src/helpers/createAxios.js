@@ -30,6 +30,9 @@ export const createAxios = () => {
 
   axiosInstance.interceptors.request.use(
     async (request) => {
+      if (!request?.url) {
+        throw new axios.Cancel('Operation canceled by the user.');
+      }
       const authInfo = JSON.parse(`${getAuth()}`);
 
       if (authInfo?.token) {

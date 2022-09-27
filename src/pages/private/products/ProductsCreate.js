@@ -15,7 +15,6 @@ import { Button, Modal } from "react-bootstrap";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import ShortProductsColumns from "../../../components/CustomTable/Columns/ShortProductsColumns";
 import useFeatures from "../../../hooks/useFeatures";
-import FeatureOptionsContainer from "../../../components/FeaturesComponents/FeatureOptionsContainer";
 
 
 
