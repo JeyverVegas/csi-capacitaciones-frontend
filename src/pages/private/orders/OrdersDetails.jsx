@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Modal, ProgressBar } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
+import DateFormatter from "../../../components/DateFormatter";
 import ObservationsForm from "../../../components/Observations/ObservationsForm";
 import OrderItemRow from "../../../components/OrderItemRow";
 import RenderStatus from "../../../components/RenderStatus";
@@ -29,11 +30,13 @@ const OrdersDetails = () => {
 
     const [templateName, setTemplateName] = useState('');
 
-    const [trakingFile, setTrakingFile] = useState(null);
-
     const [template, setTemplate] = useState(null);
 
+    const [showOrderFilesModal, setShowOrderFilesModal] = useState(false);
+
     const [{ data: orderDetails, loading: loadingOrderDetails }] = useAxios({ url: `/orders/${id}` }, { useCache: false });
+
+    const [{ }, getOrderFile] = useAxios({ method: 'GET', responseType: 'blob' }, { useCache: false });
 
     const [{ loading: changeStatusLoading }, changeStatus] = useAxios({ url: `/orders/${id}/status`, method: 'PUT' }, { useCache: false, manual: true });
 
@@ -41,9 +44,25 @@ const OrdersDetails = () => {
 
     const [{ data: createTemplateData, loading: createTemplateLoading }, createTemplate] = useAxios({ url: `/orders-templates`, method: 'POST' }, { useCache: false, manual: true });
 
-    const [{ data: generateFileData }, generateFile] = useAxios({ useCache: false, manual: true });
+    const [{ data: createOrderFileData, loading: createOrderFileLoading }, createOrderFile] = useAxios({ url: `/order-files`, method: 'POST' }, { useCache: false, manual: true });
+
+    const [{ data: generateFileData }, generateFile] = useAxios({ responseType: 'blob' }, { useCache: false, manual: true });
 
     const [{ loading: deleteTemplateLoading }, deleteTemplate] = useAxios({ method: 'DELETE' }, { useCache: false, manual: true });
+
+    const [currentFileName, setCurrentFileName] = useState('');
+
+    useEffect(() => {
+        if (createOrderFileData) {
+            setCustomAlert({ show: true, message: "La guia ha sido cargada exitosamente", severity: "success", title: 'Operación exitosa' })
+            setCurrentOrderDetails((oldOrderDetails) => {
+                return {
+                    ...oldOrderDetails,
+                    files: [...oldOrderDetails?.files, createOrderFileData?.data]
+                }
+            });
+        }
+    }, [createOrderFileData])
 
     useEffect(() => {
         setLoading?.({
@@ -54,8 +73,8 @@ const OrdersDetails = () => {
 
     useEffect(() => {
         if (generateFileData) {
-            window.open(`${SystemInfo?.host}${generateFileData?.filePath}`)
             console.log(generateFileData);
+            //handleBlobResponse(generateFileData);
         }
     }, [generateFileData])
 
@@ -173,7 +192,8 @@ const OrdersDetails = () => {
     }
 
     const handleGenerate = (fileType) => {
-        generateFile({ url: `${SystemInfo?.api}/orders/${id}/${fileType}` });
+        setCurrentFileName(`pedido-${currentOrderDetails?.id}`);
+        generateFile({ url: `orders/${id}/${fileType}` });
 
     }
 
@@ -187,11 +207,39 @@ const OrdersDetails = () => {
     }
 
     const handleFile = (e) => {
-        console.log(e.target.files[0]);
+        if (createOrderFileLoading || !e.target.files[0]) return;
+
+        const formData = new FormData();
+
+        formData?.append('file', e.target.files[0], e.target.files[0]?.name);
+        formData?.append('orderId', currentOrderDetails?.id);
+
+
+        createOrderFile({
+            data: formData
+        });
+    }
+
+    const handleFindFile = (filePath, fileName) => {
+        setCurrentFileName(fileName);
+        getOrderFile({
+            url: `/files${filePath}`
+        }).then((response) => {
+            handleBlobResponse(response?.data);
+        });
+    }
+
+    const handleBlobResponse = (blobResponse) => {
+        const fileBlobUrl = URL.createObjectURL(blobResponse);
+        const aToDownload = document.getElementById('downloadLink');
+        aToDownload.href = fileBlobUrl;
+        aToDownload?.click();
+        window.URL.revokeObjectURL(fileBlobUrl);
     }
 
     return (
         <div>
+            <a id="downloadLink" style={{ display: 'none' }} download={currentFileName}></a>
             <div className="text-end my-4">
                 <Link to="/pedidos" className="mx-4 btn btn-primary">
                     Volver Al listado
@@ -383,16 +431,26 @@ const OrdersDetails = () => {
                                     currentOrderDetails?.isReplacement ?
                                         currentOrderDetails?.service?.adquisicionReplacementUser?.id === user?.id ?
                                             <label className="btn btn-block btn-warning">
-                                                Adjuntar Guia de  Despacho
-                                                <input type="file" style={{ display: 'none' }} onChange={handleFile} />
+                                                {
+                                                    createOrderFileLoading ?
+                                                        'Enviando...'
+                                                        :
+                                                        'Adjuntar Guia de Despacho'
+                                                }
+                                                <input disabled={createOrderFileLoading} type="file" style={{ display: 'none' }} onChange={handleFile} />
                                             </label>
                                             :
                                             null
                                         :
                                         currentOrderDetails?.service?.adquisicionUser?.id === user?.id ?
                                             <label className="btn btn-block btn-warning">
-                                                Adjuntar Guia de  Despacho
-                                                <input type="file" style={{ display: 'none' }} onChange={handleFile} />
+                                                {
+                                                    createOrderFileLoading ?
+                                                        'Enviando...'
+                                                        :
+                                                        'Adjuntar Guia de Despacho'
+                                                }
+                                                <input disabled={createOrderFileLoading} type="file" style={{ display: 'none' }} onChange={handleFile} />
                                             </label>
                                             :
                                             null
@@ -400,7 +458,7 @@ const OrdersDetails = () => {
                                 <br />
                                 {
                                     currentOrderDetails?.files?.length > 0 ?
-                                        <button className="btn btn-block btn-dark">
+                                        <button onClick={() => setShowOrderFilesModal(true)} className="btn btn-block btn-dark">
                                             Mostrar Guias de Despacho
                                         </button>
                                         :
@@ -451,6 +509,64 @@ const OrdersDetails = () => {
                         </div>
                     </Modal.Footer>
                 </form>
+            </Modal>
+
+            <Modal className="fade" show={showOrderFilesModal}>
+                <Modal.Header>
+                    <Modal.Title>Guias de despacho:</Modal.Title>
+                    <Button
+                        variant=""
+                        className="btn-close"
+                        onClick={() => setShowOrderFilesModal(false)}
+                    >
+                    </Button>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="table-responsive">
+                        <table className="display dataTable no-footer w-100 text-center">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        #
+                                    </td>
+                                    <td>
+                                        Nombre
+                                    </td>
+                                    <td>
+                                        Fecha de creación
+                                    </td>
+                                    <td>
+                                        Acciones
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    currentOrderDetails?.files?.map((file, i) => {
+                                        return (
+                                            <tr key={i}>
+                                                <td>
+                                                    {i + 1}
+                                                </td>
+                                                <td>
+                                                    {file?.originalName}
+                                                </td>
+                                                <td>
+                                                    <DateFormatter value={file?.createdAt} dateFormat="dd-MM-yyyy hh:mm:ss" />
+                                                </td>
+                                                <td>
+                                                    <button onClick={() => handleFindFile(file?.filePath, `guia-de-despacho-${i + 1}`)} className="btn btn-xs btn-danger">
+                                                        Descargar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </Modal.Body>
             </Modal>
         </div>
     )
