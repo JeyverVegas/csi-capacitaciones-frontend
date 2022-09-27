@@ -21,6 +21,7 @@ const Login = () => {
     const [rememberMe, setRememberMe] = useState(false);
 
     const [{ data: loginData, loading: loadingLogin }, login] = useAxios({ url: '/auth/login', method: 'post' }, { manual: true, useCache: false });
+
     const [{ data: loginWithTokenData, loading: loadingLoginWithToken }, loginWithToken] = useAxios({ url: '/auth/login/from-token', method: 'post' }, { manual: true, useCache: false });
 
     useEffect(() => {
@@ -31,6 +32,7 @@ const Login = () => {
 
         const token = searchParams.get('token');
         if (token) {
+            alert(token);
             loginWithToken({ data: { token } });
         }
     }, [searchParams])
