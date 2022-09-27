@@ -10,6 +10,7 @@ import SystemInfo from "../../../util/SystemInfo";
 import OrderItemRow from "../../../components/OrderItemRow";
 import { useAuth } from "../../../context/AuthContext";
 import ObservationsForm from "../../../components/Observations/ObservationsForm";
+import OrdersSideCard from "../../../components/Order/OrdersSideCard";
 
 const OrdersDetailsUser = () => {
 
@@ -17,48 +18,11 @@ const OrdersDetailsUser = () => {
 
     const { id } = useParams();
 
-    const navigate = useNavigate();
-
-    const { setCustomAlert, setLoading } = useFeedBack();
+    const { setLoading } = useFeedBack();
 
     const [currentOrderDetails, setCurrentOrderDetails] = useState(null);
 
-    const [observationText, setObservationText] = useState('');
-
-    const [showModalTemplateName, setShowModalTemplateName] = useState(false);
-
-    const [templateName, setTemplateName] = useState('');
-
-    const [showObservationModal, setShowObservationModal] = useState(false);
-
-    const [trakingFile, setTrakingFile] = useState(null);
-
-    const [template, setTemplate] = useState(null);
-
     const [{ data: orderDetails, loading: loadingOrderDetails }] = useAxios({ url: `/user/orders/${id}` }, { useCache: false });
-
-    const [{ data: changeStatusData, loading: changeStatusLoading }, changeStatus] = useAxios({ url: `/orders/${id}/status`, method: 'PUT' }, { useCache: false, manual: true });
-
-    const [{ data: deleteData, loading: deleteLoading }, deleteOrder] = useAxios({ url: `/orders/${id}`, method: 'DELETE' }, { useCache: false, manual: true });
-
-    const [{ data: createTemplateData, loading: createTemplateLoading }, createTemplate] = useAxios({ url: `/orders-templates`, method: 'POST' }, { useCache: false, manual: true });
-
-    const [{ data: generateFileData }, generateFile] = useAxios({ useCache: false, manual: true });
-
-    const [{ loading: deleteTemplateLoading }, deleteTemplate] = useAxios({ method: 'DELETE' }, { useCache: false, manual: true });
-
-    useEffect(() => {
-        if (generateFileData) {
-            window.open(`${SystemInfo?.host}${generateFileData?.filePath}`)
-            console.log(generateFileData);
-        }
-    }, [generateFileData])
-
-    useEffect(() => {
-        if (createTemplateData) {
-            setTemplate(createTemplateData?.data);
-        }
-    }, [createTemplateData]);
 
     useEffect(() => {
         if (orderDetails) {
@@ -68,8 +32,6 @@ const OrdersDetailsUser = () => {
                     ...orderDetails?.data
                 }
             });
-
-            setTemplate(orderDetails?.data?.template);
         }
     }, [orderDetails]);
 
@@ -80,122 +42,6 @@ const OrdersDetailsUser = () => {
         })
     }, [loadingOrderDetails]);
 
-    const handleStatusChange = (statusCode) => {
-        swal({
-            title: "¿Estás Seguro?",
-            text: "Esta acción es irreversible",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((confirm) => {
-            if (confirm) {
-                handleAcceptChangeStatus(statusCode);
-            }
-        });
-    }
-
-    const handleAcceptChangeStatus = (newStatusCode) => {
-        setShowObservationModal({ show: false, statusCode: newStatusCode });
-    };
-
-    const handleDelete = () => {
-        swal({
-            title: "¿Estás Seguro?",
-            text: "Esta acción es irreversible",
-            icon: "warning",
-            buttons: true,
-        }).then((willDelete) => {
-            if (willDelete) {
-                deleteOrder().then(() => {
-                    setCustomAlert({
-                        message: 'El pedido se ha eliminado exitosamente.',
-                        show: true,
-                        severity: 'success'
-                    });
-                    navigate('/pedidos');
-                });
-            } else {
-
-            }
-        });
-    }
-
-    const handleAccepChangeStatus = () => {
-
-        var dataToSend = {
-            order_status_code: showObservationModal?.statusCode,
-            observation: observationText || 'Ninguna...'
-        };
-
-        const formData = new FormData();
-
-        if (showObservationModal?.statusCode === 'ors-004') {
-            formData.append('order_status_code', showObservationModal?.statusCode);
-            formData.append('observation', observationText || 'Ninguna...');
-            formData.append('traking_file', trakingFile, trakingFile?.name);
-        }
-
-
-        changeStatus({
-            data: showObservationModal?.statusCode === 'ors-004' ? formData : dataToSend,
-            method: 'POST'
-        }).then((response) => {
-            setCustomAlert({
-                message: 'El status se ha cambiado exitosamente.',
-                show: true,
-                severity: 'success'
-            });
-            console.log(response?.data?.data);
-            setCurrentOrderDetails((oldOrdersDetails) => {
-                return {
-                    ...oldOrdersDetails,
-                    allowedStatuses: response?.data?.data?.allowedStatuses,
-                    orderStatus: response?.data?.data?.orderStatus,
-                    receiptObservation: response?.data?.data?.receiptObservation,
-                    rejectionObservation: response?.data?.data?.rejectionObservation,
-                    trakingFile: response?.data?.data?.trakingFile
-                }
-            });
-        }).finally(() => {
-            setShowObservationModal(false);
-            setObservationText('');
-        });
-
-    }
-
-    const handleCreateTemplate = (e) => {
-        e?.preventDefault();
-
-        if (currentOrderDetails?.orderTypeId !== 3) {
-            createTemplate({
-                data: {
-                    name: templateName,
-                    order_id: id
-                }
-            }).then((response) => {
-                setShowModalTemplateName(false);
-                setTemplateName('');
-
-            })
-        }
-    }
-
-    const handleDeleteTemplate = () => {
-        if (!template) {
-            alert('No es una plantilla');
-            return;
-        }
-
-        deleteTemplate({ url: `/orders-templates/${template?.id}` })
-            .then(() => {
-                setTemplate(null);
-            })
-    }
-
-    const handleGenerate = (fileType) => {
-        generateFile({ url: `${SystemInfo?.api}/orders/${id}/${fileType}` });
-    }
-
     const canUpdateStatus = () => {
         if (currentOrderDetails?.isReplacement) {
             if (currentOrderDetails?.service?.adquisicionReplacementUser?.id != user?.id) return false;
@@ -203,10 +49,6 @@ const OrdersDetailsUser = () => {
             if (currentOrderDetails?.service?.adquisicionUser?.id != user?.id) return false;
         }
         return true;
-    }
-
-    const handleFile = (e) => {
-        console.log(e.target.files[0]);
     }
 
     return (
@@ -322,210 +164,12 @@ const OrdersDetailsUser = () => {
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <div className="card p-5">
-                        <div>
-                            <h4>Cambiar Estatus a:</h4>
-                            {
-                                currentOrderDetails?.allowedStatuses?.length > 0 ?
-                                    <div className="row">
-                                        {
-                                            currentOrderDetails?.allowedStatuses?.map((status, i) => {
-                                                return (
-                                                    <button
-                                                        onClick={() => handleStatusChange(status?.code)}
-                                                        type="button"
-                                                        className="btn mx-4 my-2"
-                                                        key={i}
-                                                        value={status?.code}
-                                                        style={{ textTransform: 'capitalize', background: status?.color, color: 'white' }}
-                                                    >
-                                                        {status?.name}
-                                                    </button>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                    :
-                                    <p>
-                                        --
-                                    </p>
-                            }
-                            <br />
-                            <br />
-                            <div>
-                                <h4>Exportar a:</h4>
-                                <button onClick={() => handleGenerate('excel')} className="btn btn-success mx-2">
-                                    EXCEL
-                                </button>
-                                <button onClick={() => handleGenerate('pdf')} className="btn btn-danger mx-2">
-                                    PDF
-                                </button>
-                            </div>
-                            <br />
-                            <br />
-                            <div>
-                                <h4>Acciones</h4>
-                                <button disabled={deleteLoading} onClick={handleDelete} className="btn btn-block btn-danger">
-                                    {
-                                        deleteLoading ? 'Cargando' : 'Eliminar'
-                                    }
-                                </button>
-                                <br />
-                                {
-                                    currentOrderDetails?.orderTypeId !== 3 ?
-                                        template ?
-                                            <button onClick={handleDeleteTemplate} disabled={deleteTemplateLoading} className="btn btn-block btn-danger">
-                                                {
-                                                    deleteTemplateLoading ?
-                                                        'Cargando...'
-                                                        :
-                                                        'Eliminar Como Plantilla'
-                                                }
-                                            </button>
-                                            :
-                                            <button onClick={() => setShowModalTemplateName(true)} disabled={createTemplateLoading} className="btn btn-block btn-primary">
-                                                {
-                                                    createTemplateLoading ?
-                                                        'Cargando...'
-                                                        :
-                                                        'Guardar Como Plantilla'
-                                                }
-                                            </button>
-                                        :
-                                        null
-                                }
-                                <br />
-                                {
-                                    currentOrderDetails?.isReplacement ?
-                                        currentOrderDetails?.service?.adquisicionReplacementUser?.id === user?.id ?
-                                            <label className="btn btn-block btn-warning">
-                                                Adjuntar Guia de  Despacho
-                                                <input type="file" style={{ display: 'none' }} onChange={handleFile} />
-                                            </label>
-                                            :
-                                            null
-                                        :
-                                        currentOrderDetails?.service?.adquisicionUser?.id === user?.id ?
-                                            <label className="btn btn-block btn-warning">
-                                                Adjuntar Guia de  Despacho
-                                                <input type="file" style={{ display: 'none' }} onChange={handleFile} />
-                                            </label>
-                                            :
-                                            null
-                                }
-                                <br />
-                                {
-                                    currentOrderDetails?.files?.length > 0 ?
-                                        <button className="btn btn-block btn-dark">
-                                            Mostrar Guias de Despacho ({currentOrderDetails?.files?.length})
-                                        </button>
-                                        :
-                                        null
-                                }
-                            </div>
-
-                        </div>
-
-                    </div>
+                    <OrdersSideCard
+                        order={currentOrderDetails}
+                        orderStateFunct={setCurrentOrderDetails}
+                    />
                 </div>
             </div>
-            <Modal size="lg" className="fade" show={showModalTemplateName}>
-                <form onSubmit={handleCreateTemplate}>
-                    <Modal.Header>
-                        <Modal.Title>Nombre del Template:</Modal.Title>
-                        <Button
-                            variant=""
-                            className="btn-close"
-                            onClick={() => setShowModalTemplateName(false)}
-                        >
-                        </Button>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <input
-                            autoFocus
-                            value={templateName}
-                            onChange={(e) => setTemplateName(e.target.value)}
-                            className="form-control"
-                            placeholder="Ingrese el nombre de la plantilla..."
-                        />
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <div className="row">
-                            <div className="col-md-6">
-                                <button type="button" onClick={() => setShowModalTemplateName(false)} className="btn btn-danger btn-block">
-                                    Cancelar
-                                </button>
-                            </div>
-                            <div className="col-md-6">
-                                <button disabled={createTemplateLoading} type="submit" className="btn btn-success btn-block">
-                                    {
-                                        createTemplateLoading ?
-                                            'Cargando...'
-                                            :
-                                            'Aceptar'
-                                    }
-                                </button>
-                            </div>
-                        </div>
-                    </Modal.Footer>
-                </form>
-            </Modal>
-            <Modal size="lg" className="fade" show={showObservationModal}>
-                <Modal.Header>
-                    <Modal.Title>Observaciones:</Modal.Title>
-                    <Button
-                        variant=""
-                        className="btn-close"
-                        onClick={() => setShowObservationModal(false)}
-                    >
-                    </Button>
-                </Modal.Header>
-                <Modal.Body>
-                    {
-                        showObservationModal?.statusCode === 'ors-004' ?
-                            <div className="mb-4">
-
-                                <p htmlFor="trakingInput">
-                                    Guía de despacho
-                                </p>
-                                <input
-                                    id="trakingInput"
-                                    onChange={(e) => { setTrakingFile(e.target.files[0]) }}
-                                    type="file"
-                                    accept="application/pdf,application/vnd.ms-excel"
-                                />
-                            </div>
-                            :
-                            null
-                    }
-
-                    <p>Por favor indique las observaciones en caso de que hubiera de lo contrario coloque la palabra <b>"Ninguna"</b>.</p>
-                    <textarea
-                        style={{
-                            minHeight: '200px'
-                        }}
-                        value={observationText}
-                        onChange={(e) => setObservationText(e.target.value)}
-                        className="form-control"
-                        cols="30"
-                        placeholder="Ingrese el texto..."
-                        rows="10"></textarea>
-                </Modal.Body>
-                <Modal.Footer>
-                    <div className="row">
-                        <div className="col-md-6">
-                            <button onClick={() => setShowObservationModal(false)} className="btn btn-danger btn-block">
-                                Cancelar
-                            </button>
-                        </div>
-                        <div className="col-md-6">
-                            <button disabled={changeStatusLoading} onClick={handleAccepChangeStatus} className="btn btn-success btn-block">
-                                Aceptar
-                            </button>
-                        </div>
-                    </div>
-                </Modal.Footer>
-            </Modal>
         </div >
     )
 }
