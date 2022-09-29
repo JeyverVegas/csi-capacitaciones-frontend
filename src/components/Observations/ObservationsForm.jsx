@@ -44,7 +44,7 @@ const ObservationsForm = ({ defaultObservations, orderId }) => {
 
     return (
         <div>
-            <h3>Observaciones:</h3>
+            <h3>Chat de Observaciones:</h3>
             <ul>
                 {
                     currentObservations?.length > 0 ?
