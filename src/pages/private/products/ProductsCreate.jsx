@@ -76,6 +76,7 @@ const ProductsCreate = () => {
         subCategoryId: '',
         dataSheet: '',
         certificate: '',
+        certificateExpiryDate: '',
         description: '',
         code: '',
         price: 0,
@@ -478,6 +479,21 @@ const ProductsCreate = () => {
                                     <input type="file" hidden name="certificate" onChange={handleChange} id="certificate-input" />
                                 </div>
                             </div>
+                            {
+                                data?.certificate &&
+                                <div className="col-md-12 mb-5 form-group animate__animated animate__fadeInLeft">
+                                    <label htmlFor="certificate-expiry-input">
+                                        Fecha de expiración del certificado
+                                    </label>
+                                    <input
+                                        className="form-control"
+                                        type="date"
+                                        value={data?.certificateExpiryDate}
+                                        name="certificateExpiryDate"
+                                        onChange={handleChange}
+                                        id="certificate-expiry-input" />
+                                </div>
+                            }
                             <div className="col-md-6">
                                 <div>
                                     <label>

@@ -32,7 +32,6 @@ const Login = () => {
 
         const token = searchParams.get('token');
         if (token) {
-            alert(token);
             loginWithToken({ data: { token } });
         }
     }, [searchParams])

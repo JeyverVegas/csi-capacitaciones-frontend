@@ -17,6 +17,7 @@ import { Button, Modal } from "react-bootstrap";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import ShortProductsColumns from "../../../components/CustomTable/Columns/ShortProductsColumns";
 import useFeatures from "../../../hooks/useFeatures";
+import { format } from "date-fns";
 
 
 
@@ -80,6 +81,7 @@ const ProductsUpdate = () => {
         subCategoryId: '',
         dataSheet: '',
         certificate: '',
+        certificateExpiryDate: '',
         description: '',
         serviceIds: [],
         code: '',
@@ -88,7 +90,7 @@ const ProductsUpdate = () => {
         _method: 'PUT',
         parentId: [],
         parent: '',
-        productFeatureOptionIds: []
+        productFeatureOptionIds: [],
     });
 
     const [imagePreview, setImagePreview] = useState('');
@@ -129,6 +131,7 @@ const ProductsUpdate = () => {
                 id,
                 imagePath,
                 provider,
+                certificateExpiryDate,
                 ...rest
             } = product?.data;
             setData((oldData) => {
@@ -138,7 +141,8 @@ const ProductsUpdate = () => {
                     categoryId: category?.id || '',
                     subCategoryId: subCategory?.id || '',
                     parentId: parentId ? [parentId] : [],
-                    productFeatureOptionIds: product?.data?.features?.map(feature => feature?.id)
+                    productFeatureOptionIds: product?.data?.features?.map(feature => feature?.id),
+                    certificateExpiryDate: certificateExpiryDate
                 }
             });
 
@@ -544,6 +548,21 @@ const ProductsUpdate = () => {
                                         </div>
                                     </div>
                                 </div>
+                                {
+                                    data?.certificateExpiryDate &&
+                                    <div className="col-md-12 mb-5 form-group animate__animated animate__fadeInLeft">
+                                        <label htmlFor="certificate-expiry-input">
+                                            Fecha de expiración del certificado
+                                        </label>
+                                        <input
+                                            className="form-control"
+                                            type="date"
+                                            value={data?.certificateExpiryDate}
+                                            name="certificateExpiryDate"
+                                            onChange={handleChange}
+                                            id="certificate-expiry-input" />
+                                    </div>
+                                }
                                 <div className="col-md-6">
                                     <div>
                                         <label>

@@ -38,6 +38,10 @@ const ProductsColumns = [
         Component: ({ value }) => <span style={{ fontSize: '25px' }}>{value?.parentId ? '✔️' : '🚫'}</span>
     },
     {
+        Label: () => 'Vigencia',
+        Component: ({ value }) => <span>{value?.validity}</span>
+    },
+    {
         Label: () => 'Repuesto',
         Component: ({ value }) => <span style={{ fontSize: '25px' }}>{value?.isReplacement ? '✔️' : '🚫'}</span>
     },

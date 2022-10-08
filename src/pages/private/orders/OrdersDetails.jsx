@@ -1,6 +1,7 @@
+import clsx from "clsx";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { Button, Modal, ProgressBar } from "react-bootstrap";
+import { Dropdown, ProgressBar } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import ObservationsForm from "../../../components/Observations/ObservationsForm";
 import OrdersSideCard from "../../../components/Order/OrdersSideCard";
@@ -9,6 +10,7 @@ import RenderStatus from "../../../components/RenderStatus";
 import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
+import useOrderStatuses from "../../../hooks/useOrderStatuses";
 
 
 const OrdersDetails = () => {
@@ -19,9 +21,34 @@ const OrdersDetails = () => {
 
     const { setLoading } = useFeedBack();
 
+    const [orderStatusesFilter, setOrderStatusesFilter] = useState({
+        page: 1,
+        exceptCodes: ['ors-002', 'ors-003', 'ors-005', 'ors-006']
+    })
+
     const [currentOrderDetails, setCurrentOrderDetails] = useState(null);
 
+    const [selectAll, setSelectAll] = useState(false);
+
+    const [selectedValues, setSelectedValues] = useState([]);
+
     const [{ data: orderDetails, loading: loadingOrderDetails }] = useAxios({ url: `/orders/${id}` }, { useCache: false });
+
+    const [{ data: updateStatusData, loading: updateStatusLoading }, updateStatus] = useAxios({ url: `/order-items/update-status/multiple`, method: 'POST' }, { manual: true, useCache: false });
+
+    const [{ orderStatuses, total, numberOfPages, size, error, loading }, getOrderStatuses] = useOrderStatuses({ params: { ...orderStatusesFilter, exceptCodes: orderStatusesFilter?.exceptCodes?.join(',') } });
+
+    useEffect(() => {
+        if (updateStatusData) {
+            console.log(updateStatusData?.data);
+            setCurrentOrderDetails((oldOrderDetails) => {
+                return {
+                    ...oldOrderDetails,
+                    ...updateStatusData?.data
+                }
+            })
+        }
+    }, [updateStatusData])
 
     useEffect(() => {
         if (orderDetails) {
@@ -41,6 +68,14 @@ const OrdersDetails = () => {
         })
     }, [loadingOrderDetails]);
 
+    useEffect(() => {
+        if (selectAll) {
+            setSelectedValues(currentOrderDetails?.orderItems?.map?.((value) => value?.id))
+        } else {
+            setSelectedValues([])
+        }
+    }, [selectAll])
+
     const canUpdateStatus = () => {
         if (currentOrderDetails?.isReplacement) {
             if (currentOrderDetails?.service?.adquisicionReplacementUser?.id != user?.id) return false;
@@ -48,6 +83,31 @@ const OrdersDetails = () => {
             if (currentOrderDetails?.service?.adquisicionUser?.id != user?.id) return false;
         }
         return true;
+    }
+
+    const handleSelectALL = () => {
+        setSelectAll((oldSelectAll) => !oldSelectAll);
+    }
+
+    const handleCheck = (selectedValue) => {
+        const value = selectedValues?.includes(Number(selectedValue?.id));
+        if (value) {
+            const newValues = selectedValues?.filter(n => n !== Number(selectedValue?.id));
+            setSelectedValues(newValues);
+        } else {
+            setSelectedValues((oldSelectedValues) => [...oldSelectedValues, Number(selectedValue?.id)])
+        }
+    }
+
+    const handleStatusCode = (statusCode) => {
+        if (updateStatusLoading) return;
+
+        updateStatus({
+            data: {
+                status_code: statusCode,
+                itemsIds: selectedValues
+            }
+        });
     }
 
     return (
@@ -104,11 +164,67 @@ const OrdersDetails = () => {
                                     <b>Enc. de Adquisiciones:  </b> {!currentOrderDetails?.isReplacement ? currentOrderDetails?.service?.adquisicionUser?.name || '--' : currentOrderDetails?.service?.adquisicionReplacementUser?.name || '--'}
                                 </div>
                             </div>
-                            <h3 className="text-center">Productos</h3>
+                            <div className="row align-items-center">
+                                <div style={{ transition: 'all .3s' }} className={clsx({
+                                    'col-md-6 text-left': selectedValues?.length > 0,
+                                    'col-md-12 text-center': selectedValues?.length === 0,
+                                })}>
+                                    <h3>Productos</h3>
+                                </div>
+                                <div style={{ transition: 'all .5s' }} className={clsx({
+                                    'col-md-6 text-end': selectedValues?.length > 0,
+                                    'col-md-12 text-center d-none': selectedValues?.length === 0,
+                                })}>
+                                    <Dropdown>
+                                        {
+                                            updateStatusLoading ?
+                                                <Dropdown.Toggle size="xs" variant='light'>
+                                                    Cargando...
+                                                </Dropdown.Toggle>
+                                                :
+                                                <Dropdown.Toggle size="xs" variant="primary">
+                                                    Cambiar Estatus
+                                                </Dropdown.Toggle>
+                                        }
+
+
+                                        <Dropdown.Menu>
+                                            {
+                                                loading ?
+                                                    <Dropdown.Item href="#">Cargando...</Dropdown.Item>
+                                                    :
+                                                    orderStatuses?.map((status, i) => {
+                                                        return (
+                                                            <Dropdown.Item onClick={() => handleStatusCode(status?.code)} href="#" key={i}>
+                                                                {status?.name}
+                                                            </Dropdown.Item>
+                                                        )
+                                                    })
+                                            }
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </div>
+                            </div>
                             <div className="table-responsive">
                                 <table className="table text-center">
                                     <thead>
                                         <tr>
+                                            <th>
+                                                <div className="form-check custom-checkbox ">
+                                                    <input
+                                                        type="checkbox"
+                                                        onChange={handleSelectALL}
+                                                        className="form-check-input"
+                                                        id="customCheckBox2"
+                                                        required
+                                                        checked={selectAll}
+                                                    />
+                                                    <label
+                                                        className="form-check-label"
+                                                        htmlFor="customCheckBox2"
+                                                    />
+                                                </div>
+                                            </th>
                                             <th>
                                                 #
                                             </th>
@@ -139,7 +255,14 @@ const OrdersDetails = () => {
                                         {
                                             currentOrderDetails?.orderItems?.map((item, i) => {
                                                 return (
-                                                    <OrderItemRow canUpdateStatus={canUpdateStatus()} orderItem={item} key={i} index={i} />
+                                                    <OrderItemRow
+                                                        canUpdateStatus={canUpdateStatus()}
+                                                        orderItem={item}
+                                                        selectValues={selectedValues}
+                                                        key={i}
+                                                        index={i}
+                                                        onCheck={handleCheck}
+                                                    />
                                                 )
                                             })
                                         }
@@ -169,7 +292,7 @@ const OrdersDetails = () => {
                     />
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

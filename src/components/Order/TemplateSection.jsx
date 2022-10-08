@@ -75,15 +75,15 @@ const TemplateSection = ({ order, show }) => {
                         'Cargando...'
                         :
                         template ?
-                            'Eliminar Como Plantilla'
+                            'Eliminar Copia'
                             :
-                            'Guardar Como Plantilla'
+                            'Guardar Copia'
                 }
             </button>
             <Modal size="lg" className="fade" show={showModalTemplateName}>
                 <form onSubmit={handleCreateTemplate}>
                     <Modal.Header>
-                        <Modal.Title>Nombre del Template:</Modal.Title>
+                        <Modal.Title>Nombre de la Copia:</Modal.Title>
                         <Button
                             variant=""
                             className="btn-close"
@@ -97,7 +97,7 @@ const TemplateSection = ({ order, show }) => {
                             value={templateName}
                             onChange={(e) => setTemplateName(e.target.value)}
                             className="form-control"
-                            placeholder="Ingrese el nombre de la plantilla..."
+                            placeholder="Ingrese el nombre de la copia..."
                         />
                     </Modal.Body>
                     <Modal.Footer>

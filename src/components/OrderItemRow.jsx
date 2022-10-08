@@ -5,7 +5,7 @@ import useAxios from "../hooks/useAxios";
 import useOrderStatuses from "../hooks/useOrderStatuses";
 import SystemInfo from "../util/SystemInfo";
 
-const OrderItemRow = ({ orderItem, index, canUpdateStatus }) => {
+const OrderItemRow = ({ orderItem, index, canUpdateStatus, selectValues, onCheck }) => {
 
     const [orderStatusesFilter, setOrderStatusesFilter] = useState({
         page: 1,
@@ -32,7 +32,7 @@ const OrderItemRow = ({ orderItem, index, canUpdateStatus }) => {
             setOrderStatusesFilter((oldFilters) => {
                 return {
                     ...oldFilters,
-                    exceptCodes: [currentItem?.status?.code]
+                    exceptCodes: [currentItem?.status?.code, 'ors-002', 'ors-003', 'ors-005', 'ors-006']
                 }
             });
         }
@@ -57,6 +57,25 @@ const OrderItemRow = ({ orderItem, index, canUpdateStatus }) => {
     return (
         <>
             <tr>
+                {
+                    canUpdateStatus &&
+                    <td>
+                        <div className="form-check custom-checkbox ">
+                            <input
+                                type="checkbox"
+                                onChange={() => { onCheck?.(currentItem) }}
+                                className="form-check-input"
+                                id="customCheckBox2"
+                                required
+                                checked={selectValues?.includes(currentItem?.id)}
+                            />
+                            <label
+                                className="form-check-label"
+                                htmlFor="customCheckBox2"
+                            />
+                        </div>
+                    </td>
+                }
                 <td>{index + 1}</td>
                 <td>
                     {currentItem?.productCode || '--'}
@@ -81,11 +100,11 @@ const OrderItemRow = ({ orderItem, index, canUpdateStatus }) => {
                         <Dropdown>
                             {
                                 updateStatusLoading ?
-                                    <Dropdown.Toggle variant='light'>
+                                    <Dropdown.Toggle size="xs" variant='light'>
                                         Cargando...
                                     </Dropdown.Toggle>
                                     :
-                                    <Dropdown.Toggle variant={currentItem?.status?.variant_color}>
+                                    <Dropdown.Toggle size="xs" variant={currentItem?.status?.variant_color}>
                                         {currentItem?.status?.name}
                                     </Dropdown.Toggle>
                             }

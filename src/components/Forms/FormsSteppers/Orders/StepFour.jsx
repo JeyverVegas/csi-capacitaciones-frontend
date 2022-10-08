@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFeedBack } from "../../../../context/FeedBackContext";
 import { useOrderCrud } from "../../../../context/OrderCrudContext";
@@ -15,8 +15,7 @@ import ImgUploadInput from "../../../ImgUploadInput";
 import clsx from "clsx";
 import { useTheme } from "../../../../context/ThemeContext";
 import swal from "sweetalert";
-import useOrdersTemplates from "../../../../hooks/useOrdersTemplates";
-import { format } from "date-fns";
+import TemplatesModal from "./TemplatesModal";
 
 
 const StepFour = () => {
@@ -54,12 +53,6 @@ const StepFour = () => {
         parentsOnly: true
     });
 
-    const [templatesFilters, setTemplatesFilters] = useState({
-        perPage: 10,
-        page: 1,
-        forCurrentUser: true
-    });
-
     const [subCategoriesFilters, setSubCategoriesFilters] = useState({
         page: 1,
         perPage: 200
@@ -67,7 +60,7 @@ const StepFour = () => {
 
     const { data, setData, setCurrentStep } = useOrderCrud();
 
-    const [currentOrdersTemplates, setCurrentOrdersTemplates] = useState([]);
+
 
     const [currentProducts, setCurrentProducts] = useState([]);
 
@@ -85,8 +78,6 @@ const StepFour = () => {
 
     const [{ products, total: productsTotal, numberOfPages, loading: loadingProducts }, getProducts] = useProducts({ params: { ...filters }, options: { useCache: false } });
 
-    const [{ ordersTemplates, numberOfPages: templatesPages, loading: loadingTemplates }, getOrdersTemplates] = useOrdersTemplates({ params: { ...templatesFilters }, options: { useCache: false } });
-
     const [{ categories, loading: loadingCategories }] = useCategories({ params: { ...categoriesFilters } });
 
     const [{ categories: subCategories, loading: loadingSubCategories }, getSubCategories] = useCategories({ params: { ...categoriesFilters }, options: { manual: true } });
@@ -94,26 +85,6 @@ const StepFour = () => {
     const [{ data: createData, loading: createLoading, error: createError }, createOrder] = useAxios({ url: `/orders`, method: 'POST' }, { manual: true, useCache: false });
 
     const [total, setTotal] = useState(0);
-
-    const observer = useRef();
-
-    const lastTemplateRef = useCallback((template) => {
-        if (observer?.current) observer?.current?.disconnect?.();
-
-        observer.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                if (templatesPages > templatesFilters.page) {
-                    setTemplatesFilters((oldTemplatesFilters) => {
-                        return {
-                            ...oldTemplatesFilters,
-                            page: oldTemplatesFilters?.page + 1
-                        }
-                    })
-                }
-            }
-        })
-        if (template) observer?.current?.observe?.(template)
-    }, [templatesPages, templatesFilters.page]);
 
     useEffect(() => {
         if (filters?.categoryId) {
@@ -206,12 +177,6 @@ const StepFour = () => {
         }
     }, [createError]);
 
-    useEffect(() => {
-        setCurrentOrdersTemplates((oldTemplates) => {
-            return [...currentOrdersTemplates, ...ordersTemplates]
-        })
-    }, [ordersTemplates])
-
     const handleDragEnd = (e) => {
         const { source, destination } = e;
         if (!destination) {
@@ -225,8 +190,6 @@ const StepFour = () => {
 
 
         const product = products.find(x => x.id == e.draggableId);
-
-        console.log(product);
 
         const orderHasProduct = data?.orderItems?.find(x => x.id === product.id);
 
@@ -471,7 +434,8 @@ const StepFour = () => {
                         productId: item?.id,
                         quantity: item?.quantity,
                         name: item?.name,
-                        price: item?.price
+                        price: item?.price,
+                        code: item?.code
                     }
                 })
             }
@@ -678,7 +642,7 @@ const StepFour = () => {
                             data?.orderTypeId !== 3 &&
                             <div className="text-center">
                                 <button onClick={() => { setShowModal(true) }} className="btn btn-primary mb-2">
-                                    Cargar Plantilla
+                                    Cargar Copia
                                     <i className="flaticon-381-add mx-2"></i>
                                 </button>
                             </div>
@@ -909,77 +873,7 @@ const StepFour = () => {
                     </button>
                 </Modal.Footer>
             </Modal>
-
-            <Modal show={showModal} className="fade" size="lg">
-                <Modal.Header>
-                    <Modal.Title>Tus Plantillas</Modal.Title>
-                    <Button
-                        variant=""
-                        className="btn-close"
-                        onClick={() => setShowModal(false)}
-                    >
-                    </Button>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="table-responsive">
-                        <table className="table text-center">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Template #
-                                    </th>
-                                    <th>
-                                        nombre
-                                    </th>
-                                    <th>
-                                        Nro. de items
-                                    </th>
-                                    <th>
-                                        Fecha de Creación
-                                    </th>
-                                    <th>
-                                        Acciones
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    currentOrdersTemplates?.map((template, i) => {
-                                        return (
-                                            <tr key={i}
-                                                ref={i + 1 === currentOrdersTemplates.length ? lastTemplateRef : null}
-                                            >
-                                                <td>
-                                                    {template?.id}
-                                                </td>
-                                                <td>
-                                                    {template?.name}
-                                                </td>
-                                                <td>
-                                                    {template?.items?.length}
-                                                </td>
-                                                <td>
-                                                    {format(new Date(template?.createdAt), 'dd/MM/yyyy hh:mm:ss a')}
-                                                </td>
-                                                <td onClick={() => handleTemplate(template)} className="text-end">
-                                                    <button className="btn btn-primary" title="descargar">
-                                                        <i className="flaticon-381-add"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <button onClick={() => { setShowModal(false) }} className="btn btn-danger">
-                        Cerrar
-                    </button>
-                </Modal.Footer>
-            </Modal>
+            <TemplatesModal show={showModal} onClose={() => setShowModal(false)} onSelectTemplate={handleTemplate} />
         </DragDropContext>
     )
 }
