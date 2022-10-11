@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import useAxios from "../../hooks/useAxios";
 import {
     ORDER_NOTIFICATION,
-    ORDER_NOTIFICATION_FOR_OWNER
+    ORDER_NOTIFICATION_FOR_OWNER,
+    QUOTE_NOTIFICATION,
+    QUOTE_NOTIFICATION_FOR_OWNER
 } from "../../util/NotificationsTypes";
 import { es } from "date-fns/locale";
 import { Link } from "react-router-dom";
@@ -29,6 +31,13 @@ const NotificationRow = ({ notification, onReadNotification }) => {
         case ORDER_NOTIFICATION:
             notificationUrl = `/pedidos/detalles/${notification?.notificable_id}`
             break;
+        case QUOTE_NOTIFICATION_FOR_OWNER:
+            notificationUrl = `/mis-cotizaciones/${notification?.notificable_id}`
+            break;
+        case QUOTE_NOTIFICATION:
+            notificationUrl = `/cotizaciones/detalles/${notification?.notificable_id}`
+            break;
+
     }
 
     const timeDistance = (date, length) => {
@@ -64,7 +73,16 @@ const NotificationRow = ({ notification, onReadNotification }) => {
                 <div className="timeline-panel">
                     <div className="media-body">
                         <h6 className="mb-1">{currentNotification?.title}</h6>
-                        <small className="d-block">Hace: {timeDistance(currentNotification?.createdAt, 20)}</small>
+                        <p className="mb-1">
+                            {currentNotification?.message?.length > 30 ?
+                                `${currentNotification?.message?.slice(0, 30)}...`
+                                :
+                                currentNotification?.message
+                            }
+                        </p>
+                        <small className="d-block">
+                            <b>Hace: {timeDistance(currentNotification?.createdAt, 20)}</b>
+                        </small>
                     </div>
                     {
                         !currentNotification?.isRead &&
