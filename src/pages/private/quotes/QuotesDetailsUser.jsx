@@ -78,7 +78,7 @@ const QuotesDetails = () => {
                     <div className="card p-4">
                         <div className="row">
                             <div className="col-md-6">
-                                <h4>Detalles de la cotizacion</h4>
+                                <h4>Detalles de la cotización</h4>
                             </div>
                             <div className="col-md-6 text-right">
                                 <div className="d-flex justify-content-end">
@@ -105,7 +105,7 @@ const QuotesDetails = () => {
                                         <b>Cuenta:</b> {currentQuote?.account}
                                     </div>
                                     <div className="col-md-4">
-                                        <b>Seven:</b> {currentQuote?.seven}
+                                        <b>Ceb:</b> {currentQuote?.seven}
                                     </div>
                                 </div>
                         }
@@ -136,7 +136,7 @@ const QuotesDetails = () => {
                                         <th>Imagen</th>
                                         <th>Nombre</th>
                                         <th>Cantidad</th>
-                                        <th>Ficha Tecnica</th>
+                                        <th>Documento</th>
                                     </tr>
                                 </thead>
                                 <tbody>

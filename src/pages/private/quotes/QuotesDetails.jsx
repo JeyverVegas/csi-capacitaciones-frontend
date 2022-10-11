@@ -38,6 +38,8 @@ const QuotesDetails = () => {
 
     const [{ loading: deleteQuoteFileLoading }, deleteQuoteFile] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false })
 
+    const [{ data: exportQuoteData, loading: exportQuoteLoading }, exportQuote] = useAxios({ method: 'GET', responseType: 'blob' }, { manual: true, useCache: false })
+
     const [{ }, getQuoteFile] = useAxios({ method: 'GET', responseType: 'blob' }, { useCache: false });
 
     const [{ orderStatuses, loading: orderStatusesLoading }, getOrderStatuses] = useOrderStatuses({ params: { ...orderStatusesFilter, exceptCodes: orderStatusesFilter?.exceptCodes?.join(',') } });
@@ -149,6 +151,15 @@ const QuotesDetails = () => {
         window.URL.revokeObjectURL(fileBlobUrl);
     }
 
+    const handleExport = (destiny) => {
+        setCurrentFileName(`cotización-${id}`);
+        exportQuote({
+            url: `/quotes/${id}/${destiny}`
+        }).then((response) => {
+            handleBlobResponse(response?.data);
+        });
+    }
+
     return (
         <div>
             <a id="downloadLink" style={{ display: 'none' }} download={currentFileName}></a>
@@ -170,7 +181,7 @@ const QuotesDetails = () => {
                     <div className="card p-4">
                         <div className="row">
                             <div className="col-md-6">
-                                <h4>Detalles de la cotizacion</h4>
+                                <h4>Detalles de la cotización</h4>
                             </div>
                             <div className="col-md-6 text-right">
                                 <div className="d-flex justify-content-end">
@@ -202,6 +213,19 @@ const QuotesDetails = () => {
                                             }
                                         </Dropdown.Menu>
                                     </Dropdown>
+                                    <Dropdown className="mx-2">
+                                        <Dropdown.Toggle size="xs" variant="light">
+                                            Exportar
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={() => handleExport('excel')} href="#">
+                                                Excel
+                                            </Dropdown.Item>
+                                            <Dropdown.Item onClick={() => handleExport('pdf')} href="#">
+                                                PDF
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
                                 </div>
                             </div>
                         </div>
@@ -220,7 +244,7 @@ const QuotesDetails = () => {
                                         <b>Cuenta:</b> {currentQuote?.account}
                                     </div>
                                     <div className="col-md-4">
-                                        <b>Seven:</b> {currentQuote?.seven}
+                                        <b>Ceb:</b> {currentQuote?.seven}
                                     </div>
                                 </div>
                         }
@@ -251,7 +275,7 @@ const QuotesDetails = () => {
                                         <th>Imagen</th>
                                         <th>Nombre</th>
                                         <th>Cantidad</th>
-                                        <th>Ficha Tecnica</th>
+                                        <th>Documento</th>
                                     </tr>
                                 </thead>
                                 <tbody>

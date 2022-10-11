@@ -204,7 +204,7 @@ const QuotesCreate = () => {
                                 />
                             </div>
                             <div className="col-md-4 form-group">
-                                <label>Seven</label>
+                                <label>Ceb</label>
                                 <input
                                     type="text"
                                     value={data?.seven}
@@ -225,7 +225,7 @@ const QuotesCreate = () => {
                                 <th>Nombre</th>
                                 <th>Cantidad</th>
                                 <th>Imagen</th>
-                                <th>Ficha Tecnica</th>
+                                <th>Doocumento</th>
                                 <th></th>
                             </tr>
                         </thead>
