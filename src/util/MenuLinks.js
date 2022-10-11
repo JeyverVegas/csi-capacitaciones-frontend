@@ -18,6 +18,11 @@ import ProductsUpdatePrices from "../pages/private/products/ProductsUpdatePrices
 import Providers from "../pages/private/providers/Providers";
 import ProvidersCreate from "../pages/private/providers/ProvidersCreate";
 import ProvidersUpdate from "../pages/private/providers/ProvidersUpdate";
+import MyQuotes from "../pages/private/quotes/MyQuotes";
+import Quotes from "../pages/private/quotes/Quotes";
+import QuotesCreate from "../pages/private/quotes/QuotesCreate";
+import QuotesDetails from "../pages/private/quotes/QuotesDetails";
+import QuotesDetailsUser from "../pages/private/quotes/QuotesDetailsUser";
 import SystemInfo from "./SystemInfo";
 
 const createLink = (
@@ -36,6 +41,7 @@ export const mainPermissions = {
     dashboard: [`${systemCode}-view-dashboard`],
     providers: [`${systemCode}-view-providers`, `${systemCode}-create-providers`, `${systemCode}-update-providers`, `${systemCode}-delete-providers`],
     orders: [`${systemCode}-view-orders`, `${systemCode}-create-orders`, `${systemCode}-update-orders`, `${systemCode}-delete-orders`],
+    quotes: [`${systemCode}-view-quotes`, `${systemCode}-create-quotes`, `${systemCode}-update-quotes`, `${systemCode}-delete-quotes`],
     products: [`${systemCode}-view-products`, `${systemCode}-create-products`, `${systemCode}-update-products`, `${systemCode}-delete-products`],
     categories: [`${systemCode}-view-categories`, `${systemCode}-create-categories`, `${systemCode}-update-categories`, `${systemCode}-delete-categories`],
     features: [`${systemCode}-view-product-features`, `${systemCode}-create-product-features`, `${systemCode}-update-product-features`, `${systemCode}-delete-product-features`],
@@ -51,6 +57,15 @@ const MenuLinks = [
         createLink('Mis Pedidos', null, <MyOrders />, '', '/mis-pedidos', null),
         createLink('Actualizar Pedido', true, <OrdersDetails />, '', '/pedidos/detalles/:id', null),
         createLink('Ver Pedido', true, <OrdersDetailsUser />, '', '/mis-pedidos/:id', null)
+    ]),
+
+
+    createLink('Cotizaciones', null, null, 'flaticon-381-list', '/cotizaciones', mainPermissions?.quotes, [
+        createLink('Crear', null, <QuotesCreate />, '', '/cotizaciones/crear', mainPermissions?.quotes[1]),
+        createLink('Listar', null, <Quotes />, '', '/cotizaciones', mainPermissions?.quotes[0]),
+        createLink('Mis Cotizaciones', null, <MyQuotes />, '', '/mis-cotizaciones', null),
+        createLink('Actualizar Cotización', true, <QuotesDetails />, '', '/cotizaciones/detalles/:id', null),
+        createLink('Ver Cotización', true, <QuotesDetailsUser />, '', '/mis-cotizaciones/:id', null)
     ]),
 
     createLink('Proveedores', null, null, 'flaticon-052-inside', '/proveedores', mainPermissions?.providers, [

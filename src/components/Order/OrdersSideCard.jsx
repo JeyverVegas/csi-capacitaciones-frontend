@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Badge, Button, Modal } from "react-bootstrap";
 import swal from "sweetalert";
 import { useAuth } from "../../context/AuthContext";
 import { useFeedBack } from "../../context/FeedBackContext";
@@ -130,8 +130,11 @@ const OrdersSideCard = ({ order, orderStateFunct }) => {
                     <br />
                     {
                         order?.files?.length > 0 ?
-                            <button onClick={() => setShowOrderFilesModal(true)} className="btn btn-block btn-dark">
-                                Mostrar Guias de Despacho
+                            <button onClick={() => setShowOrderFilesModal(true)} className="btn btn-block btn-dark position-relative">
+                                <p style={{ margin: 0 }}>Mostrar Guias de Despacho</p>
+                                <div className="bg-danger rounded" style={{ height: '20px', width: '20px', position: 'absolute', right: '-5px', top: '-5px' }}>
+                                    {order?.files?.length}
+                                </div>
                             </button>
                             :
                             null

@@ -27,6 +27,9 @@ const ImgUploadInput = (options) => {
 
   useEffect(() => {
     if (files.length > 0) {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
       setPreview(URL.createObjectURL(files[0]));
       change?.({ target: { name: name, files: files, type: "file" } });
     }

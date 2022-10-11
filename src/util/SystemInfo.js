@@ -8,7 +8,7 @@ const SystemInfo = {
     logo: logo,
     logoBlanco: logoBlanco,
     logoShort: logoShort,
-    host: 'http://csipedidos.test/', //'http://csipedidos.csiltda.cl/'
+    host: 'http://csipedidos.test', //'http://csipedidos.csiltda.cl/'
     api: 'http://csipedidos.test/api',
     usersApi: 'http://csiusers.test/api',
     systemCode: 'sys-002',

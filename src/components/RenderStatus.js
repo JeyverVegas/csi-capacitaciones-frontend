@@ -1,25 +1,34 @@
+import { useEffect, useState } from "react";
 import { ProgressBar } from "react-bootstrap";
 
 
 const RenderStatus = ({ value, styles, hiddenBar }) => {
+
+    const [currentStatus, setCurrentStatus] = useState(null);
+
+    useEffect(() => {
+        if (value?.orderStatus) setCurrentStatus(value?.orderStatus);
+        if (value?.quoteStatus) setCurrentStatus(value?.quoteStatus);
+    }, [value])
+
     return (
         <>
             <div style={{ display: 'flex', width: 'fit-content', alignItems: 'center', justifyContent: 'space-evenly', textTransform: 'capitalize', ...styles }}>
-                {value?.orderStatus?.name}
+                {currentStatus?.name}
                 <div
                     style={{
                         height: '10px',
                         width: '10px',
                         borderRadius: '100%',
-                        background: value?.orderStatus?.color
+                        background: currentStatus?.color
                     }}
                 />
             </div>
             {
                 !hiddenBar &&
                 <ProgressBar
-                    now={value?.orderStatus?.progress}
-                    variant={value?.orderStatus?.variantColor}
+                    now={currentStatus?.progress}
+                    variant={currentStatus?.variantColor}
                     className="my-3"
                 />
             }

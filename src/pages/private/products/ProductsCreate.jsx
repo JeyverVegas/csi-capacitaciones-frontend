@@ -77,6 +77,7 @@ const ProductsCreate = () => {
         dataSheet: '',
         certificate: '',
         certificateExpiryDate: '',
+        notifyCertificateExpiryDays: '',
         description: '',
         code: '',
         price: 0,
@@ -84,7 +85,7 @@ const ProductsCreate = () => {
         isReplacement: false,
         parentId: [],
         parent: '',
-        productFeatureOptionIds: []
+        productFeatureOptionIds: [],
     });
 
     const { openMenuToggle, customMenuToggle, sideBarStyle } = useTheme();
@@ -481,18 +482,32 @@ const ProductsCreate = () => {
                             </div>
                             {
                                 data?.certificate &&
-                                <div className="col-md-12 mb-5 form-group animate__animated animate__fadeInLeft">
-                                    <label htmlFor="certificate-expiry-input">
-                                        Fecha de expiración del certificado
-                                    </label>
-                                    <input
-                                        className="form-control"
-                                        type="date"
-                                        value={data?.certificateExpiryDate}
-                                        name="certificateExpiryDate"
-                                        onChange={handleChange}
-                                        id="certificate-expiry-input" />
-                                </div>
+                                <>
+                                    <div className="col-md-6 mb-5 form-group animate__animated animate__fadeInLeft">
+                                        <label htmlFor="certificate-expiry-input">
+                                            Fecha de expiración del certificado
+                                        </label>
+                                        <input
+                                            className="form-control"
+                                            type="date"
+                                            value={data?.certificateExpiryDate}
+                                            name="certificateExpiryDate"
+                                            onChange={handleChange}
+                                            id="certificate-expiry-input" />
+                                    </div>
+                                    <div className="col-md-6 mb-5 form-group animate__animated animate__fadeInLeft">
+                                        <label htmlFor="certificate-expiry-days-input">
+                                            Días para notificar
+                                        </label>
+                                        <input
+                                            className="form-control"
+                                            type="number"
+                                            value={data?.notifyCertificateExpiryDays}
+                                            name="notifyCertificateExpiryDays"
+                                            onChange={handleChange}
+                                            id="certificate-expiry-days-input" />
+                                    </div>
+                                </>
                             }
                             <div className="col-md-6">
                                 <div>
