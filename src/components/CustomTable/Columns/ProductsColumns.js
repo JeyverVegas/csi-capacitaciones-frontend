@@ -39,7 +39,7 @@ const ProductsColumns = [
     },
     {
         Label: () => 'Vigencia',
-        Component: ({ value }) => <span>{value?.validity}</span>
+        Component: ({ value }) => <span style={{ color: value?.validity?.color }}>{value?.validity?.name}</span>
     },
     {
         Label: () => 'Repuesto',
