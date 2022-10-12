@@ -11,7 +11,11 @@ export const OrderCrudProvider = ({ children }) => {
     isReplacement: false,
     orderTypeId: '',
     serviceId: '',
-    orderItems: []
+    orderItems: [],
+    authorizedBy: '',
+    account: '',
+    seven: '',
+    chargePerForm: false
   });
 
   const [canNext, setCanNext] = useState(false);

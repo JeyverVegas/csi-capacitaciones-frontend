@@ -16,6 +16,7 @@ import clsx from "clsx";
 import { useTheme } from "../../../../context/ThemeContext";
 import swal from "sweetalert";
 import TemplatesModal from "./TemplatesModal";
+import Toggle from "react-toggle";
 
 
 const StepFour = () => {
@@ -253,6 +254,15 @@ const StepFour = () => {
         })
     }
 
+    const handleChangeForm = (e) => {
+        setData((oldData) => {
+            return {
+                ...oldData,
+                [e.target.name]: e.target.value
+            }
+        })
+    }
+
     const handleNewItemChange = (e) => {
         setNewItemData((oldData) => {
             return {
@@ -390,7 +400,15 @@ const StepFour = () => {
     }
 
     const handleCreateOrder = () => {
-        const { isReplacement, orderItems, ...rest } = data;
+        const {
+            isReplacement,
+            orderItems,
+            authorizedBy,
+            account,
+            seven,
+            chargePerForm,
+            ...rest
+        } = data;
 
         var formData = new FormData();
 
@@ -398,6 +416,12 @@ const StepFour = () => {
             Object.keys(rest).forEach((key, i) => {
                 formData?.append(key, rest[key]);
             });
+
+            if (data?.chargePerForm) {
+                formData?.append('authorizedBy', data?.authorizedBy);
+                formData?.append('account', data?.account);
+                formData?.append('seven', data?.seven);
+            }
 
             formData?.append('isReplacement', isReplacement ? 1 : 0);
 
@@ -452,6 +476,56 @@ const StepFour = () => {
                     {
                         data?.orderTypeId == 3 ?
                             <div className="col-md-7 card p-5">
+                                <div className="row">
+                                    <div className="col-md-12 align-items-center justify-content-between d-flex">
+                                        <label className="d-block">
+                                            <h4>Cobro por formular:</h4>
+                                        </label>
+                                        <Toggle onChange={() => setData((oldData) => {
+                                            return {
+                                                ...oldData,
+                                                chargePerForm: !oldData?.chargePerForm
+                                            }
+                                        })} checked={data?.chargePerForm} />
+                                    </div>
+                                </div>
+                                {
+                                    data?.chargePerForm &&
+                                    <div className="row animate__animated animate__fadeInRight mb-4">
+                                        <div className="col-md-4 form-group">
+                                            <label>Autorizado por</label>
+                                            <input
+                                                type="text"
+                                                value={data?.authorizedBy}
+                                                name="authorizedBy"
+                                                className="form-control"
+                                                onChange={handleChangeForm}
+                                            />
+                                        </div>
+                                        <div className="col-md-4 form-group">
+                                            <label>Cuenta</label>
+                                            <input
+                                                type="text"
+                                                value={data?.account}
+                                                name="account"
+                                                className="form-control"
+                                                onChange={handleChangeForm}
+                                            />
+                                        </div>
+                                        <div className="col-md-4 form-group">
+                                            <label>Ceb</label>
+                                            <input
+                                                type="text"
+                                                value={data?.seven}
+                                                name="seven"
+                                                className="form-control"
+                                                onChange={handleChangeForm}
+                                            />
+                                        </div>
+                                    </div>
+                                }
+                                <div className="border-bottom"></div>
+                                <br />
                                 <div className="row align-items-center">
                                     <div className="col-md-6">
                                         <h3>
@@ -511,16 +585,44 @@ const StepFour = () => {
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col-md-6 form-group mb-2">
-                                                <input type="text" className="form-control" placeholder="Nombre..." name="name" onChange={handleChange} value={filters?.name} />
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    placeholder="Nombre..."
+                                                    name="name"
+                                                    onChange={handleChange}
+                                                    value={filters?.name}
+                                                />
                                             </div>
                                             <div className="col-md-6 form-group mb-2">
-                                                <input type="text" className="form-control" placeholder="referencia..." name="reference" onChange={handleChange} value={filters?.reference} />
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    placeholder="referencia..."
+                                                    name="reference"
+                                                    onChange={handleChange}
+                                                    value={filters?.reference}
+                                                />
                                             </div>
                                             <div className="col-md-6 form-group mb-2">
-                                                <input type="text" className="form-control" placeholder="proveedor..." name="providerName" onChange={handleChange} value={filters?.providerName} />
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    placeholder="proveedor..."
+                                                    name="providerName"
+                                                    onChange={handleChange}
+                                                    value={filters?.providerName}
+                                                />
                                             </div>
                                             <div className="col-md-6 form-group mb-2">
-                                                <input type="number" className="form-control" placeholder="Precio..." name="price" onChange={handleChange} value={filters?.price} />
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    placeholder="Precio..."
+                                                    name="price"
+                                                    onChange={handleChange}
+                                                    value={filters?.price}
+                                                />
                                             </div>
                                             <div className="col-md-6 form-group mb-2">
                                                 <label>Categoría</label>

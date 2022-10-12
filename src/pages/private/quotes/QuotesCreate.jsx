@@ -34,6 +34,17 @@ const QuotesCreate = () => {
     const [{ data: createQuoteData, loading: createQuoteLoading }, createQuote] = useAxios({ url: `/quotes`, method: 'POST' }, { manual: true, useCache: false });
 
     useEffect(() => {
+        if (services?.length === 1) {
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    serviceId: services[0]?.id
+                }
+            });
+        }
+    }, [services])
+
+    useEffect(() => {
         setLoading({
             show: createQuoteLoading,
             message: 'Creando cotización'
@@ -53,14 +64,7 @@ const QuotesCreate = () => {
     }, [createQuoteData])
 
     useEffect(() => {
-        if (data.chargePerForm) {
-            setData((oldData) => {
-                return {
-                    ...oldData,
-                    serviceId: ''
-                }
-            });
-        } else {
+        if (!data.chargePerForm) {
             setData((oldData) => {
                 return {
                     ...oldData,
@@ -90,9 +94,9 @@ const QuotesCreate = () => {
             formData?.append('authorizedBy', data?.authorizedBy);
             formData?.append('account', data?.account);
             formData?.append('seven', data?.seven);
-        } else {
-            formData?.append('serviceId', data?.serviceId);
         }
+
+        formData?.append('serviceId', data?.serviceId);
 
         data?.quoteItems?.forEach((item, i) => {
             formData?.append(`quoteItems[${i}][name]`, item?.name);
@@ -157,63 +161,63 @@ const QuotesCreate = () => {
                     })} checked={data?.chargePerForm} />
                 </div>
                 <br />
+                <div className="form-group animate__animated animate__fadeInRight text-center">
+                    <label>
+                        <h3>
+                            Servicio
+                        </h3>
+                    </label>
+                    <select
+                        name="serviceId"
+                        value={data?.serviceId}
+                        onChange={handleChange}
+                        className="form-control"
+                    >
+                        <option value="">seleccione un servicio</option>
+                        {
+                            services?.map((service) => {
+                                return (
+                                    <option value={service?.id} key={service?.id}>{service?.name}</option>
+                                )
+                            })
+                        }
+                    </select>
+                </div>
+                <br />
                 {
-                    !data?.chargePerForm ?
-                        <div className="form-group animate__animated animate__fadeInRight text-center">
-                            <label>
-                                <h3>
-                                    Servicio
-                                </h3>
-                            </label>
-                            <select
-                                name="serviceId"
-                                value={data?.serviceId}
-                                onChange={handleChange}
+                    data?.chargePerForm &&
+                    <div className="row animate__animated animate__fadeInRight">
+                        <div className="col-md-4 form-group">
+                            <label>Autorizado por</label>
+                            <input
+                                type="text"
+                                value={data?.authorizedBy}
+                                name="authorizedBy"
                                 className="form-control"
-                            >
-                                <option value="">seleccione un servicio</option>
-                                {
-                                    services?.map((service) => {
-                                        return (
-                                            <option value={service?.id} key={service?.id}>{service?.name}</option>
-                                        )
-                                    })
-                                }
-                            </select>
+                                onChange={handleChange}
+                            />
                         </div>
-                        :
-                        <div className="row animate__animated animate__fadeInRight">
-                            <div className="col-md-4 form-group">
-                                <label>Autorizado por</label>
-                                <input
-                                    type="text"
-                                    value={data?.authorizedBy}
-                                    name="authorizedBy"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col-md-4 form-group">
-                                <label>Cuenta</label>
-                                <input
-                                    type="text"
-                                    value={data?.account}
-                                    name="account"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col-md-4 form-group">
-                                <label>Ceb</label>
-                                <input
-                                    type="text"
-                                    value={data?.seven}
-                                    name="seven"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                />
-                            </div>
+                        <div className="col-md-4 form-group">
+                            <label>Cuenta</label>
+                            <input
+                                type="text"
+                                value={data?.account}
+                                name="account"
+                                className="form-control"
+                                onChange={handleChange}
+                            />
                         </div>
+                        <div className="col-md-4 form-group">
+                            <label>Ceb</label>
+                            <input
+                                type="text"
+                                value={data?.seven}
+                                name="seven"
+                                className="form-control"
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
                 }
                 <br />
                 <h3 className="text-center">Items</h3>

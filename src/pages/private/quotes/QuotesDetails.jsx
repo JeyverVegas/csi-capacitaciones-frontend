@@ -230,23 +230,33 @@ const QuotesDetails = () => {
                             </div>
                         </div>
                         <br />
+                        <div>
+                            <b>Servicio:</b> {currentQuote?.service?.name}
+                        </div>
+                        <br />
                         {
-                            currentQuote?.serviceId ?
-                                <div>
-                                    <b>Servicio:</b> {currentQuote?.service?.name}
-                                </div>
-                                :
+                            currentQuote?.authorizedBy ||
+                                currentQuote?.account ||
+                                currentQuote?.seven ?
                                 <div className="row">
                                     <div className="col-md-4">
-                                        <b>Autorizado por</b> {currentQuote?.authorizedBy}
+                                        <b>Autorizado por</b>
+                                        <br />
+                                        {currentQuote?.authorizedBy || '--'}
                                     </div>
                                     <div className="col-md-4">
-                                        <b>Cuenta:</b> {currentQuote?.account}
+                                        <b>Cuenta:</b>
+                                        <br />
+                                        {currentQuote?.account || '--'}
                                     </div>
                                     <div className="col-md-4">
-                                        <b>Ceb:</b> {currentQuote?.seven}
+                                        <b>Ceb:</b>
+                                        <br />
+                                        {currentQuote?.seven || '--'}
                                     </div>
                                 </div>
+                                :
+                                null
                         }
                         <br />
                         <div className="row">
