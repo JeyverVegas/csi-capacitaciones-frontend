@@ -530,7 +530,7 @@ const ProductsUpdate = () => {
                                             <a href={dataSheetPreview} target="_blank" style={{ margin: 0 }}>Mostrar Ficha Técnica</a>
                                             <label className={clsx(['btn'], {
                                                 "btn-primary": !dataSheetPreview,
-                                                "btn-success": dataSheetPreview,
+                                                "btn-success": dataSheetPreview || data?.dataSheet,
                                             })} htmlFor="datasheet-input">
                                                 Ficha técnica
                                             </label>
@@ -540,7 +540,7 @@ const ProductsUpdate = () => {
                                             <a href={certificatePreview} target="_blank" style={{ margin: 0 }}>Mostrar Certificado</a>
                                             <label className={clsx(['btn'], {
                                                 "btn-primary": !certificatePreview,
-                                                "btn-success": certificatePreview,
+                                                "btn-success": certificatePreview || data?.certificate,
                                             })} htmlFor="certificate-input">
                                                 Certificado
                                             </label>
