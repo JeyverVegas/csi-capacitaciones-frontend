@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { Dropdown } from "react-bootstrap";
+import { Button, Dropdown, Modal } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import DateFormatter from "../../../components/DateFormatter";
 import RenderStatus from "../../../components/RenderStatus";
@@ -22,6 +22,8 @@ const QuotesDetails = () => {
     const [currentQuote, setCurrentQuote] = useState(null);
 
     const [currentFileName, setCurrentFileName] = useState('');
+
+    const [showModalImagePreview, setShowModalImagePreview] = useState(false);
 
     const [{ data: quoteData, loading: quoteLoading }] = useAxios({ url: `/user/quotes/${id}` }, { useCache: false });
 
@@ -156,11 +158,14 @@ const QuotesDetails = () => {
                                                 <tr key={i}>
                                                     <td><b>{i + 1}</b></td>
                                                     <td>
-                                                        <img src={imgUrl(item?.imagePath)}
+                                                        <img
+                                                            onClick={() => setShowModalImagePreview(imgUrl(item?.imagePath))}
+                                                            src={imgUrl(item?.imagePath)}
                                                             style={{
                                                                 borderRadius: '100%',
                                                                 height: '50px',
-                                                                width: '50px'
+                                                                width: '50px',
+                                                                cursor: 'pointer'
                                                             }}
                                                         />
                                                     </td>
@@ -215,7 +220,25 @@ const QuotesDetails = () => {
                     </div>
                 </div>
             </div>
-        </div >
+            <Modal size="lg" className="fade" show={showModalImagePreview}>
+                <Modal.Header>
+                    <Modal.Title></Modal.Title>
+                    <Button
+                        variant=""
+                        className="btn-close"
+                        onClick={() => setShowModalImagePreview(false)}
+                    >
+                    </Button>
+                </Modal.Header>
+                <Modal.Body>
+
+                    <div className="text-center">
+                        <img style={{ width: '40vw' }} src={showModalImagePreview} />
+                    </div>
+
+                </Modal.Body>
+            </Modal>
+        </div>
     )
 }
 

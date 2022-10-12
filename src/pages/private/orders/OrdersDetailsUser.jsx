@@ -96,15 +96,58 @@ const OrdersDetailsUser = () => {
                                     <RenderStatus hiddenBar styles={{ marginBottom: '10px' }} value={currentOrderDetails} />
                                 </div>
                                 <div className="col-md-4 my-4">
-                                    <b>Gestionado Por:  </b> {currentOrderDetails?.user?.name}
+                                    <b>Gestionado Por:  </b>
+                                    <br />
+                                    {currentOrderDetails?.user?.name}
                                 </div>
                                 <div className="col-md-4 my-4">
-                                    <b>Jefe del servicio:  </b> {!currentOrderDetails?.isReplacement ? currentOrderDetails?.service?.ordersBoss?.name || '--' : currentOrderDetails?.service?.ordersReplacementBoss?.name || '--'}
+                                    <b>Jefe del servicio:  </b>
+                                    <br />
+                                    {!currentOrderDetails?.isReplacement ? currentOrderDetails?.service?.ordersBoss?.name || '--' : currentOrderDetails?.service?.ordersReplacementBoss?.name || '--'}
                                 </div>
                                 <div className="col-md-4 my-4">
-                                    <b>Enc. de Adquisiciones:  </b> {!currentOrderDetails?.isReplacement ? currentOrderDetails?.service?.adquisicionUser?.name || '--' : currentOrderDetails?.service?.adquisicionReplacementUser?.name || '--'}
+                                    <b>Enc. de Adquisiciones:  </b>
+                                    <br />
+                                    {!currentOrderDetails?.isReplacement ? currentOrderDetails?.service?.adquisicionUser?.name || '--' : currentOrderDetails?.service?.adquisicionReplacementUser?.name || '--'}
+                                </div>
+                                <div className="col-md-4 mb-4">
+                                    <b>Cobro por Formular:  </b>
+                                    <br />
+                                    {
+                                        currentOrderDetails?.authorizedBy ||
+                                            currentOrderDetails?.account ||
+                                            currentOrderDetails?.seven ?
+                                            'SI'
+                                            :
+                                            'NO'
+                                    }
                                 </div>
                             </div>
+                            {
+                                currentOrderDetails?.authorizedBy ||
+                                    currentOrderDetails?.account ||
+                                    currentOrderDetails?.seven ?
+                                    <div className="row">
+                                        <div className="col-md-4">
+                                            <b>Autorizado por</b>
+                                            <br />
+                                            {currentOrderDetails?.authorizedBy || '--'}
+                                        </div>
+                                        <div className="col-md-4">
+                                            <b>Cuenta:</b>
+                                            <br />
+                                            {currentOrderDetails?.account || '--'}
+                                        </div>
+                                        <div className="col-md-4">
+                                            <b>Ceb:</b>
+                                            <br />
+                                            {currentOrderDetails?.seven || '--'}
+                                        </div>
+                                    </div>
+                                    :
+                                    null
+                            }
+                            <br />
                             <h3 className="text-center">Productos</h3>
                             <div className="table-responsive">
                                 <table className="table text-center">
