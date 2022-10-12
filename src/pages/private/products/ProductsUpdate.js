@@ -549,7 +549,7 @@ const ProductsUpdate = () => {
                                     </div>
                                 </div>
                                 {
-                                    data?.certificateExpiryDate &&
+                                    certificatePreview || data?.certificate &&
                                     <>
                                         <div className="col-md-6 mb-5 form-group animate__animated animate__fadeInLeft">
                                             <label htmlFor="certificate-expiry-input">
