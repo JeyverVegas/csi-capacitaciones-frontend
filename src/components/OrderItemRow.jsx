@@ -5,7 +5,7 @@ import useAxios from "../hooks/useAxios";
 import useOrderStatuses from "../hooks/useOrderStatuses";
 import SystemInfo from "../util/SystemInfo";
 
-const OrderItemRow = ({ orderItem, index, canUpdateStatus, selectValues, onCheck }) => {
+const OrderItemRow = ({ orderItem, index, canUpdateStatus, selectValues, onCheck, withOutCheck }) => {
 
     const [orderStatusesFilter, setOrderStatusesFilter] = useState({
         page: 1,
@@ -58,7 +58,7 @@ const OrderItemRow = ({ orderItem, index, canUpdateStatus, selectValues, onCheck
         <>
             <tr>
                 {
-                    canUpdateStatus &&
+                    !withOutCheck &&
                     <td>
                         <div className="form-check custom-checkbox ">
                             <input

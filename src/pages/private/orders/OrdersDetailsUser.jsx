@@ -140,7 +140,7 @@ const OrdersDetailsUser = () => {
                                         {
                                             currentOrderDetails?.orderItems?.map((item, i) => {
                                                 return (
-                                                    <OrderItemRow canUpdateStatus={canUpdateStatus()} orderItem={item} key={i} index={i} />
+                                                    <OrderItemRow withOutCheck canUpdateStatus={canUpdateStatus()} orderItem={item} key={i} index={i} />
                                                 )
                                             })
                                         }
