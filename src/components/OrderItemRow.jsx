@@ -3,9 +3,10 @@ import { useEffect } from "react";
 import { Button, Dropdown, Modal } from "react-bootstrap";
 import useAxios from "../hooks/useAxios";
 import useOrderStatuses from "../hooks/useOrderStatuses";
+import imgUrl from "../util/imgUrl";
 import SystemInfo from "../util/SystemInfo";
 
-const OrderItemRow = ({ orderItem, index, canUpdateStatus, selectValues, onCheck, withOutCheck }) => {
+const OrderItemRow = ({ orderItem, index, canUpdateStatus, selectValues, onCheck, withOutCheck, orderTypeId }) => {
 
     const [orderStatusesFilter, setOrderStatusesFilter] = useState({
         page: 1,
@@ -95,6 +96,21 @@ const OrderItemRow = ({ orderItem, index, canUpdateStatus, selectValues, onCheck
                     {currentItem?.name}
                 </td>
                 <td>{currentItem?.providerName}</td>
+                {
+                    orderTypeId === 3 &&
+                    <td>
+                        {
+                            currentItem?.filePath ?
+                                <a href={imgUrl(currentItem?.filePath, '#')} target="_blank" className="btn btn-danger btn-xs">
+                                    Descargar
+                                </a>
+                                :
+                                <a className="btn btn-light btn-xs">
+                                    No tiene
+                                </a>
+                        }
+                    </td>
+                }
                 <td>
                     <div className="basic-dropdown">
                         <Dropdown>

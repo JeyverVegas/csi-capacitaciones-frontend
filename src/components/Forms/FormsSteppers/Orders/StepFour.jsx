@@ -70,7 +70,8 @@ const StepFour = () => {
         price: 0,
         providerName: '',
         description: '',
-        image: null
+        image: null,
+        file: null
     });
 
     const [{ data: service, loading: loadingService }, getService] = useAxios({ url: `/services/${data?.serviceId}` }, { useCache: false, manual: true });
@@ -272,10 +273,20 @@ const StepFour = () => {
         });
     }
 
-    const handleAddNewItem = () => {
-
-        if (!newItemData?.name || !newItemData?.price || !newItemData?.providerName || !newItemData?.image || !newItemData?.description) {
+    const handleAddNewItem = (e) => {
+        e.preventDefault?.();
+        if (
+            !newItemData?.name ||
+            !newItemData?.price ||
+            !newItemData?.providerName ||
+            !newItemData?.description
+        ) {
             alert('Todos lo campos son obligatorios');
+            return;
+        }
+
+        if (!newItemData?.image && !newItemData?.file) {
+            alert('Tienes que llenar el campo imagen o el campo archivo.');
             return;
         }
 
@@ -286,7 +297,8 @@ const StepFour = () => {
                     ...oldData?.orderItems,
                     {
                         name: newItemData?.name,
-                        image: newItemData?.image,
+                        image: newItemData?.image || null,
+                        file: newItemData?.file || null,
                         providerName: newItemData?.providerName,
                         description: newItemData?.description,
                         quantity: 1,
@@ -301,7 +313,8 @@ const StepFour = () => {
             price: 0,
             providerName: '',
             description: '',
-            image: null
+            image: null,
+            file: null
         });
     }
 
@@ -427,7 +440,14 @@ const StepFour = () => {
 
             orderItems?.forEach((item, i) => {
                 formData.append(`customOrderItems[${i}][name]`, item?.name);
-                formData.append(`customOrderItems[${i}][image]`, item?.image, item?.image?.name);
+                if (item?.image) {
+                    formData.append(`customOrderItems[${i}][image]`, item?.image, item?.image?.name);
+                }
+
+                if (item?.file) {
+                    formData.append(`customOrderItems[${i}][file]`, item?.file, item?.file?.name);
+                }
+
                 formData.append(`customOrderItems[${i}][providerName]`, item?.providerName);
                 formData.append(`customOrderItems[${i}][description]`, item?.description);
                 formData.append(`customOrderItems[${i}][quantity]`, item?.quantity);
@@ -475,7 +495,7 @@ const StepFour = () => {
                 <div className="row">
                     {
                         data?.orderTypeId == 3 ?
-                            <div className="col-md-7 card p-5">
+                            <form onSubmit={handleAddNewItem} className="col-md-7 card p-5">
                                 <div className="row">
                                     <div className="col-md-12 align-items-center justify-content-between d-flex">
                                         <label className="d-block">
@@ -553,9 +573,47 @@ const StepFour = () => {
                                         <label>Precio Referencia</label>
                                         <input value={newItemData?.price} onChange={handleNewItemChange} name="price" type="number" className="form-control" />
                                     </div>
-                                    <div className="col-md-12 form-group mb-4">
+                                    <div className="col-md-6 form-group mb-4">
                                         <label>Proveedor</label>
                                         <input value={newItemData?.providerName} type="text" className="form-control" name="providerName" onChange={handleNewItemChange} />
+                                    </div>
+                                    <div className="col-md-6 form-group mb-4">
+                                        <label>Documento</label>
+                                        <div className="text-center">
+                                            <label
+                                                htmlFor={`file-input`}
+                                                className={clsx("btn", {
+                                                    "btn-danger": !newItemData?.file,
+                                                    "btn-success": newItemData?.file,
+                                                })}
+                                                title="Cargar Archivo"
+                                            >
+                                                <i className="flaticon-022-copy"></i>
+                                            </label>
+                                            {
+                                                newItemData?.file &&
+                                                <>
+                                                    <p style={{ margin: 0 }} title={newItemData?.file?.name}>
+                                                        {newItemData?.file?.name?.length > 20 ? `${newItemData?.file?.name?.slice(0, 20)}...` : newItemData?.file?.name}
+                                                    </p>
+                                                    <button
+                                                        type="button" onClick={() => handleNewItemChange({ target: { files: [''], type: 'file', name: 'file' } })}
+                                                        className="text-danger btn"
+                                                        title="Remover Archivo"
+                                                    >
+                                                        X
+                                                    </button>
+                                                </>
+                                            }
+                                            <input
+                                                type="file"
+                                                name="file"
+                                                accept="application/pdf,application/vnd.ms-excel,application/msword,image/*"
+                                                className="form-control d-none"
+                                                id={`file-input`}
+                                                onChange={(e) => handleNewItemChange(e)}
+                                            />
+                                        </div>
                                     </div>
                                     <div className="col-md-12 form-group mb-2">
                                         <label>Descripción</label>
@@ -574,7 +632,7 @@ const StepFour = () => {
                                         </button>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                             :
                             <div className="col-md-7">
                                 <h1 className="text-center">{data?.isReplacement ? 'Repuestos' : 'Productos'}</h1>

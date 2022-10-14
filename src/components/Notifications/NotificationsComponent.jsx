@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { Dropdown } from "react-bootstrap";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Link } from "react-router-dom";
 import useAxios from "../../hooks/useAxios";
 import useUserNotifications from "../../hooks/useUserNotifications";
-import avatar from "../../images/avatar/pic1.jpg";
 import NotificationRow from "./NotificationRow";
 
 const NotificationsComponent = () => {

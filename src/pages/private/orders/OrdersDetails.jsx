@@ -280,6 +280,12 @@ const OrdersDetails = () => {
                                             <th>
                                                 Proveedor
                                             </th>
+                                            {
+                                                currentOrderDetails?.orderTypeId === 3 &&
+                                                <th>
+                                                    Archivo
+                                                </th>
+                                            }
                                             <th>
                                                 Estatus
                                             </th>
@@ -299,6 +305,7 @@ const OrdersDetails = () => {
                                             currentOrderDetails?.orderItems?.map((item, i) => {
                                                 return (
                                                     <OrderItemRow
+                                                        orderTypeId={currentOrderDetails?.orderTypeId}
                                                         canUpdateStatus={canUpdateStatus()}
                                                         orderItem={item}
                                                         selectValues={selectedValues}

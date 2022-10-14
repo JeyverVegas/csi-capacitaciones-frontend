@@ -229,7 +229,7 @@ const QuotesCreate = () => {
                                 <th>Nombre</th>
                                 <th>Cantidad</th>
                                 <th>Imagen</th>
-                                <th>Doocumento</th>
+                                <th>Documento</th>
                                 <th></th>
                             </tr>
                         </thead>
