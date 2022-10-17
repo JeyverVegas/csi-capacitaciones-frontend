@@ -51,7 +51,7 @@ export const mainPermissions = {
 const MenuLinks = [
     createLink('DashBoard', null, <Dashboard />, 'flaticon-025-dashboard', '/dashboard', mainPermissions?.dashboard[0]),
 
-    createLink('Pedidos', null, null, 'flaticon-381-list', '/pedidos', mainPermissions?.orders, [
+    createLink('Pedidos', null, null, 'fa fa-shopping-cart', '/pedidos', mainPermissions?.orders, [
         createLink('Crear Pedido', null, <OrdersCreate />, '', '/pedidos/crear', mainPermissions?.orders[1]),
         createLink('Listar Pedidos', null, <Orders />, '', '/pedidos', mainPermissions?.orders[0]),
         createLink('Mis Pedidos', null, <MyOrders />, '', '/mis-pedidos', null),
@@ -74,7 +74,7 @@ const MenuLinks = [
         createLink('Actualizar Proveedores', true, <ProvidersUpdate />, '', '/proveedores/:id', mainPermissions?.providers[2]),
     ]),
 
-    createLink('Productos', null, null, 'flaticon-381-tab', '/productos', mainPermissions?.products, [
+    createLink('Productos', null, null, 'fa fa-box', '/productos', mainPermissions?.products, [
         createLink('Crear Producto', null, <ProductsCreate />, '', '/productos/crear', mainPermissions?.products[1]),
         createLink('Asociar Productos', true, <ProductsAssociate />, '', '/productos/asociar-servicios', mainPermissions?.products[1]),
         createLink('Actualizar precios', true, <ProductsUpdatePrices />, '', '/productos/actualizar-precios', mainPermissions?.products[1]),
@@ -85,7 +85,7 @@ const MenuLinks = [
         createLink('Actualizar Categoria', true, <CategoriesUpdate />, '', '/categorias/:id', mainPermissions?.categories[2]),
     ]),
 
-    createLink('Caracteristicas', null, null, 'flaticon-381-tab', '/caracteristicas', mainPermissions?.features, [
+    createLink('Caracteristicas', null, null, 'fa fa-sliders-h', '/caracteristicas', mainPermissions?.features, [
         createLink('Crear Caracteristica', null, <FeaturesCreate />, '', '/caracteristicas/crear', mainPermissions?.features[1]),
         createLink('Listar Caracteristicas', null, <Features />, '', '/caracteristicas', mainPermissions?.features[0]),
         createLink('Actualizar Caracteristicas', true, <FeaturesUpdate />, '', '/caracteristicas/:id', mainPermissions?.features[2]),
