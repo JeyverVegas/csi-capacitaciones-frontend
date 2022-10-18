@@ -68,7 +68,7 @@ const MenuLinks = [
         createLink('Ver Cotización', true, <QuotesDetailsUser />, '', '/mis-cotizaciones/:id', null)
     ]),
 
-    createLink('Proveedores', null, null, 'flaticon-052-inside', '/proveedores', mainPermissions?.providers, [
+    createLink('Proveedores', null, null, 'fa fa-truck', '/proveedores', mainPermissions?.providers, [
         createLink('Crear Proveedor', null, <ProvidersCreate />, '', '/proveedores/crear', mainPermissions?.providers[1]),
         createLink('Listar Proveedores', null, <Providers />, '', '/proveedores', mainPermissions?.providers[0]),
         createLink('Actualizar Proveedores', true, <ProvidersUpdate />, '', '/proveedores/:id', mainPermissions?.providers[2]),
