@@ -28,7 +28,7 @@ const OrdersColumns = [
         Component: ({ value }) => value?.service?.name || '--'
     },
     {
-        Label: () => 'Jefe Del Servicio',
+        Label: () => 'Jefe de Operaciones',
         Component: ({ value }) => `${!value?.isReplacement ? value?.service?.ordersBoss?.name || '--' : value?.service?.ordersReplacementBoss?.name || '--'}`
     },
     {

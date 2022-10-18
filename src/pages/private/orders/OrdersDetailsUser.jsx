@@ -73,7 +73,7 @@ const OrdersDetailsUser = () => {
                         <div className="card-body">
                             <div className="row">
                                 <div className="col-4">
-                                    <b>Numero de Pedido</b>
+                                    <b>Número de Pedido</b>
                                     <p>{currentOrderDetails?.id}</p>
                                     <b>Servicio</b>
                                     <p style={{ textTransform: 'capitalize' }}>{currentOrderDetails?.service?.name || '--'}</p>
@@ -101,7 +101,7 @@ const OrdersDetailsUser = () => {
                                     {currentOrderDetails?.user?.name}
                                 </div>
                                 <div className="col-md-4 my-4">
-                                    <b>Jefe del servicio:  </b>
+                                    <b>Jefe de zona:  </b>
                                     <br />
                                     {!currentOrderDetails?.isReplacement ? currentOrderDetails?.service?.ordersBoss?.name || '--' : currentOrderDetails?.service?.ordersReplacementBoss?.name || '--'}
                                 </div>
@@ -157,13 +157,13 @@ const OrdersDetailsUser = () => {
                                                 #
                                             </th>
                                             <th>
-                                                Código
+                                                Cód.
                                             </th>
                                             <th>
                                                 Nombre
                                             </th>
                                             <th>
-                                                Proveedor
+                                                Prov.
                                             </th>
                                             {
                                                 currentOrderDetails?.orderTypeId === 3 &&
@@ -175,7 +175,7 @@ const OrdersDetailsUser = () => {
                                                 Estatus
                                             </th>
                                             <th>
-                                                Cantidad
+                                                Cant.
                                             </th>
                                             <th>
                                                 P.U

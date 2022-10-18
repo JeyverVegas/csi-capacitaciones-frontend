@@ -14,7 +14,7 @@ const ProductsColumns = [
         accessor: 'id'
     },
     {
-        Label: () => 'Código',
+        Label: () => 'Cód',
         Component: ({ value }) => `${value?.code ?? '--'}`
     },
     {

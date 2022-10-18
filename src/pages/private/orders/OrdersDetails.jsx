@@ -272,13 +272,13 @@ const OrdersDetails = () => {
                                                 #
                                             </th>
                                             <th>
-                                                Código
+                                                Cód.
                                             </th>
                                             <th>
                                                 Nombre
                                             </th>
                                             <th>
-                                                Proveedor
+                                                Prov.
                                             </th>
                                             {
                                                 currentOrderDetails?.orderTypeId === 3 &&
@@ -290,7 +290,7 @@ const OrdersDetails = () => {
                                                 Estatus
                                             </th>
                                             <th>
-                                                Cantidad
+                                                Cant.
                                             </th>
                                             <th>
                                                 P.U
