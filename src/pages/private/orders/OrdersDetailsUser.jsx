@@ -139,7 +139,7 @@ const OrdersDetailsUser = () => {
                                             {currentOrderDetails?.account || '--'}
                                         </div>
                                         <div className="col-md-4">
-                                            <b>Ceb:</b>
+                                            <b>Cebe:</b>
                                             <br />
                                             {currentOrderDetails?.seven || '--'}
                                         </div>

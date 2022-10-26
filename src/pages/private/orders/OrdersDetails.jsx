@@ -132,7 +132,7 @@ const OrdersDetails = () => {
                         <div className="card-body">
                             <div className="row">
                                 <div className="col-4">
-                                    <b>Numero de Pedido</b>
+                                    <b>Número de Pedido</b>
                                     <p>{currentOrderDetails?.id}</p>
                                     <b>Servicio</b>
                                     <p style={{ textTransform: 'capitalize' }}>{currentOrderDetails?.service?.name || '--'}</p>
@@ -160,7 +160,7 @@ const OrdersDetails = () => {
                                     {currentOrderDetails?.user?.name}
                                 </div>
                                 <div className="col-md-4 my-4">
-                                    <b>Jefe del servicio:  </b>
+                                    <b>Jefe del zona:  </b>
                                     <br />
                                     {!currentOrderDetails?.isReplacement ? currentOrderDetails?.service?.ordersBoss?.name || '--' : currentOrderDetails?.service?.ordersReplacementBoss?.name || '--'}
                                 </div>
@@ -188,7 +188,7 @@ const OrdersDetails = () => {
                                     currentOrderDetails?.seven ?
                                     <div className="row">
                                         <div className="col-md-4">
-                                            <b>Autorizado por</b>
+                                            <b>Autorizado por:</b>
                                             <br />
                                             {currentOrderDetails?.authorizedBy || '--'}
                                         </div>
@@ -198,7 +198,7 @@ const OrdersDetails = () => {
                                             {currentOrderDetails?.account || '--'}
                                         </div>
                                         <div className="col-md-4">
-                                            <b>Ceb:</b>
+                                            <b>Cebe:</b>
                                             <br />
                                             {currentOrderDetails?.seven || '--'}
                                         </div>
