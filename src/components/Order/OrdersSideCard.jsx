@@ -141,7 +141,7 @@ const OrdersSideCard = ({ order, orderStateFunct }) => {
                     }
                 </div>
             </div>
-            <Modal className="fade" show={showOrderFilesModal}>
+            <Modal className="fade" size="lg" show={showOrderFilesModal}>
                 <Modal.Header>
                     <Modal.Title>Guias de despacho:</Modal.Title>
                     <Button
@@ -163,7 +163,7 @@ const OrdersSideCard = ({ order, orderStateFunct }) => {
                                         Nombre
                                     </td>
                                     <td>
-                                        Fecha de creación
+                                        Fecha de envio
                                     </td>
                                     <td>
                                         Acciones
