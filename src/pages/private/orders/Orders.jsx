@@ -6,6 +6,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useOrders from "../../../hooks/useOrders";
+import useOrdersTypes from "../../../hooks/useOrdersTypes";
 import useServices from "../../../hooks/useServices";
 import { mainPermissions } from "../../../util/MenuLinks";
 
@@ -15,13 +16,19 @@ const Orders = () => {
 
     const { setCustomAlert, setLoading } = useFeedBack();
 
+    const [showFilters, setShowFilters] = useState('');
+
     const [filters, setFilters] = useState({
         page: 1,
-        serviceIds: ''
+        serviceIds: '',
+        start: '',
+        end: '',
+        orderTypeId: ''
     });
 
     const [servicesFilters, setServicesFilters] = useState({
-        currentUserServices: true
+        currentUserServices: true,
+        perPage: 100
     });
 
     const [selectedValues, setSelectedValues] = useState([]);
@@ -29,6 +36,8 @@ const Orders = () => {
     const [selectAll, setSelectAll] = useState(false);
 
     const [{ services, loading: servicesLoading }, getServices] = useServices({ params: { ...servicesFilters } }, { useCache: false });
+
+    const [{ ordersTypes, loading: loadingOrdersTypes }, getOrdersTypes] = useOrdersTypes({ options: { useCache: false } });
 
     const [{ orders, total, numberOfPages, error: ordersError, loading }, getOrders] = useOrders({ params: { ...filters }, options: { useCache: false } });
 
@@ -164,6 +173,54 @@ const Orders = () => {
                     </div>
                 </div>
                 <div className="col-md-6">
+                    <div className="card p-4">
+                        <label>
+                            Tipo de pedido
+                        </label>
+                        <select name="orderTypeId" className="form-control" value={filters?.orderTypeId} onChange={handleChange}>
+                            <option value="">Seleccione uno</option>
+                            {
+                                ordersTypes?.map((orderType, i) => {
+                                    return (
+                                        <option key={i} value={orderType?.id}>{orderType?.displayText}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div className="col-md-6">
+                    <div className="card p-4">
+                        <label>
+                            Fecha
+                        </label>
+                        <div className="row">
+                            <div className="col-md-6 form-group">
+                                <label>
+                                    Desde:
+                                </label>
+                                <input
+                                    type="date"
+                                    onChange={handleChange}
+                                    className="form-control"
+                                    name="start"
+                                    value={filters?.start}
+                                />
+                            </div>
+                            <div className="col-md-6 form-group">
+                                <label>
+                                    Hasta:
+                                </label>
+                                <input
+                                    type="date"
+                                    onChange={handleChange}
+                                    className="form-control"
+                                    name="end"
+                                    value={filters?.end}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <CustomTable
@@ -185,7 +242,7 @@ const Orders = () => {
                 collumns={OrdersColumns}
                 changePage={handlePageChange}
             />
-        </div>
+        </div >
     )
 }
 export default Orders;

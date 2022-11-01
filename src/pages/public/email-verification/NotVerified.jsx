@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
@@ -7,7 +7,9 @@ import SystemInfo from "../../../util/SystemInfo";
 
 const NotVerified = () => {
 
-    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const { user, setAuthInfo } = useAuth();
 
     const { pathname } = useLocation();
 
@@ -27,6 +29,11 @@ const NotVerified = () => {
     const handleButtonClick = (e) => {
         e?.preventDefault();
         resendVerificationEmail();
+    }
+
+    const handleLogOut = () => {
+        setAuthInfo?.(false);
+        navigate('/iniciar-sesion', { replace: true });
     }
 
     return (
@@ -55,19 +62,34 @@ const NotVerified = () => {
                                             <form onSubmit={handleButtonClick}>
                                                 <div className="mb-2">Antes de empezar debes verificar tu correo electrónico haciendo click en el link que se te ha enviado a tu buzón. Si no has recibido el correo, con gusto te lo enviaremos nuevamente.</div>
                                                 <br />
-                                                <div className="text-center">
-                                                    <button
-                                                        type="submit"
-                                                        className="btn btn-primary btn-block"
-                                                        disabled={resendVerificationEmailLoading}
-                                                    >
-                                                        {
-                                                            resendVerificationEmailLoading ?
-                                                                'Cargando'
-                                                                :
-                                                                'Reenviar correo de verificación'
-                                                        }
-                                                    </button>
+                                                <div className="row justify-content-center align-items-center">
+                                                    <div className="col-md-12 my-4">
+                                                        <button
+                                                            className="btn btn-primary btn-block"
+                                                            disabled={resendVerificationEmailLoading}
+                                                        >
+                                                            {
+                                                                resendVerificationEmailLoading ?
+                                                                    'Cargando'
+                                                                    :
+                                                                    'Reenviar correo de verificación'
+                                                            }
+                                                        </button>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <Link className="btn btn-success" to={'/dashboard'}>
+                                                            Ya estoy verificado
+                                                        </Link>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <button
+                                                            onClick={handleLogOut}
+                                                            className="btn btn-danger"
+                                                            disabled={resendVerificationEmailLoading}
+                                                        >
+                                                            Cerrar Sesión e intentar mas tarde.
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </form>
                                     }
