@@ -2,7 +2,15 @@ import { useEffect } from "react";
 import { useState } from "react"
 import Chart from "react-apexcharts";
 
-const PieChart = ({ labels = [], defaultSeries = [], title = '' }) => {
+const PieChart = ({
+    labels = [],
+    defaultSeries = [],
+    title = '',
+    colors = [],
+    label = 'percent',
+    labelEndAdornment = '',
+    labelStartAdornment = ''
+}) => {
 
     const [options, setOptions] = useState({
         chart: {
@@ -10,11 +18,6 @@ const PieChart = ({ labels = [], defaultSeries = [], title = '' }) => {
             type: 'pie',
         },
         labels: labels,
-        theme: {
-            monochrome: {
-                enabled: true
-            }
-        },
         plotOptions: {
             pie: {
                 dataLabels: {
@@ -22,13 +25,25 @@ const PieChart = ({ labels = [], defaultSeries = [], title = '' }) => {
                 }
             }
         },
+        colors: colors,
         title: {
             text: title
         },
         dataLabels: {
             formatter(val, opts) {
                 const name = opts.w.globals.labels[opts.seriesIndex]
-                return [name, val.toFixed(1) + '%']
+
+                if (label === 'percent') {
+                    return [name, val.toFixed(1) + '%']
+                }
+
+                if (label === 'value') {
+                    return [name, `${labelStartAdornment} ${opts.w.config.series[opts.seriesIndex]} ${labelEndAdornment}`]
+                }
+
+                if (label === 'valueAndPercent') {
+                    return [name, `${labelStartAdornment}${opts.w.config.series[opts.seriesIndex]}${labelEndAdornment} - ${val.toFixed(1)}%`]
+                }
             }
         },
         legend: {

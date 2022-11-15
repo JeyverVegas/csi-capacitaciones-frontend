@@ -25,6 +25,10 @@ const Dashboard = () => {
 
     const [{ data: countByServices, loading: loadingOrdersCountByServices }, getOrdersCountByServices] = useAxios({ url: `/orders/count-by-services`, params: { ...filters } }, { manual: true, useCache: false });
 
+    const [{ data: amountByServices, loading: loadingOrdersAmountByServices }, getOrdersAmountByServices] = useAxios({ url: `/orders/amount-by-services`, params: { ...filters } }, { manual: true, useCache: false });
+
+    const [{ data: amountByOrderTypes, loading: loadingAmountByOrderTypes }, getAmountByOrderTypes] = useAxios({ url: `/orders/amount-by-order-types`, params: { ...filters } }, { manual: true, useCache: false });
+
     useEffect(() => {
         setFilters((oldFilters) => {
             return {
@@ -36,24 +40,11 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (filters?.serviceIds?.length > 0) {
-            getOrdersCount({
-                params: {
-                    ...filters,
-                    serviceIds: filters?.serviceIds.join(',')
-                }
-            });
-            getOrdersCountByZone({
-                params: {
-                    ...filters,
-                    serviceIds: filters?.serviceIds.join(',')
-                }
-            });
-            getOrdersCountByServices({
-                params: {
-                    ...filters,
-                    serviceIds: filters?.serviceIds.join(',')
-                }
-            });
+            getOrdersCount({ params: { ...filters, serviceIds: filters?.serviceIds.join(',') } });
+            getOrdersCountByZone({ params: { ...filters, serviceIds: filters?.serviceIds.join(',') } });
+            getOrdersCountByServices({ params: { ...filters, serviceIds: filters?.serviceIds.join(',') } });
+            getOrdersAmountByServices({ params: { ...filters, serviceIds: filters?.serviceIds.join(',') } });
+            getAmountByOrderTypes({ params: { ...filters, serviceIds: filters?.serviceIds.join(',') } });
         }
     }, [filters])
 
@@ -64,6 +55,17 @@ const Dashboard = () => {
                 serviceIds: e.target.value ? [e.target.value] : services?.map(service => service.id)
             }
         });
+    }
+
+    const findColorPieChart = (key) => {
+        switch (key) {
+            case 'Extraordinario':
+                return '#df6adb';
+            case 'Manual':
+                return '#5e74f4';
+            case 'Mensual':
+                return '#878ee3';
+        }
     }
 
     return (
@@ -149,7 +151,7 @@ const Dashboard = () => {
                     </h3>
                     <div className="row mb-5 justify-content-center">
                         {
-                            Object.keys(countByZone).length > 0 ?
+                            Object.keys(countByZone).length > 0 && !loadingOrdersCountByZone ?
                                 Object.keys(countByZone).map((key, i) => {
                                     const { zone, ...rest } = countByZone[key]
                                     return (
@@ -159,6 +161,7 @@ const Dashboard = () => {
                                                 key={i}
                                                 labels={Object.keys(rest).map((key2) => key2)}
                                                 defaultSeries={Object.keys(rest).map((key2) => rest[key2])}
+                                                colors={Object.keys(rest).map((key2) => findColorPieChart(key2))}
                                             />
                                         </div>
                                     )
@@ -181,22 +184,26 @@ const Dashboard = () => {
                     </h3>
                     <div className="row mb-5">
                         {
-                            Object.keys(countByServices).length > 0 ?
+                            Object.keys(countByServices).length > 0 && !loadingOrdersCountByServices ?
                                 <div className="col-md-12">
                                     <ColumnChart
-                                        categories={Object.keys(countByServices).map(key => countByServices[key]?.service)}
+                                        categories={Object.keys(countByServices).map(key => countByServices[key]?.service.toLocaleUpperCase())}
                                         defaultSeries={[
                                             {
                                                 name: 'Mensual',
-                                                data: Object.keys(countByServices).map(key => countByServices[key]?.Mensual || 0)
+                                                data: Object.keys(countByServices).map(key => countByServices[key]?.Mensual || 0),
+                                                color: '#878ee3'
                                             },
                                             {
                                                 name: 'Extraordinario',
-                                                data: Object.keys(countByServices).map(key => countByServices[key]?.Extraordinario || 0)
+                                                data: Object.keys(countByServices).map(key => countByServices[key]?.Extraordinario || 0),
+                                                color: '#df6adb'
+
                                             },
                                             {
                                                 name: 'Manual',
-                                                data: Object.keys(countByServices).map(key => countByServices[key]?.Manual || 0)
+                                                data: Object.keys(countByServices).map(key => countByServices[key]?.Manual || 0),
+                                                color: '#5e74f4'
                                             },
                                         ]}
                                     />
@@ -210,6 +217,91 @@ const Dashboard = () => {
                     </div>
                 </>
             }
+            <div className="row">
+                <div className="col-md-6">
+                    <h3 className="text-center my-5">
+                        Monto por tipo de pedido
+                    </h3>
+                    {
+                        amountByOrderTypes && Object.keys(amountByOrderTypes).length > 0 && !loadingAmountByOrderTypes ?
+                            <PieChart
+                                label="valueAndPercent"
+                                labelEndAdornment='$'
+                                labels={['Mensual', 'Extraordinario', 'Manual']}
+                                defaultSeries={Object.keys(amountByOrderTypes).map((key2) => amountByOrderTypes[key2] || 0)}
+                                colors={['#878ee3', '#df6adb', '#5e74f4']}
+                            />
+                            :
+                            <h3 className="text-center text-danger">
+                                No hay datos para mostrar.
+                            </h3>
+                    }
+                </div>
+                <div className="col-md-6">
+                    <h3 className="text-center my-5">
+                        Porcentaje tipo de pedido
+                    </h3>
+                    {
+                        data && Object.keys(data).length > 0 && !loadingOrdersCount ?
+                            <PieChart
+                                labels={['Extraordinario', 'Manual', 'Mensual']}
+                                defaultSeries={Object.keys(data).map((key2) => data[key2])}
+                                colors={['#df6adb', '#5e74f4', '#878ee3']}
+                            />
+                            :
+                            <h3 className="text-center text-danger">
+                                No hay datos para mostrar.
+                            </h3>
+                    }
+                </div>
+            </div>
+
+            {
+                amountByServices &&
+                <>
+                    <h3 className="text-center my-5">
+                        Monto de pedidos por servicio
+                    </h3>
+                    <div className="row mb-5">
+                        {
+                            Object.keys(amountByServices).length > 0 && !loadingOrdersAmountByServices ?
+                                <div className="col-md-12">
+                                    <ColumnChart
+                                        label="value"
+                                        labelEndAdornment='$'
+                                        categories={Object.keys(amountByServices).map(key => amountByServices[key]?.service.toLocaleUpperCase())}
+                                        defaultSeries={[
+                                            {
+                                                name: 'Mensual',
+                                                data: Object.keys(amountByServices).map(key => amountByServices[key]?.Mensual || 0),
+                                                color: '#878ee3'
+                                            },
+                                            {
+                                                name: 'Extraordinario',
+                                                data: Object.keys(amountByServices).map(key => amountByServices[key]?.Extraordinario || 0),
+                                                color: '#df6adb'
+
+                                            },
+                                            {
+                                                name: 'Manual',
+                                                data: Object.keys(amountByServices).map(key => amountByServices[key]?.Manual || 0),
+                                                color: '#5e74f4'
+                                            },
+                                        ]}
+                                    />
+                                </div>
+                                :
+                                <h3 className="text-center text-danger">
+                                    No hay datos para mostrar.
+                                </h3>
+                        }
+
+                    </div>
+                </>
+            }
+            <br />
+            <br />
+
         </div>
     )
 }

@@ -2,12 +2,18 @@ import { useEffect } from "react";
 import { useState } from "react"
 import Chart from "react-apexcharts";
 
-const ColumnChart = ({ categories = [], defaultSeries = [] }) => {
+const ColumnChart = ({
+    categories = [],
+    defaultSeries = [],
+    label = 'value',
+    labelEndAdornment = '',
+    labelStartAdornment = ''
+}) => {
 
     const [options, setOptions] = useState({
         chart: {
             type: 'bar',
-            height: 350,
+            height: 400,
             stacked: true,
             toolbar: {
                 show: true
@@ -36,10 +42,24 @@ const ColumnChart = ({ categories = [], defaultSeries = [] }) => {
                         style: {
                             fontSize: '13px',
                             fontWeight: 900
+                        },
+                        formatter(val, opts) {
+                            return `${labelStartAdornment}${val}${labelEndAdornment}`
                         }
                     }
                 }
             },
+        },
+        dataLabels: {
+            formatter(val, opts) {
+                if (label === 'value') {
+                    return `${labelStartAdornment}${opts.w.config.series[opts.seriesIndex].data[opts?.dataPointIndex]}${labelEndAdornment}`
+                }
+
+                if (label === 'valueAndPercent') {
+                    return `${labelStartAdornment}${opts.w.config.series[opts.seriesIndex].data[opts?.dataPointIndex]}${labelEndAdornment} - ${val.toFixed(1)}%`
+                }
+            }
         },
         xaxis: {
             type: 'string',
@@ -55,7 +75,7 @@ const ColumnChart = ({ categories = [], defaultSeries = [] }) => {
     });
 
     return (
-        <Chart options={options} series={defaultSeries} type="bar" height={350} />
+        <Chart options={options} series={defaultSeries} type="bar" height={400} />
     )
 }
 
