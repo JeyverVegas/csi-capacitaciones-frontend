@@ -24,7 +24,8 @@ const Products = () => {
         isReplacement: false,
         code: '',
         categoryId: '',
-        subCategoryId: ''
+        subCategoryId: '',
+        perPage: 10
     });
 
     const [categoriesFilters, setCategoriesFilters] = useState({

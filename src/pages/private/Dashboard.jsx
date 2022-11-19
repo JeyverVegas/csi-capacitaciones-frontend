@@ -1,23 +1,29 @@
 import { format } from "date-fns";
 import { useEffect } from "react";
 import { useState } from "react";
+import { Tab, Tabs } from "react-bootstrap";
+import BarChart from "../../components/Charts/BarChart";
 import ColumnChart from "../../components/Charts/ColumnChart";
 import PieChart from "../../components/Charts/PieChart";
 import DetailsCard from "../../components/DetailsCard";
 import { useAuth } from "../../context/AuthContext";
 import useAxios from "../../hooks/useAxios";
 import useServices from "../../hooks/useServices";
+import useZones from "../../hooks/useZones";
 
 const Dashboard = () => {
 
-    const { user } = useAuth();
+    const [filterBy, setFilterBy] = useState('services');
 
     const [filters, setFilters] = useState({
         monthAndYear: `${format(new Date(), 'yyyy-MM')}`,
         serviceIds: [],
+        zoneIds: []
     });
 
     const [{ services, loading: servicesLoading }, getServices] = useServices({ params: { perPage: 500, currentUserServices: true, page: 1 }, options: { useCache: false } });
+
+    const [{ zones, loading: zonesLoading }, getZones] = useZones({ params: { perPage: 500, currentUserZones: true, page: 1 }, options: { useCache: false } });
 
     const [{ data, loading: loadingOrdersCount }, getOrdersCount] = useAxios({ url: `/orders/count`, params: { ...filters } }, { manual: true, useCache: false });
 
@@ -29,6 +35,30 @@ const Dashboard = () => {
 
     const [{ data: amountByOrderTypes, loading: loadingAmountByOrderTypes }, getAmountByOrderTypes] = useAxios({ url: `/orders/amount-by-order-types`, params: { ...filters } }, { manual: true, useCache: false });
 
+    const [{ data: itemsCount, loading: loadingItemsCount }, getItemsCount] = useAxios({ url: `/orders/items-count`, params: { ...filters } }, { manual: true, useCache: false });
+
+    useEffect(() => {
+        if (filterBy === 'services') {
+            setFilters((oldFilters) => {
+                return {
+                    ...oldFilters,
+                    serviceIds: services?.map(service => service.id),
+                    zoneIds: []
+                }
+            })
+        }
+
+        if (filterBy == 'zones') {
+            setFilters((oldFilters) => {
+                return {
+                    ...oldFilters,
+                    zoneIds: zones?.map(zone => zone.id),
+                    serviceIds: []
+                }
+            });
+        }
+    }, [filterBy])
+
     useEffect(() => {
         setFilters((oldFilters) => {
             return {
@@ -39,14 +69,50 @@ const Dashboard = () => {
     }, [services])
 
     useEffect(() => {
-        if (filters?.serviceIds?.length > 0) {
-            getOrdersCount({ params: { ...filters, serviceIds: filters?.serviceIds.join(',') } });
-            getOrdersCountByZone({ params: { ...filters, serviceIds: filters?.serviceIds.join(',') } });
-            getOrdersCountByServices({ params: { ...filters, serviceIds: filters?.serviceIds.join(',') } });
-            getOrdersAmountByServices({ params: { ...filters, serviceIds: filters?.serviceIds.join(',') } });
-            getAmountByOrderTypes({ params: { ...filters, serviceIds: filters?.serviceIds.join(',') } });
+        if (filters?.serviceIds?.length > 0 || filters?.zoneIds?.length > 0) {
+            getOrdersCount({
+                params: {
+                    ...filters,
+                    serviceIds: filters?.serviceIds.join(','),
+                    zoneIds: filters?.zoneIds.join(',')
+                }
+            });
+            getOrdersCountByZone({
+                params: {
+                    ...filters,
+                    serviceIds: filters?.serviceIds.join(','),
+                    zoneIds: filters?.zoneIds.join(',')
+                }
+            });
+            getOrdersCountByServices({
+                params: {
+                    ...filters,
+                    serviceIds: filters?.serviceIds.join(','),
+                    zoneIds: filters?.zoneIds.join(',')
+                }
+            });
+            getOrdersAmountByServices({
+                params: {
+                    ...filters,
+                    serviceIds: filters?.serviceIds.join(','),
+                    zoneIds: filters?.zoneIds.join(',')
+                }
+            });
+            getAmountByOrderTypes({
+                params: {
+                    ...filters,
+                    serviceIds: filters?.serviceIds.join(','),
+                    zoneIds: filters?.zoneIds.join(',')
+                }
+            });
+            getItemsCount({
+                params: {
+                    ...filters, serviceIds: filters?.serviceIds.join(','),
+                    zoneIds: filters?.zoneIds.join(',')
+                }
+            });
         }
-    }, [filters])
+    }, [filters]);
 
     const handleService = (e) => {
         setFilters((oldFilters) => {
@@ -55,6 +121,16 @@ const Dashboard = () => {
                 serviceIds: e.target.value ? [e.target.value] : services?.map(service => service.id)
             }
         });
+    }
+
+    const handleZone = (e) => {
+
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                zoneIds: e.target.value ? [e.target.value] : zones?.map(zone => zone.id)
+            }
+        })
     }
 
     const findColorPieChart = (key) => {
@@ -73,23 +149,58 @@ const Dashboard = () => {
             <div className="row">
                 <div className="col-md-6">
                     <div className="card p-3">
-                        <label>Servicio</label>
-                        {
-                            services?.length > 1 ?
-                                <div className="form-group">
-                                    <select className="form-control" onChange={handleService}>
-                                        <option value="">Todos</option>
-                                        {services?.map((service, i) => <option value={service?.id} key={i}>
-                                            {service?.name}
-                                        </option>
-                                        )}
-                                    </select>
-                                </div>
-                                :
-                                <h4>
-                                    {services?.[0]?.name}
-                                </h4>
-                        }
+                        <Tabs
+                            activeKey={filterBy}
+                            onSelect={(k) => setFilterBy(k)}
+                            className="mb-3"
+                        >
+                            <Tab eventKey="services" title="Servicios">
+                                {
+                                    filterBy === 'services' ?
+                                        services?.length > 1 ?
+                                            <div className="form-group">
+                                                <select className="form-control" onChange={handleService}>
+                                                    <option value="">Todos</option>
+                                                    {services?.map((service, i) => <option value={service?.id} key={i}>
+                                                        {service?.name}
+                                                    </option>
+                                                    )}
+                                                </select>
+                                            </div>
+                                            :
+                                            <h4>
+                                                {services?.[0]?.name}
+                                            </h4>
+                                        :
+                                        null
+                                }
+                            </Tab>
+                            <Tab eventKey="zones" title="Zonas">
+                                {
+                                    filterBy === 'zones' ?
+                                        zones?.length > 1 ?
+                                            <div className="form-group">
+                                                <select className="form-control" onChange={handleZone}>
+                                                    <option value="">Todas</option>
+                                                    {zones?.map((zone, i) => {
+                                                        return (
+                                                            <option value={zone.id} key={i}>
+                                                                {zone?.name}
+                                                            </option>
+                                                        )
+                                                    }
+                                                    )}
+                                                </select>
+                                            </div>
+                                            :
+                                            <h4>
+                                                {zones?.[0]?.name}
+                                            </h4>
+                                        :
+                                        null
+                                }
+                            </Tab>
+                        </Tabs>
                     </div>
                 </div>
                 <div className="col-md-6">
@@ -290,6 +401,41 @@ const Dashboard = () => {
                                         ]}
                                     />
                                 </div>
+                                :
+                                <h3 className="text-center text-danger">
+                                    No hay datos para mostrar.
+                                </h3>
+                        }
+
+                    </div>
+                </>
+            }
+            {
+                itemsCount &&
+                <>
+                    <h3 className="text-center mt-5">
+                        Conteo de items
+                    </h3>
+                    <div className="row mb-5 justify-content-center">
+                        {
+                            Object.keys(itemsCount).length > 0 && !loadingItemsCount ?
+                                Object.keys(itemsCount).map((key, i) => {
+                                    return (
+                                        <div className={`col-md-${12 / Object.keys(itemsCount).length}`} key={i}>
+                                            <h5 className="text-center my-4">
+                                                Pedido {key}
+                                            </h5>
+                                            <BarChart
+                                                categories={itemsCount?.[key]?.map(value => value?.name.toLocaleUpperCase())}
+                                                defaultSeries={[
+                                                    {
+                                                        data: itemsCount?.[key]?.map(value => Number(value?.count))
+                                                    }
+                                                ]}
+                                            />
+                                        </div>
+                                    )
+                                })
                                 :
                                 <h3 className="text-center text-danger">
                                     No hay datos para mostrar.
