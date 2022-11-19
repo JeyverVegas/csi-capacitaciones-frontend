@@ -140,7 +140,7 @@ const Dashboard = () => {
             case 'Manual':
                 return '#5e74f4';
             case 'Mensual':
-                return '#878ee3';
+                return '#34b4db';
         }
     }
 
@@ -258,7 +258,7 @@ const Dashboard = () => {
                 countByZone &&
                 <>
                     <h3 className="text-center my-5">
-                        Graficos por zona
+                        Gráficos por zona
                     </h3>
                     <div className="row mb-5 justify-content-center">
                         {
@@ -268,7 +268,7 @@ const Dashboard = () => {
                                     return (
                                         <div className="col-md-4">
                                             <PieChart
-                                                title={key}
+                                                title={key.toUpperCase()}
                                                 key={i}
                                                 labels={Object.keys(rest).map((key2) => key2)}
                                                 defaultSeries={Object.keys(rest).map((key2) => rest[key2])}
@@ -303,7 +303,7 @@ const Dashboard = () => {
                                             {
                                                 name: 'Mensual',
                                                 data: Object.keys(countByServices).map(key => countByServices[key]?.Mensual || 0),
-                                                color: '#878ee3'
+                                                color: '#34b4db'
                                             },
                                             {
                                                 name: 'Extraordinario',
@@ -340,7 +340,7 @@ const Dashboard = () => {
                                 labelEndAdornment='$'
                                 labels={['Mensual', 'Extraordinario', 'Manual']}
                                 defaultSeries={Object.keys(amountByOrderTypes).map((key2) => amountByOrderTypes[key2] || 0)}
-                                colors={['#878ee3', '#df6adb', '#5e74f4']}
+                                colors={['#34b4db', '#df6adb', '#5e74f4']}
                             />
                             :
                             <h3 className="text-center text-danger">
@@ -357,7 +357,7 @@ const Dashboard = () => {
                             <PieChart
                                 labels={['Extraordinario', 'Manual', 'Mensual']}
                                 defaultSeries={Object.keys(data).map((key2) => data[key2])}
-                                colors={['#df6adb', '#5e74f4', '#878ee3']}
+                                colors={['#df6adb', '#5e74f4', '#34b4db']}
                             />
                             :
                             <h3 className="text-center text-danger">
@@ -385,7 +385,7 @@ const Dashboard = () => {
                                             {
                                                 name: 'Mensual',
                                                 data: Object.keys(amountByServices).map(key => amountByServices[key]?.Mensual || 0),
-                                                color: '#878ee3'
+                                                color: '#34b4db'
                                             },
                                             {
                                                 name: 'Extraordinario',
