@@ -88,7 +88,7 @@ const OrderItemRow = ({ orderItem, index, canUpdateStatus, selectValues, onCheck
                         }}
                         className="rounded"
                         style={{ width: 60, height: 60, cursor: 'pointer' }}
-                        src={`${SystemInfo?.host}${currentItem?.imagePath}`}
+                        src={imgUrl(currentItem?.imagePath)}
                         alt=""
                     />
                     <br></br>
@@ -163,7 +163,7 @@ const OrderItemRow = ({ orderItem, index, canUpdateStatus, selectValues, onCheck
                 <Modal.Body>
 
                     <div className="text-center">
-                        <img style={{ width: '40vw' }} src={`${SystemInfo?.host}${currentItem?.imagePath}`} />
+                        <img style={{ width: '40vw' }} src={imgUrl(currentItem?.imagePath)} />
                     </div>
 
                 </Modal.Body>

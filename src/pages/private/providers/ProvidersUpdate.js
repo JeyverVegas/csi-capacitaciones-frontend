@@ -52,7 +52,7 @@ const ProvidersUpdate = () => {
                 }
             });
 
-            setImagePreview(`${SystemInfo?.host}${imagePath}`);
+            setImagePreview(imagePath);
         }
     }, [providerData])
 

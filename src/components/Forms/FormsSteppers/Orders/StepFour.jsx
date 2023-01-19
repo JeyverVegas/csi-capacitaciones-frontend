@@ -17,6 +17,7 @@ import { useTheme } from "../../../../context/ThemeContext";
 import swal from "sweetalert";
 import TemplatesModal from "./TemplatesModal";
 import Toggle from "react-toggle";
+import imgUrl from "../../../../util/imgUrl";
 
 
 const StepFour = () => {
@@ -743,14 +744,16 @@ const StepFour = () => {
                                                             >
                                                                 <div className="rounded" style={{ overflow: 'hidden', background: background?.value === 'light' ? 'white' : '#171622' }}>
                                                                     <img
-                                                                        src={`${SystemInfo?.host}${product?.imagePath || notImage}`}
+                                                                        src={imgUrl(product?.imagePath)}
                                                                         style={{ maxWidth: '100%' }}
                                                                         alt=""
                                                                     />
                                                                     <div className="p-3">
-                                                                        <div className="d-flex justify-content-between">
-                                                                            <h5>{cutString(product?.name, 10, 0, '...')}</h5>
-                                                                            <span>{product?.price}$</span>
+                                                                        <div>
+                                                                            <h5>{cutString(product?.name, 20, 0, '...')}</h5>
+                                                                        </div>
+                                                                        <div>
+                                                                            <b>${product?.price}</b>
                                                                         </div>
                                                                         <div>
                                                                             <span>
@@ -872,8 +875,8 @@ const StepFour = () => {
                                                 <tr>
                                                     <th></th>
                                                     <th>Código</th>
-                                                    <th>Item</th>
-                                                    <th colSpan={2}>Cantidad</th>
+                                                    <th width={"30%"} colSpan={2}>Item</th>
+                                                    <th>Cant.</th>
                                                     <th>Precio</th>
                                                     <th>Total</th>
                                                 </tr>
@@ -891,8 +894,8 @@ const StepFour = () => {
                                                                             onClick={() => { handleRemove(i) }}></i>
                                                                     </td>
                                                                     <td>{item?.code}</td>
-                                                                    <td title={item?.name}>{cutString(`${item?.name}`, 15, 0, '...')}</td>
-                                                                    <td colSpan={2}>
+                                                                    <td width={"30%"} colSpan={2} title={item?.name}>{cutString(`${item?.name}`, 20, 0, '...')}</td>
+                                                                    <td>
                                                                         <input type="number" min={1} style={{
                                                                             borderRadius: '8px',
                                                                             width: '100%',
@@ -902,7 +905,7 @@ const StepFour = () => {
                                                                             color: background?.value === 'light' ? 'black' : 'white'
                                                                         }} name="quantity" value={item?.quantity} onChange={(e) => { handleArrayChange(e, i, 'orderItems') }} />
                                                                     </td>
-                                                                    <td>$ {item?.price}</td>
+                                                                    <td>${Number(item?.price).toFixed(0)}</td>
                                                                     <td>$ {item?.price * item?.quantity}</td>
                                                                 </tr>
                                                             )

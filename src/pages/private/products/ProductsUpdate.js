@@ -17,6 +17,7 @@ import { Button, Modal } from "react-bootstrap";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import ShortProductsColumns from "../../../components/CustomTable/Columns/ShortProductsColumns";
 import useFeatures from "../../../hooks/useFeatures";
+import imgUrl from "../../../util/imgUrl";
 
 
 
@@ -156,7 +157,7 @@ const ProductsUpdate = () => {
             }
             if (dataSheet) setDataSheetPreview(`${SystemInfo?.host}${dataSheet}`);
             if (certificate) setCertificatePreview(`${SystemInfo?.host}${certificate}`);
-            if (imagePath) setImagePreview(`${SystemInfo?.host}${imagePath}`);
+            if (imagePath) setImagePreview(imgUrl(imagePath));
 
         }
     }, [product]);
@@ -753,7 +754,7 @@ const ProductsUpdate = () => {
                                                 <div className="col-md-2">
                                                     <img
                                                         style={{ height: '80px', width: '80px', borderRadius: '10px' }}
-                                                        src={`${SystemInfo?.host}${productChild?.image_path}`}
+                                                        src={imgUrl(productChild?.imagePath)}
                                                         alt=""
                                                     />
                                                 </div>

@@ -1,6 +1,7 @@
 import logo from "../images/logo.png";
 import logoBlanco from "../images/logo-blanco.png";
 import logoShort from "../images/logo-short.png";
+import env from "./env";
 
 const SystemInfo = {
     name: "Csi-Pedidos",
@@ -8,9 +9,9 @@ const SystemInfo = {
     logo: logo,
     logoBlanco: logoBlanco,
     logoShort: logoShort,
-    host: 'http://csipedidos.csiltda.cl/', //'http://csipedidos.csiltda.cl/'
-    api: 'http://apicsipedidos.csiltda.cl/api',
-    usersApi: 'http://apicsiuser.csiltda.cl/api',
+    host: env('HOST_URL'),
+    api: env('API_URL'),
+    usersApi: env('USERS_API_URL'),
     systemCode: 'sys-002',
     AUTO_SAVE_KEY: `sys-002-order_create`
 }
