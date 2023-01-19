@@ -957,7 +957,11 @@ const StepFour = () => {
                 <Modal.Body>
                     <div className="row">
                         <div className="col-md-4">
-                            <img src={`${SystemInfo?.host}${detailProduct?.imagePath || notImage}`} style={{ maxWidth: '100%', borderRadius: '10px' }} alt="" />
+                            <img
+                                src={imgUrl(detailProduct?.imagePath)}
+                                style={{ maxWidth: '100%', borderRadius: '10px' }}
+                                alt=""
+                            />
                         </div>
                         <div className="col-md-4">
                             <div className="form-group my-2">
@@ -999,7 +1003,9 @@ const StepFour = () => {
                                             return (
                                                 <tr key={i}>
                                                     <td>
-                                                        <img style={{ maxWidth: '50px', height: '50px' }} src={`${SystemInfo?.host}${childProduct?.imagePath || notImage}`} />
+                                                        <img
+                                                            style={{ maxWidth: '50px', height: '50px' }}
+                                                            src={imgUrl(childProduct?.imagePath)} />
                                                     </td>
                                                     <td>
                                                         {childProduct?.name}
