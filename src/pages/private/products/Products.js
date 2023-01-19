@@ -202,6 +202,9 @@ const Products = () => {
                             <Link to={"/productos/asociar-servicios"} className="btn btn-primary mx-1">
                                 Asociar A los Servicios
                             </Link>
+                            <Link to={"/productos/importar"} className="btn btn-success mx-1">
+                                Importar
+                            </Link>
                             <Link to={"/productos/crear"} className="btn btn-primary">
                                 Crear producto
                             </Link>

@@ -8,9 +8,9 @@ const SystemInfo = {
     logo: logo,
     logoBlanco: logoBlanco,
     logoShort: logoShort,
-    host: 'http://csipedidos.test', //'http://csipedidos.csiltda.cl/'
-    api: 'http://csipedidos.test/api',
-    usersApi: 'http://csiusers.test/api',
+    host: 'http://csipedidos.csiltda.cl/', //'http://csipedidos.csiltda.cl/'
+    api: 'http://apicsipedidos.csiltda.cl/api',
+    usersApi: 'http://apicsiuser.csiltda.cl/api',
     systemCode: 'sys-002',
     AUTO_SAVE_KEY: `sys-002-order_create`
 }
