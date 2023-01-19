@@ -473,7 +473,7 @@ const ProductsUpdate = () => {
                                     </div>
                                     <div className="mb-4">
                                         <label>
-                                            Codigo
+                                            Código
                                         </label>
                                         <input
                                             type="text"

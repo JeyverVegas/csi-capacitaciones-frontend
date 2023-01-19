@@ -337,7 +337,7 @@ const Dashboard = () => {
                         amountByOrderTypes && Object.keys(amountByOrderTypes).length > 0 && !loadingAmountByOrderTypes ?
                             <PieChart
                                 label="valueAndPercent"
-                                labelEndAdornment='$'
+                                labelStartAdornment='$'
                                 labels={['Mensual', 'Extraordinario', 'Manual']}
                                 defaultSeries={Object.keys(amountByOrderTypes).map((key2) => amountByOrderTypes[key2] || 0)}
                                 colors={['#34b4db', '#df6adb', '#5e74f4']}
@@ -379,7 +379,7 @@ const Dashboard = () => {
                                 <div className="col-md-12">
                                     <ColumnChart
                                         label="value"
-                                        labelEndAdornment='$'
+                                        labelStartAdornment='$ '
                                         categories={Object.keys(amountByServices).map(key => amountByServices[key]?.service.toLocaleUpperCase())}
                                         defaultSeries={[
                                             {
@@ -414,7 +414,7 @@ const Dashboard = () => {
                 itemsCount &&
                 <>
                     <h3 className="text-center mt-5">
-                        Conteo de items
+                        Artículos más pedidos del mes
                     </h3>
                     <div className="row mb-5 justify-content-center">
                         {
