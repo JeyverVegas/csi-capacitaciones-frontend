@@ -102,6 +102,12 @@ const handleValidationErrors = (errorData) => {
 const handleUnAuthorizeUser = (data) => {
   if (data?.message === 'Unauthenticated.') {
     deleteAuth();
-    window.location.pathname = '/iniciar-sesion';
+
+    var message = 'La sesión ha finalizado.'
+
+    var redirectTo = window.location.pathname;
+
+
+    window.location.href = `/iniciar-sesion?message=${message}&redirectTo=${redirectTo}`;
   }
 }

@@ -43,11 +43,11 @@ const Login = () => {
     useEffect(() => {
         if (loginData) {
             setAuthInfo({ user: loginData?.data, token: loginData?.token });
-            navigate('/dashboard', { replace: true });
+            navigate(searchParams?.get('redirectTo') || '/dashboard', { replace: true });
         }
         if (loginWithTokenData) {
             setAuthInfo({ user: loginWithTokenData.data, token: loginWithTokenData.token });
-            navigate('/dashboard', { replace: true });
+            navigate(searchParams?.get('redirectTo') || '/dashboard', { replace: true });
         }
     }, [loginData, loginWithTokenData])
 

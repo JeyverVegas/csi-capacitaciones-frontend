@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 import useAxios from "../../../hooks/useAxios";
 import alertEmojis from "../../../util/AlertsEmojis";
+import excelTemplate from "../../../assets/excels/plantilla-para-actualizar-precios-de-los-productos-en-pedidos.xlsx";
 
 const ProductsUpdatePrices = () => {
     const [data, setData] = useState({
@@ -60,19 +61,31 @@ const ProductsUpdatePrices = () => {
     return (
         <div>
             <div className="card p-5">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h3>Archivo excel</h3>
-                        <input
-                            name="file"
-                            onChange={handleChange}
-                            type="file"
-                            accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        />
+                <div className="card-header">
+                    <div className="row aling-items-center col-md-12">
+                        <div className="col-md-6">
+                            <h4>Actualizar precios de los productos</h4>
+                        </div>
+                        <div className="col-md-6 text-end">
+                            <a href={excelTemplate} download>Descargar plantilla</a>
+                        </div>
+                    </div>
+                </div>
+                <div className="card-body">
+                    <div className="row">
+                        <div className="col-md-12">
+                            <h3>Archivo excel</h3>
+                            <input
+                                name="file"
+                                onChange={handleChange}
+                                type="file"
+                                accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            />
+                        </div>
                     </div>
                 </div>
 
-                <div className="text-end">
+                <div className="text-end card-footer">
                     <button onClick={handleSubmit} className="btn btn-primary" disabled={!data?.file || loading}>
                         {
                             loading ?
