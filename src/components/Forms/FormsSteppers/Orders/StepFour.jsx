@@ -46,7 +46,8 @@ const StepFour = () => {
         subCategoryId: '',
         categoryId: '',
         parentsOnly: true,
-        withChildren: true
+        withChildren: true,
+        perPage: 8
     });
 
     const [categoriesFilters, setCategoriesFilters] = useState({
@@ -251,7 +252,8 @@ const StepFour = () => {
         setFilters((oldFilters) => {
             return {
                 ...oldFilters,
-                [e.target.name]: e.target.value
+                [e.target.name]: e.target.value,
+                page: 1
             }
         })
     }
@@ -635,7 +637,7 @@ const StepFour = () => {
                                 </div>
                             </form>
                             :
-                            <div className="col-md-7">
+                            <div className="col-12 col-lg-7">
                                 <h1 className="text-center">{data?.isReplacement ? 'Repuestos' : 'Productos'}</h1>
                                 <div style={{ height: 'fit-content' }} className={clsx(["mb-4 rounded shadow-sm"], {
                                     "bg-white": background?.value === 'light',
@@ -740,37 +742,40 @@ const StepFour = () => {
                                                                 {...draggableProvided?.draggableProps}
                                                                 ref={draggableProvided?.innerRef}
                                                                 {...draggableProvided?.dragHandleProps}
-                                                                className="col-md-4 animate__animated animate__fadeIn"
+                                                                className="col-6 col-md-4 col-xl-3 mb-4 animate__animated animate__fadeIn"
                                                             >
-                                                                <div className="rounded" style={{ overflow: 'hidden', background: background?.value === 'light' ? 'white' : '#171622' }}>
-                                                                    <img
-                                                                        src={imgUrl(product?.imagePath)}
-                                                                        style={{ maxWidth: '100%' }}
-                                                                        alt=""
+                                                                <div
+                                                                    className="rounded position-relative"
+                                                                    style={{ overflow: 'hidden', background: background?.value === 'light' ? 'white' : '#171622' }}
+                                                                >
+                                                                    <input
+                                                                        className="position-absolute"
+                                                                        style={{ top: 5, right: 5 }}
+                                                                        onChange={() => { handleToggleVersion(product) }}
+                                                                        checked={orderHasProduct(product?.id)}
+                                                                        type={'checkbox'}
                                                                     />
-                                                                    <div className="p-3">
+                                                                    <div
+                                                                        className="text-center"
+                                                                        style={{ minHeight: '100px', background: `url(${imgUrl(product?.imagePath)})`, backgroundPosition: 'center center', backgroundSize: 'cover' }}
+
+                                                                    >
+                                                                    </div>
+                                                                    <div className="p-1">
                                                                         <div>
-                                                                            <h5>{cutString(product?.name, 20, 0, '...')}</h5>
+                                                                            <h6>{cutString(product?.name, 20, 0, '...')}</h6>
                                                                         </div>
                                                                         <div>
                                                                             <b>${product?.price}</b>
                                                                         </div>
                                                                         <div>
                                                                             <span>
-                                                                                Categoría: <b>{product?.category?.name || '--'}</b>
+                                                                                Categoría: <b>{product?.category?.name || ''}</b>
                                                                             </span>
                                                                         </div>
-                                                                        <div>
-                                                                            <span>
-                                                                                Sub Categoría: <b>{product?.subCategory?.name || '--'}</b>
-                                                                            </span>
-                                                                        </div>
-                                                                        <span>
-                                                                            Proveedor: <b>{product?.provider?.name || '--'}</b>
-                                                                        </span>
                                                                         <div className="text-center mt-2">
                                                                             <button onClick={() => { showProductDetails(product) }} className="btn btn-primary btn-xs">
-                                                                                Detalles
+                                                                                Tallas y colores
                                                                             </button>
                                                                         </div>
                                                                     </div>
@@ -798,9 +803,69 @@ const StepFour = () => {
                                     </div>
                                     }
                                 </Droppable>
+                                <div
+                                    className="d-flex col-12 justify-content-between mt-5 mb-5 mb-md-0"
+                                >
+                                    <button
+                                        className="btn btn-primary btn-xs"
+                                        disabled={filters?.page <= 1}
+                                        style={{ border: 'none !important' }}
+                                        onClick={() =>
+                                            filters?.page > 1 && setFilters((oldFilters) => {
+                                                return {
+                                                    ...oldFilters,
+                                                    page: oldFilters?.page - 1
+                                                }
+                                            })
+                                        }
+                                    >
+                                        <i className="fa fa-angle-double-left" aria-hidden="true"></i>
+                                        Anterior
+                                    </button>
+                                    <span className="custom-horizontal-scrollbar scrollbar-primary" style={{ maxWidth: '100%', display: 'flex', overflowX: 'auto' }}>
+                                        {Array.from(Array(numberOfPages).keys()).map((number, i) => (
+                                            <div
+                                                key={i}
+                                                className={`${filters?.page === (i + 1) ? "current bg-primary text-white" : ""}`}
+                                                onClick={() => {
+                                                    setFilters((oldFilters) => {
+                                                        return {
+                                                            ...oldFilters,
+                                                            page: 1 + number
+                                                        }
+                                                    })
+                                                }}
+                                                style={{
+                                                    marginRight: '10px',
+                                                    padding: '10px 15px',
+                                                    borderRadius: '10px',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                {1 + number}
+                                            </div>
+                                        ))}
+                                    </span>
+                                    <button
+                                        className="btn btn-primary btn-xs"
+                                        disabled={filters?.page >= numberOfPages}
+                                        onClick={() =>
+                                            filters?.page < numberOfPages &&
+                                            setFilters((oldFilters) => {
+                                                return {
+                                                    ...oldFilters,
+                                                    page: oldFilters?.page + 1
+                                                }
+                                            })
+                                        }
+                                    >
+                                        Siguiente
+                                        <i className="fa fa-angle-double-right" aria-hidden="true"></i>
+                                    </button>
+                                </div>
                             </div>
                     }
-                    <div className="col-md-5">
+                    <div className="col-12 col-lg-5">
                         {
                             data?.orderTypeId !== 3 &&
                             <div className="text-center">
@@ -870,63 +935,65 @@ const StepFour = () => {
                                         <div className="text-center mt-2">
                                             <h4 style={{ marginBottom: 0 }}>{data?.isReplacement ? 'Repuestos' : 'Productos'}</h4>
                                         </div>
-                                        <table className="table table-order text-center" style={{ fontSize: '10px' }}>
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Código</th>
-                                                    <th width={"30%"} colSpan={2}>Item</th>
-                                                    <th>Cant.</th>
-                                                    <th>Precio</th>
-                                                    <th>Total</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    data?.orderItems?.length > 0 ?
-                                                        data?.orderItems?.map((item, i) => {
-                                                            return (
-                                                                <tr key={i}>
-                                                                    <td>
-                                                                        <i
-                                                                            className="flaticon-381-trash-2 text-danger"
-                                                                            style={{ fontSize: '13px', cursor: 'pointer' }}
-                                                                            onClick={() => { handleRemove(i) }}></i>
-                                                                    </td>
-                                                                    <td>{item?.code}</td>
-                                                                    <td width={"30%"} colSpan={2} title={item?.name}>{cutString(`${item?.name}`, 20, 0, '...')}</td>
-                                                                    <td>
-                                                                        <input type="number" min={1} style={{
-                                                                            borderRadius: '8px',
-                                                                            width: '100%',
-                                                                            border: '1px solid whitesmoke',
-                                                                            padding: '5px',
-                                                                            background: 'transparent',
-                                                                            color: background?.value === 'light' ? 'black' : 'white'
-                                                                        }} name="quantity" value={item?.quantity} onChange={(e) => { handleArrayChange(e, i, 'orderItems') }} />
-                                                                    </td>
-                                                                    <td>${Number(item?.price).toFixed(0)}</td>
-                                                                    <td>$ {item?.price * item?.quantity}</td>
-                                                                </tr>
-                                                            )
-                                                        })
-                                                        :
-                                                        <tr className="text-center">
-                                                            <td colSpan={7} style={{ fontSize: 15 }}>
-                                                                <p>{`Añada ${data?.isReplacement ? 'repuestos' : 'productos'} al pedido`}</p>
-                                                            </td>
-                                                        </tr>
-                                                }
-                                                <tr>
-                                                    <td colSpan={5}>
-                                                        <h3>Total:</h3>
-                                                    </td>
-                                                    <td colSpan={2}>
-                                                        <h3>$ {total}</h3>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        <div className="table-responsive">
+                                            <table className="table table-order text-center" style={{ fontSize: '10px' }}>
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Código</th>
+                                                        <th width={"30%"} colSpan={2}>Item</th>
+                                                        <th>Cant.</th>
+                                                        <th>Precio</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        data?.orderItems?.length > 0 ?
+                                                            data?.orderItems?.map((item, i) => {
+                                                                return (
+                                                                    <tr key={i}>
+                                                                        <td>
+                                                                            <i
+                                                                                className="flaticon-381-trash-2 text-danger"
+                                                                                style={{ fontSize: '13px', cursor: 'pointer' }}
+                                                                                onClick={() => { handleRemove(i) }}></i>
+                                                                        </td>
+                                                                        <td>{item?.code}</td>
+                                                                        <td width={"30%"} colSpan={2} title={item?.name}>{cutString(`${item?.name}`, 20, 0, '...')}</td>
+                                                                        <td>
+                                                                            <input type="number" min={1} style={{
+                                                                                borderRadius: '8px',
+                                                                                width: '100%',
+                                                                                border: '1px solid whitesmoke',
+                                                                                padding: '5px',
+                                                                                background: 'transparent',
+                                                                                color: background?.value === 'light' ? 'black' : 'white'
+                                                                            }} name="quantity" value={item?.quantity} onChange={(e) => { handleArrayChange(e, i, 'orderItems') }} />
+                                                                        </td>
+                                                                        <td>${Number(item?.price).toFixed(0)}</td>
+                                                                        <td>$ {item?.price * item?.quantity}</td>
+                                                                    </tr>
+                                                                )
+                                                            })
+                                                            :
+                                                            <tr className="text-center">
+                                                                <td colSpan={7} style={{ fontSize: 15 }}>
+                                                                    <p>{`Añada ${data?.isReplacement ? 'repuestos' : 'productos'} al pedido`}</p>
+                                                                </td>
+                                                            </tr>
+                                                    }
+                                                    <tr>
+                                                        <td colSpan={5}>
+                                                            <h3>Total:</h3>
+                                                        </td>
+                                                        <td colSpan={2}>
+                                                            <h3>$ {total}</h3>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                     <div className="card-footer text-center">
                                         <button type="button" className="btn btn-danger mx-1" onClick={handleBack}>

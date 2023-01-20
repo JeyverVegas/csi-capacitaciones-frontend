@@ -76,14 +76,14 @@ const Header = ({ onNote }) => {
                             <div style={{ margin: '0 30px', display: 'flex', alignItems: 'center' }}>
                                 {
                                     !darkMode ?
-                                        <img style={{ maxWidth: '40px', marginRight: 10 }} src={sun} alt="" />
+                                        <img className="d-none d-sm-block" style={{ maxWidth: '40px', marginRight: 10 }} src={sun} alt="" />
                                         :
                                         null
                                 }
                                 <Toggle onChange={() => { setDarkMode((oldDarkMode) => !oldDarkMode) }} checked={darkMode} />
                                 {
                                     darkMode ?
-                                        <img style={{ maxWidth: '40px', marginLeft: 10 }} src={moon} alt="" />
+                                        <img className="d-none d-sm-block" style={{ maxWidth: '40px', marginLeft: 10 }} src={moon} alt="" />
                                         :
                                         null
                                 }
