@@ -109,9 +109,7 @@ const StepFour = () => {
 
     useEffect(() => {
         if (products?.length > 0) {
-            setCurrentProducts((oldProducts) => {
-                return [...oldProducts, ...products]
-            });
+            setCurrentProducts(products);
         }
     }, [products]);
 
