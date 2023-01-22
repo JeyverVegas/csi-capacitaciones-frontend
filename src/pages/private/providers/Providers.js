@@ -92,14 +92,12 @@ const Providers = () => {
     }
 
     const handlePageChange = (page) => {
-        if (page < 11 && page > 0) {
-            setFilters((oldFilters) => {
-                return {
-                    ...oldFilters,
-                    page: page
-                }
-            })
-        }
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                page: page
+            }
+        })
     }
 
     const handleDeleteSelected = () => {
