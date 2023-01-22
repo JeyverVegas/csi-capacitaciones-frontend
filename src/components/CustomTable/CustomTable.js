@@ -83,7 +83,7 @@ const CustomTable = ({
                             <h5>Global Acción:</h5>
                             {
                                 selectedValues?.length > 0 ?
-                                    <ActionDropdown withOutUpdate onDelete={handleDeleteSelected} />
+                                    <ActionDropdown entity={entity} withOutUpdate onDelete={handleDeleteSelected} />
                                     :
                                     <span>you must select at least one record</span>
                             }

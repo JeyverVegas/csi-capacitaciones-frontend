@@ -126,6 +126,7 @@ const Categories = () => {
             <CustomTable
                 onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
+                entity={'categories'}
                 onSelectAll={handleSelectALL}
                 loading={loading}
                 selectAll={selectAll}
