@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import CustomSelect from "../../../components/CustomSelect";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useCategories from "../../../hooks/useCategories";
+import handleLoadSelectOptions from "../../../util/loadSelectValues";
+import mapValues from "../../../util/mapValues";
+import AsyncSelect from 'react-select/async';
 
 const CategoriesCreate = () => {
 
@@ -11,29 +13,22 @@ const CategoriesCreate = () => {
 
     const { setCustomAlert, setLoading } = useFeedBack();
 
-    const [filters, setFilters] = useState({
-        perPage: 200,
-        page: 1,
-        name: '',
-        parentsOnly: true
-    });
-
     const [data, setData] = useState({
         name: '',
-        parentId: '',
+        parent: '',
         description: ''
     });
 
     const [{ data: createData, loading: createLoading, error: createError }, createCategory] = useAxios({ url: `/categories`, method: 'POST' }, { manual: true, useCache: false });
 
-    const [{ categories, error: categoriesError, loading: categoriesLoading }, getCategories] = useCategories({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
+    const [{ categories, loading: categoriesLoading }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
 
     useEffect(() => {
         if (createData) {
             setCustomAlert({
                 title: '¡Operacion Exitosa!',
                 severity: 'success',
-                message: 'La categorías fue creada exitosamente.',
+                message: 'El registro fue creado exitosamente.',
                 show: true
             });
             navigate('/categorias');
@@ -49,16 +44,7 @@ const CategoriesCreate = () => {
                 show: true
             });
         }
-
-        if (categoriesError) {
-            setCustomAlert({
-                title: 'Error',
-                severity: 'danger',
-                message: 'Ha ocurrido un error al obtener las categorías.',
-                show: true
-            });
-        }
-    }, [createError, categoriesError])
+    }, [createError])
 
     const handleSubmit = (e) => {
         e?.preventDefault?.();
@@ -67,20 +53,12 @@ const CategoriesCreate = () => {
             return;
         }
 
-
-
-
-        if (!data?.name) {
-            setCustomAlert({
-                title: 'Error',
-                severity: 'danger',
-                message: 'El nombre es obligatorio.',
-                show: true
-            });
-            return;
-        }
-
-        createCategory({ data });
+        createCategory({
+            data: {
+                ...data,
+                parentId: data?.parent?.value || null
+            }
+        });
     }
 
     const handleChange = (e) => {
@@ -90,21 +68,6 @@ const CategoriesCreate = () => {
                 [e.target.name]: e.target.type === 'file' ? e.target.files[0] : e.target.value
             }
         })
-    }
-
-    const handleCategory = (category) => {
-        setData((oldData) => {
-            return {
-                ...oldData,
-                parentId: category?.id
-            }
-        });
-        setFilters((oldFilters) => {
-            return {
-                ...oldFilters,
-                name: category?.name
-            }
-        });
     }
 
     return (
@@ -130,17 +93,22 @@ const CategoriesCreate = () => {
                                 </div>
                                 <div className="form-group mb-3 col-md-6">
                                     <label>Categoría padre</label>
-                                    {
-
-                                    }
-                                    <CustomSelect
-                                        options={categories}
-                                        optionLabel="name"
-                                        inputPlaceholder="Escribe el nombre..."
+                                    <AsyncSelect
+                                        isClearable
+                                        onFocus={() => {
+                                            getCategories({
+                                                params: {
+                                                    parentsOnly: true,
+                                                    perPage: 30
+                                                }
+                                            });
+                                        }}
+                                        value={data?.parent}
+                                        defaultOptions={mapValues(categories)}
                                         isLoading={categoriesLoading}
-                                        onSelectValue={handleCategory}
-                                        handleInputChange={(e) => { setFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
-                                        inputValue={filters?.name}
+                                        loadOptions={(e) => handleLoadSelectOptions(e, getCategories, { parentsOnly: true })}
+                                        placeholder='Escriba el nombre para buscar...'
+                                        onChange={(e) => { handleChange({ target: { value: e, name: 'parent' } }) }}
                                     />
                                 </div>
                                 <div className="form-group mb-3 col-md-12">

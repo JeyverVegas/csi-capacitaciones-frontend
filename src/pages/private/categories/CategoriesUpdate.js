@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import CustomSelect from "../../../components/CustomSelect";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useCategories from "../../../hooks/useCategories";
+import AsyncSelect from 'react-select/async';
+import mapValues from "../../../util/mapValues";
+import handleLoadSelectOptions from "../../../util/loadSelectValues";
 
 const CategoriesUpdate = () => {
 
@@ -13,68 +15,37 @@ const CategoriesUpdate = () => {
 
     const { setCustomAlert, setLoading } = useFeedBack();
 
-    const [filters, setFilters] = useState({
-        perPage: 200,
-        page: 1,
-        name: '',
-        parentsOnly: true
-    });
-
     const [data, setData] = useState({
         name: '',
         description: '',
-        parentId: ''
+        parent: ''
     });
-
-    const [firstLoading, setFirstLoading] = useState(true);
 
     const [{ data: category, error: categoryError, loading: categoryLoading }, getCategory] = useAxios({ url: `/categories/${id}` }, { useCache: false });
 
     const [{ data: updateData, loading: updateLoading, error: updateError }, updateCategory] = useAxios({ url: `/categories/${id}`, method: 'PUT' }, { manual: true, useCache: false });
 
-    const [{ categories, error: categoriesError, loading: categoriesLoading }, getCategories] = useCategories({ axiosConfig: { params: { ...filters } }, options: { useCache: false } });
+    const [{ categories, loading: categoriesLoading }, getCategories] = useCategories({ options: { manual: true, useCache: false } });
 
     useEffect(() => {
         if (category) {
-            console.log(category?.data);
-            setFilters((oldFilters) => {
-                return {
-                    ...oldFilters,
-                    name: category?.data?.parentCategory?.name
-                }
-            })
             setData((oldData) => {
                 return {
                     ...oldData,
                     name: category?.data?.name,
                     description: category?.data?.description,
-                    parentId: category?.data?.parentCategory ? category?.data?.parentCategory?.id : ''
+                    parent: category?.data?.parentCategory ? mapValues([category?.data?.parentCategory])[0] : null
                 }
             })
         }
-    }, [category])
-
-    useEffect(() => {
-        if (!categoriesLoading && !categoryLoading) {
-            setFirstLoading(false);
-        } else {
-            setFirstLoading(true);
-        }
-    }, [categoriesLoading, categoryLoading]);
-
-    useEffect(() => {
-        setLoading({
-            show: firstLoading,
-            message: 'Obteniendo información'
-        });
-    }, [firstLoading])
+    }, [category]);
 
     useEffect(() => {
         if (updateData) {
             setCustomAlert({
                 title: '¡Operacion Exitosa!',
                 severity: 'success',
-                message: 'La categoría fue actualizada exitosamente.',
+                message: 'El registro fue actualizado exitosamente.',
                 show: true
             });
 
@@ -91,25 +62,7 @@ const CategoriesUpdate = () => {
                 show: true
             });
         }
-
-        if (categoriesError) {
-            setCustomAlert({
-                title: 'Error',
-                severity: 'danger',
-                message: 'Ha ocurrido un error al obtener las categorías.',
-                show: true
-            });
-        }
-
-        if (categoryError) {
-            setCustomAlert({
-                title: 'Error',
-                severity: 'danger',
-                message: 'Ha ocurrido un error al obtener la categoría.',
-                show: true
-            });
-        }
-    }, [updateError, categoriesError, categoryError])
+    }, [updateError])
 
     const handleSubmit = (e) => {
         e?.preventDefault?.();
@@ -118,17 +71,12 @@ const CategoriesUpdate = () => {
             return;
         }
 
-        if (!data?.name) {
-            setCustomAlert({
-                title: 'Error',
-                severity: 'danger',
-                message: 'El nombre es obligatorio.',
-                show: true
-            });
-            return;
-        }
-
-        updateCategory({ data });
+        updateCategory({
+            data: {
+                ...data,
+                parentId: data?.parent?.value || null
+            }
+        });
     }
 
     const handleChange = (e) => {
@@ -140,26 +88,11 @@ const CategoriesUpdate = () => {
         })
     }
 
-    const handleCategory = (category) => {
-        setData((oldData) => {
-            return {
-                ...oldData,
-                parentId: category?.id
-            }
-        });
-        setFilters((oldFilters) => {
-            return {
-                ...oldFilters,
-                name: category?.name
-            }
-        });
-    }
-
     return (
         <div>
             <div className="card">
                 <div className="card-header">
-                    <h4 className="card-title">Crear Categoría</h4>
+                    <h4 className="card-title">Actualizar Categoría</h4>
                 </div>
                 <div className="card-body">
                     <div className="basic-form">
@@ -178,17 +111,23 @@ const CategoriesUpdate = () => {
                                 </div>
                                 <div className="form-group mb-3 col-md-6">
                                     <label>Categoria padre</label>
-                                    {
-
-                                    }
-                                    <CustomSelect
-                                        options={categories}
-                                        optionLabel="name"
-                                        inputPlaceholder="Escribe el nombre..."
+                                    <AsyncSelect
+                                        isClearable
+                                        onFocus={() => {
+                                            getCategories({
+                                                params: {
+                                                    parentsOnly: true,
+                                                    exceptIds: [id],
+                                                    perPage: 30
+                                                }
+                                            });
+                                        }}
+                                        value={data?.parent}
+                                        defaultOptions={mapValues(categories)}
                                         isLoading={categoriesLoading}
-                                        onSelectValue={handleCategory}
-                                        handleInputChange={(e) => { setFilters((oldFilters) => { return { ...oldFilters, name: e.target.value } }) }}
-                                        inputValue={filters?.name}
+                                        loadOptions={(e) => handleLoadSelectOptions(e, getCategories, { parentsOnly: true, exceptIds: [id] })}
+                                        placeholder='Escriba el nombre para buscar...'
+                                        onChange={(e) => { handleChange({ target: { value: e, name: 'parent' } }) }}
                                     />
                                 </div>
                                 <div className="form-group mb-3 col-md-12">

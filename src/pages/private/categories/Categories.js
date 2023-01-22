@@ -28,14 +28,6 @@ const Categories = () => {
     const [{ error: deleteError, loading: deleteLoading }, deleteCategories] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
     useEffect(() => {
-        console.log(categories);
-    }, [categories])
-
-    useEffect(() => {
-
-    }, [filters])
-
-    useEffect(() => {
         setLoading?.({
             show: deleteLoading,
             message: 'Eliminando categorías'
@@ -97,14 +89,13 @@ const Categories = () => {
     }
 
     const handlePageChange = (page) => {
-        if (page < 11 && page > 0) {
-            setFilters((oldFilters) => {
-                return {
-                    ...oldFilters,
-                    page: page
-                }
-            })
-        }
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                page: page
+            }
+        })
+
     }
 
     const handleDeleteSelected = () => {
