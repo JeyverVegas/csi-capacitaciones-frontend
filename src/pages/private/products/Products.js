@@ -304,6 +304,7 @@ const Products = () => {
                 loading={loading}
                 selectAll={selectAll}
                 title={'Productos'}
+                entity='products'
                 updatePath={"/productos"}
                 onDelete={handleDelete}
                 selectedValues={selectedValues}

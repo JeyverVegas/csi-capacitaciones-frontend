@@ -134,6 +134,7 @@ const Providers = () => {
                 loading={loading}
                 selectAll={selectAll}
                 title={'Proveedores'}
+                entity='providers'
                 updatePath={"/proveedores"}
                 onDelete={handleDelete}
                 selectedValues={selectedValues}

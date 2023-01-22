@@ -134,6 +134,7 @@ const Features = () => {
                 selectAll={selectAll}
                 loading={featuresLoading}
                 title={'Características'}
+                entity="features"
                 updatePath={"/características"}
                 onDelete={handleDelete}
                 selectedValues={selectedValues}
