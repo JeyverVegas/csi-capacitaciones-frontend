@@ -536,7 +536,7 @@ const StepFour = () => {
                                             />
                                         </div>
                                         <div className="col-md-4 form-group">
-                                            <label>Ceb</label>
+                                            <label>Cebe</label>
                                             <input
                                                 type="text"
                                                 value={data?.seven}
