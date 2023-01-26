@@ -755,7 +755,12 @@ const StepFour = () => {
                                                                     />
                                                                     <div
                                                                         className="text-center"
-                                                                        style={{ minHeight: '100px', background: `url(${imgUrl(product?.imagePath)})`, backgroundPosition: 'center center', backgroundSize: 'cover' }}
+                                                                        style={{
+                                                                            minHeight: '100px',
+                                                                            backgroundImage: `url(${imgUrl(product?.imagePath)})`,
+                                                                            backgroundPosition: 'center',
+                                                                            backgroundSize: '100%'
+                                                                        }}
 
                                                                     >
                                                                     </div>

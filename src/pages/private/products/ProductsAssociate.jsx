@@ -25,7 +25,7 @@ const ProductsAssociate = () => {
 
     const [{ data: dataExcel, loading }, sendExcel] = useAxios({ url: `/excel-products-services`, method: 'POST' }, { manual: true });
 
-    const [{ services, loading: servicesLoading }, getServices] = useServices({ params: { perPage: 100, currentUserServices: true, page: 1 }, options: { useCache: false } });
+    const [{ services, loading: servicesLoading }, getServices] = useServices({ params: { perPage: 300, currentUserServices: true, page: 1 }, options: { useCache: false } });
 
     useEffect(() => {
         console.log(data);
