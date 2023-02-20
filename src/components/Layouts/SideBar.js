@@ -30,13 +30,22 @@ class MM extends Component {
     }
 }
 
+const hasPermissionForLink = (menuLink, permissions, isSuperAdmin = false) => menuLink?.permissions?.some?.(r => permissions?.indexOf(r) >= 0) ||
+    !menuLink?.permissions ||
+    permissions?.includes(menuLink?.permissions) ||
+    isSuperAdmin
+
+const hasPermissionForChildLink = (childMenu, permissions, isSuperAdmin) => !childMenu?.permissions ||
+    permissions?.includes?.(childMenu?.permissions) ||
+    isSuperAdmin
+
 const SideBar = () => {
 
     const location = useLocation();
 
     const { iconHover, sidebarposition, headerposition, sidebarLayout } = useTheme();
 
-    const { permissions } = useAuth();
+    const { permissions, isSuperAdmin } = useAuth();
 
     const scrollPosition = useScrollPosition();
 
@@ -63,7 +72,6 @@ const SideBar = () => {
         setPath(location?.pathname)
     }, [location?.pathname]);
 
-
     return (
         <div
             className={`deznav ${iconHover} ${sidebarposition.value === "fixed" &&
@@ -79,7 +87,7 @@ const SideBar = () => {
                 <MM className="metismenu" id="menu">
                     {MenuLinks?.map((menuLink, i) => {
                         return (
-                            menuLink?.permissions?.some?.(r => permissions?.indexOf(r) >= 0) || !menuLink?.permissions || permissions?.includes(menuLink?.permissions) ?
+                            hasPermissionForLink(menuLink, permissions, isSuperAdmin) ?
                                 <li className={`${path.includes(menuLink?.path) && !menuLink?.children ? "mm-active" : ""}`} key={i}>
                                     <Link to={menuLink?.children?.length > 0 ? '#' : menuLink?.path} className={`${menuLink?.children?.length > 0 ? 'has-arrow' : ''} ai-icon`}>
                                         {
@@ -96,7 +104,7 @@ const SideBar = () => {
                                                 {
                                                     menuLink?.children?.map?.((childrenMenu, i2) => {
                                                         return (
-                                                            !childrenMenu?.permissions || permissions?.includes?.(childrenMenu?.permissions) ?
+                                                            hasPermissionForChildLink(childrenMenu, permissions, isSuperAdmin) ?
                                                                 !childrenMenu.hidden ?
                                                                     <li key={`${i}-${i2}`}>
                                                                         <Link className={`${path === childrenMenu?.path ? "mm-active" : ""}`} to={childrenMenu?.path}>
