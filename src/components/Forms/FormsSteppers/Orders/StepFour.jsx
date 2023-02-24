@@ -45,8 +45,8 @@ const StepFour = () => {
         page: 1,
         subCategoryId: '',
         categoryId: '',
-        parentsOnly: true,
         withChildren: true,
+        parentsOnly: true,
         perPage: 8
     });
 

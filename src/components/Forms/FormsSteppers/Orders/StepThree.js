@@ -56,9 +56,9 @@ const StepThree = () => {
                             <option>Seleccione un tipo</option>
                         }
                         {
-                            ordersTypes?.map((ordersTypes, i) => {
+                            ordersTypes?.map((ordersType, i) => {
                                 return (
-                                    <option key={i} value={ordersTypes?.id}>{ordersTypes?.displayText}</option>
+                                    <option key={i} value={ordersType?.id}>{ordersType?.displayText}</option>
                                 )
                             })
                         }
