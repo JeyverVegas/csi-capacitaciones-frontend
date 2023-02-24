@@ -1,8 +1,5 @@
 import ActionDropdown from "../../ActionDropdown";
-import DocumentNumber from "../../DocumentNumber";
-import ImageAndName from "../../ImageAndName";
 import TableCheck from "../TableCheck";
-import { format } from "date-fns";
 import RenderStatus from "../../RenderStatus";
 import DateFormatter from "../../DateFormatter";
 import { dateFine } from "../../../util/Utilities";

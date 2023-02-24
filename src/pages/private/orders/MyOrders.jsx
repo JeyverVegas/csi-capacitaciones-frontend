@@ -30,7 +30,7 @@ const MyOrders = () => {
 
     const [{ services, loading: servicesLoading }, getServices] = useServices({ params: { ...servicesFilters } }, { useCache: false });
 
-    const [{ orders, total, numberOfPages, error: ordersError, loading }, getOrders] = useUserOrders({ params: { ...filters }, options: { useCache: false } });
+    const [{ orders, total, numberOfPages, error: ordersError, loading }, getOrders] = useUserOrders({ params: { ...filters } }, { useCache: false });
 
     const [{ error: deleteError, loading: deleteLoading }, deleteProvider] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
