@@ -1,6 +1,7 @@
 import ImageAndName from "../../ImageAndName";
 import TableCheck from "../TableCheck";
 
+
 const ShortProductsColumns = [
     {
         Label: () => 'Seleccionar',

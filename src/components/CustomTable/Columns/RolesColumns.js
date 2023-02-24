@@ -1,6 +1,7 @@
 import ActionDropdown from "../../ActionDropdown";
 import TableCheck from "../TableCheck";
-import { format } from "date-fns";
+import DateFormatter from "../../DateFormatter";
+import { dateFine } from "../../../util/Utilities";
 
 const RolesColumns = [
     {
@@ -18,7 +19,7 @@ const RolesColumns = [
     },
     {
         Label: () => 'Fecha de Creación',
-        Component: ({ date }) => format(new Date(date), 'dd/MM/yyyy')
+        Component: ({ value }) => <DateFormatter value={dateFine(value?.createdAt)} dateFormat="dd/MM/yyyy hh:mm:ss" />
     },
     {
         Label: () => 'Acciones',
