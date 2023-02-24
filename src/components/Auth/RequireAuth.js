@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const RequireAuth = ({ children, screenPermission }) => {
 
-    const { user, permissions } = useAuth();
+    const { user, permissions, isSuperAdmin } = useAuth();
 
     let location = useLocation();
 
@@ -15,7 +15,7 @@ const RequireAuth = ({ children, screenPermission }) => {
         return <Navigate to="/iniciar-sesion" state={{ from: location }} replace />;
     }
 
-    if (screenPermission && !permissions?.includes?.(screenPermission)) {
+    if (screenPermission && !permissions?.includes?.(screenPermission) && !isSuperAdmin) {
         return (
             <div>
                 <h3>No tienes Permisos.</h3>

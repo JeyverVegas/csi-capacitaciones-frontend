@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
 
   return <AuthContext.Provider value={{
     user: authInfo.user,
+    isSuperAdmin: authInfo.user?.role?.name === "sys-002-super-admin",
     token: authInfo.token,
     permissions: getPermissionName(),
     isAuthenticated: authInfo.isAuthenticated,
