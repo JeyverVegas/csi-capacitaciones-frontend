@@ -1,20 +1,19 @@
-export const AUTH_KEY = 'csi-pedidos-auth';
-
+import SystemInfo from "../util/SystemInfo";
 
 export const setAuth = (authInfo) => {
   if (authInfo) {
-    localStorage.setItem(AUTH_KEY, authInfo);
+    localStorage.setItem(SystemInfo.authKey, authInfo);
   }
 };
 
 export const clearAuth = () => {
-  localStorage.removeItem(AUTH_KEY)
+  localStorage.removeItem(SystemInfo.authKey)
 };
 
 export const getAuth = () => {
-  return localStorage.getItem(AUTH_KEY);
+  return localStorage.getItem(SystemInfo.authKey);
 };
 
 export const deleteAuth = () => {
-  localStorage.removeItem(AUTH_KEY);
+  localStorage.removeItem(SystemInfo.authKey);
 };

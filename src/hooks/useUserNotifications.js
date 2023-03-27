@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import useAxios from './useAxios';
 
 const useUserNotifications = ({ options, axiosConfig } = {}) => {
-  const [{ data, error, loading }, getUserNotifications] = useAxios({ url: '/notifications/current-user', ...axiosConfig }, options);
+  const [{ data, error, loading }, getUserNotifications] = useAxios({ url: 'my-account/notifications', ...axiosConfig }, options);
 
   const [userNotifications, setUserNotifications] = useState([]);
 

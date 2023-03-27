@@ -11,6 +11,8 @@ import { useScrollPosition } from 'react-use-scroll-position';
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import MenuLinks from "../../util/MenuLinks";
+import SystemInfo from "../../util/SystemInfo";
+import UserHavePermission from "../../util/UserHavePermission";
 
 class MM extends Component {
     componentDidMount() {
@@ -30,22 +32,13 @@ class MM extends Component {
     }
 }
 
-const hasPermissionForLink = (menuLink, permissions, isSuperAdmin = false) => menuLink?.permissions?.some?.(r => permissions?.indexOf(r) >= 0) ||
-    !menuLink?.permissions ||
-    permissions?.includes(menuLink?.permissions) ||
-    isSuperAdmin
-
-const hasPermissionForChildLink = (childMenu, permissions, isSuperAdmin) => !childMenu?.permissions ||
-    permissions?.includes?.(childMenu?.permissions) ||
-    isSuperAdmin
-
 const SideBar = () => {
 
     const location = useLocation();
 
     const { iconHover, sidebarposition, headerposition, sidebarLayout } = useTheme();
 
-    const { permissions, isSuperAdmin } = useAuth();
+    const { permissions } = useAuth();
 
     const scrollPosition = useScrollPosition();
 
@@ -72,6 +65,7 @@ const SideBar = () => {
         setPath(location?.pathname)
     }, [location?.pathname]);
 
+
     return (
         <div
             className={`deznav ${iconHover} ${sidebarposition.value === "fixed" &&
@@ -85,16 +79,14 @@ const SideBar = () => {
         >
             <PerfectScrollbar className="deznav-scroll">
                 <MM className="metismenu" id="menu">
-                    {MenuLinks?.map((menuLink, i) => {
+                    {MenuLinks?.map(({ Icon, ...menuLink }, i) => {
                         return (
-                            hasPermissionForLink(menuLink, permissions, isSuperAdmin) ?
+                            UserHavePermission(MenuLinks?.permissions) && !menuLink.hidden ?
                                 <li className={`${path.includes(menuLink?.path) && !menuLink?.children ? "mm-active" : ""}`} key={i}>
                                     <Link to={menuLink?.children?.length > 0 ? '#' : menuLink?.path} className={`${menuLink?.children?.length > 0 ? 'has-arrow' : ''} ai-icon`}>
                                         {
-                                            menuLink?.icon ?
-                                                <i className={`${menuLink?.icon}`}></i>
-                                                :
-                                                null
+                                            Icon &&
+                                            <Icon className="link-icon" style={{ color: path.includes(menuLink?.path) && !menuLink?.children ? 'white' : null, minHeight: '25px', minWidth: '25px' }} />
                                         }
                                         <span className="nav-text">{menuLink?.title}</span>
                                     </Link>
@@ -104,15 +96,12 @@ const SideBar = () => {
                                                 {
                                                     menuLink?.children?.map?.((childrenMenu, i2) => {
                                                         return (
-                                                            hasPermissionForChildLink(childrenMenu, permissions, isSuperAdmin) ?
-                                                                !childrenMenu.hidden ?
-                                                                    <li key={`${i}-${i2}`}>
-                                                                        <Link className={`${path === childrenMenu?.path ? "mm-active" : ""}`} to={childrenMenu?.path}>
-                                                                            {childrenMenu?.title}
-                                                                        </Link>
-                                                                    </li>
-                                                                    :
-                                                                    null
+                                                            UserHavePermission(menuLink?.permissions) && !childrenMenu.hidden ?
+                                                                <li key={`${i}-${i2}`}>
+                                                                    <Link className={`${path === childrenMenu?.path ? "mm-active" : ""}`} to={childrenMenu?.path}>
+                                                                        {childrenMenu?.title}
+                                                                    </Link>
+                                                                </li>
                                                                 :
                                                                 null
                                                         )
@@ -129,7 +118,7 @@ const SideBar = () => {
                     })}
                 </MM>
                 <div className="copyright">
-                    <p><strong>CSI SPM 2.0</strong> © Sistema de Pedidos Web 2022</p>
+                    <p><strong>CSI CA</strong> © Sistema {SystemInfo.name} 2023</p>
                     <p className="fs-12"><span className="heart"></span></p>
                 </div>
             </PerfectScrollbar>

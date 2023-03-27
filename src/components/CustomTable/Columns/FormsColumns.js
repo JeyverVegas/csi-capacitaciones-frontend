@@ -1,11 +1,9 @@
 import ActionDropdown from "../../ActionDropdown";
-import DocumentNumber from "../../DocumentNumber";
-import ImageAndName from "../../ImageAndName";
 import TableCheck from "../TableCheck";
-import DateFormatter from "../../DateFormatter";
 import { dateFine } from "../../../util/Utilities";
+import DateFormatter from "../../DateFormatter";
 
-const ProvidersColumns = [
+const FormsColumns = [
     {
         Label: TableCheck,
         Component: TableCheck
@@ -17,23 +15,11 @@ const ProvidersColumns = [
     },
     {
         Label: () => 'Nombre',
-        Component: ImageAndName
+        accessor: 'name'
     },
     {
-        Label: () => 'Nro. de documento',
-        Component: DocumentNumber
-    },
-    {
-        Label: () => 'Teléfono',
-        accessor: 'phoneNumber'
-    },
-    {
-        Label: () => 'Email',
-        accessor: 'email'
-    },
-    {
-        Label: () => 'Dirección',
-        accessor: 'address'
+        Label: () => 'Tareas',
+        Component: ({ parentCategory }) => "5"
     },
     {
         Label: () => 'Fecha de Creación',
@@ -45,5 +31,5 @@ const ProvidersColumns = [
     }
 ];
 
-export default ProvidersColumns;
+export default FormsColumns;
 

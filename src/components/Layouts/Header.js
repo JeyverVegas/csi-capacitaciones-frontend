@@ -24,7 +24,7 @@ const Header = ({ onNote }) => {
     const [nameForUpdate, setNameForUpdate] = useState('');
 
     useEffect(() => {
-        const dark = localStorage.getItem('CSI-PEDIDOS-DARKMODE') === 'true' ? true : false;
+        const dark = localStorage.getItem(`${SystemInfo?.systemCode}-DARKMODE`) === 'true' ? true : false;
         setDarkMode(dark);
     }, []);
 
@@ -47,7 +47,7 @@ const Header = ({ onNote }) => {
             changeBackground({ value: "light", label: "light" });
         }
 
-        localStorage.setItem('CSI-PEDIDOS-DARKMODE', darkMode);
+        localStorage.setItem(`${SystemInfo?.systemCode}-DARKMODE`, darkMode);
     }, [darkMode]);
 
     return (
