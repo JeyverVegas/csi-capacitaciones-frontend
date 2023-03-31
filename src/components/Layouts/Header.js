@@ -59,9 +59,9 @@ const Header = ({ onNote }) => {
                             <div className="dashboard_bar" style={{ textTransform: "capitalize" }}>
                                 {
                                     nameForUpdate ?
-                                        `${location?.pathname?.split?.('/')?.filter?.((value) => { if (value) return value; })[0]} - ${nameForUpdate.length > 16 ? `${nameForUpdate.slice(0, 16)}...` : nameForUpdate}`
+                                        `${nameForUpdate}`
                                         :
-                                        location?.pathname?.split?.('/')?.filter?.((value) => { if (value) return value; }).join(' - ')
+                                        location?.pathname?.split?.('/')[location?.pathname?.split('/').length - 1]
                                 }
                             </div>
                         </div>

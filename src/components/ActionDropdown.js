@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { mainPermissions } from "../util/MenuLinks";
 import SystemInfo from "../util/SystemInfo";
+import UserHavePermission from "../util/UserHavePermission";
 
 const ActionDropdown = ({
     updateOptionString = 'Actualizar',
@@ -57,7 +58,7 @@ const ActionDropdown = ({
             </Dropdown.Toggle>
             <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
                 {
-                    permissions?.includes?.(`${SystemInfo?.systemCode}-delete-${entity}`) ?
+                    UserHavePermission(`${SystemInfo?.systemCode}-delete-${entity}`) || true ?
                         <Dropdown.Item onClick={handleDelete}>Eliminar</Dropdown.Item>
                         :
                         null

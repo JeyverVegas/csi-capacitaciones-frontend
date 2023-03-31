@@ -118,7 +118,7 @@ const SideBar = () => {
                     })}
                 </MM>
                 <div className="copyright">
-                    <p><strong>CSI CA</strong> © Sistema {SystemInfo.name} 2023</p>
+                    <p><strong>CSI CH</strong> © Sistema {SystemInfo.name} 2023</p>
                     <p className="fs-12"><span className="heart"></span></p>
                 </div>
             </PerfectScrollbar>

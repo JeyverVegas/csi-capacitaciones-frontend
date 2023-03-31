@@ -1,39 +1,39 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import FeaturesColumns from "../../../components/CustomTable/Columns/FeaturesColumns";
+import AccreditationProcessesColumns from "../../../components/CustomTable/Columns/AccreditationProcessesColumns";
 import CustomTable from "../../../components/CustomTable/CustomTable";
-import { useAuth } from "../../../context/AuthContext";
 import { useFeedBack } from "../../../context/FeedBackContext";
+import useAccreditationProcess from "../../../hooks/useAccreditationProcess";
 import useAxios from "../../../hooks/useAxios";
-import useFeatures from "../../../hooks/useFeatures";
+import useForms from "../../../hooks/useForms";
 import { mainPermissions } from "../../../util/MenuLinks";
+import UserHavePermission from "../../../util/UserHavePermission";
 
-const Features = () => {
-
-    const { permissions } = useAuth();
+const AccreditationProcess = () => {
 
     const { setCustomAlert, setLoading } = useFeedBack();
 
     const [filters, setFilters] = useState({
-        page: 1
-    })
+        page: 1,
+        serviceIds: ''
+    });
 
     const [selectedValues, setSelectedValues] = useState([]);
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [{ features, total, numberOfPages, size, error: featuresError, loading: featuresLoading }, getFeatures] = useFeatures({ params: { ...filters } }, { useCache: false });
+    const [{ accreditationProcess: records, total, numberOfPages, loading }, getRecords] = useAccreditationProcess({ params: { ...filters }, options: { useCache: false } });
 
-    const [{ error: deleteError, loading: deleteLoading }, deleteFeature] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
+    const [{ error: deleteError, loading: deleteLoading }, deleteRecord] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
     useEffect(() => {
-        getFeatures();
+        getRecords();
     }, [])
 
     useEffect(() => {
         setLoading?.({
             show: deleteLoading,
-            message: 'Eliminando Características'
+            message: 'Eliminando Registros'
         })
     }, [deleteLoading])
 
@@ -46,34 +46,25 @@ const Features = () => {
                 show: true
             });
         }
-
-        if (featuresError) {
-            setCustomAlert({
-                title: 'error',
-                severity: 'danger',
-                message: 'Ha ocurrido un error al obtener las características.',
-                show: true
-            });
-        }
-    }, [deleteError, featuresError])
+    }, [deleteError])
 
     useEffect(() => {
         if (selectAll) {
-            setSelectedValues(features?.map?.((value) => value?.id))
+            setSelectedValues(records?.map?.((value) => value?.id))
         } else {
             setSelectedValues([])
         }
     }, [selectAll])
 
     const handleDelete = (value) => {
-        deleteFeature({ url: `/features/${value?.id}` }).then((data) => {
+        deleteRecord({ url: `forms/${value?.id}` }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
-                message: 'La característica ha sido eliminada exitosamente.',
+                message: 'El registros ha sido eliminado exitosamente.',
                 show: true
             });
-            getFeatures();
+            getRecords();
         })
     }
 
@@ -92,58 +83,62 @@ const Features = () => {
     }
 
     const handlePageChange = (page) => {
-        setFilters((oldFilters) => {
-            return {
-                ...oldFilters,
-                page: page
-            }
-        })
+        if (page < 11 && page > 0) {
+            setFilters((oldFilters) => {
+                return {
+                    ...oldFilters,
+                    page: page
+                }
+            })
+        }
     }
 
     const handleDeleteSelected = () => {
-        deleteFeature({ url: `/features/multiple`, data: { ids: selectedValues } }).then((data) => {
+        deleteRecord({ url: `forms/multiple`, data: { ids: selectedValues } }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
-                message: 'Las características han sido eliminadas exitosamente.',
+                message: 'Los registros han sido eliminados exitosamente.',
                 show: true
             })
             setSelectedValues([]);
-            getFeatures();
+            getRecords();
         });
     }
 
     return (
         <div>
-            {
-                permissions?.includes?.(mainPermissions?.features[1]) ?
-                    <div className="my-4 justify-content-end d-flex">
-                        <Link to={"/caracteristicas/crear"} className="btn btn-primary">
-                            Crear Característica
+            <div className="my-4 justify-content-end d-flex">
+                {
+                    <>
+                        <Link to={"/proceso-de-acreditaciones/iniciar-proceso"} className="btn btn-primary">
+                            Iniciar Proceso
                         </Link>
-                    </div>
-                    :
-                    null
-            }
+                    </>
+                }
+            </div>
+
             <CustomTable
                 onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
+                loading={loading}
                 selectAll={selectAll}
-                loading={featuresLoading}
-                title={'Características'}
-                entity="features"
-                updatePath={"/características"}
+                title={'Procesos de acreditación'}
+                entity={"forms"}
+                updatePath={'/proceso-de-acreditaciones'}
+                updateOptionString={'Editar'}
                 onDelete={handleDelete}
                 selectedValues={selectedValues}
                 pages={numberOfPages}
                 total={total}
-                values={features}
-                currentPage={filters.page}
-                collumns={FeaturesColumns}
+                values={records}
+                currentPage={filters?.page}
+                collumns={AccreditationProcessesColumns}
                 changePage={handlePageChange}
             />
         </div>
     )
 }
-export default Features;
+
+export default AccreditationProcess;

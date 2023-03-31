@@ -5,6 +5,8 @@ import CustomTable from "../../../components/CustomTable/CustomTable";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useForms from "../../../hooks/useForms";
+import { mainPermissions } from "../../../util/MenuLinks";
+import UserHavePermission from "../../../util/UserHavePermission";
 
 const Forms = () => {
 
@@ -54,7 +56,7 @@ const Forms = () => {
     }, [selectAll])
 
     const handleDelete = (value) => {
-        deleteRecord({ url: `Forms/${value?.id}` }).then((data) => {
+        deleteRecord({ url: `forms/${value?.id}` }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
@@ -91,7 +93,7 @@ const Forms = () => {
     }
 
     const handleDeleteSelected = () => {
-        deleteRecord({ url: `Forms/multiple`, data: { ids: selectedValues } }).then((data) => {
+        deleteRecord({ url: `forms/multiple`, data: { ids: selectedValues } }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
@@ -106,9 +108,13 @@ const Forms = () => {
     return (
         <div>
             <div className="my-4 justify-content-end d-flex">
-                <Link to={"/solicitar-viaje"} className="btn btn-primary">
-                    Crear Solicitud
-                </Link>
+                {
+                    <>
+                        <Link to={"/formularios-de-acreditacion/crear"} className="btn btn-primary">
+                            Crear Formulario
+                        </Link>
+                    </>
+                }
             </div>
 
             <CustomTable

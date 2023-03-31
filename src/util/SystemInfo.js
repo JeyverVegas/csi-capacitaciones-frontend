@@ -4,7 +4,7 @@ import logoShort from "../images/logo-short.png";
 import env from "./env";
 
 const SystemInfo = {
-    name: "Control de acreditaciones",
+    name: "Control de Acreditaciones",
     description: "Sistema para el manejo de las acreditaciones.",
     logo: logo,
     logoBlanco: logoBlanco,

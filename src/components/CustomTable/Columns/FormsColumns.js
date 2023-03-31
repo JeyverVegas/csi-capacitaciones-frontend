@@ -19,7 +19,7 @@ const FormsColumns = [
     },
     {
         Label: () => 'Tareas',
-        Component: ({ parentCategory }) => "5"
+        Component: ({ value }) => value?.steps?.length || '0'
     },
     {
         Label: () => 'Fecha de Creación',
