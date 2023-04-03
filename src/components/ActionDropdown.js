@@ -18,8 +18,6 @@ const ActionDropdown = ({
 
     const { permissions } = useAuth();
 
-    console.log(permissions);
-
     let navigate = useNavigate();
 
     const handleDelete = () => {

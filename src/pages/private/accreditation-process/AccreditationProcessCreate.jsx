@@ -8,19 +8,24 @@ import mapValues from "../../../util/mapValues";
 import useUsers from "../../../hooks/useUsers";
 import useForms from "../../../hooks/useForms";
 import AsyncSelect from 'react-select/async';
+import useCostCenters from "../../../hooks/useCostCenters";
 
 const AccreditationProcessCreate = () => {
 
     const navigate = useNavigate();
 
     const [data, setData] = useState({
-        userId: '',
+        users: '',
         formId: '',
+        costCenterId: '',
+        responsibles: ''
     });
 
     const { setLoading, setCustomAlert } = useFeedBack();
 
     const [{ users, loading: usersLoading }, getUsers] = useUsers({ options: { useCache: false, manual: true } });
+
+    const [{ costCenters, loading: costCentersLoading }, getCostCenters] = useCostCenters({ options: { useCache: false, manual: true } });
 
     const [{ forms, loading: formsLoading }, getForms] = useForms({ options: { useCache: false, manual: true } });
 
@@ -41,10 +46,10 @@ const AccreditationProcessCreate = () => {
                 show: true,
                 severity: 'success',
                 title: 'Operación Exitosa',
-                message: 'El registro fue creado exitosamente.'
+                message: 'Los registros fueron creados exitosamente.'
             });
 
-            navigate(`/proceso-de-acreditaciones/${createData?.data?.id}`);
+            navigate(`/proceso-de-acreditaciones/listar`);
         }
     }, [createData])
 
@@ -55,7 +60,14 @@ const AccreditationProcessCreate = () => {
     const handleSubmit = (e) => {
         e?.preventDefault();
 
-        createRecord({ data });
+        const dataTosend = {
+            userIds: data?.users?.map(user => user?.value),
+            formId: data.formId,
+            costCenterId: data?.costCenterId,
+            responsibleIds: data?.responsibles?.map(responsible => responsible?.value)
+        }
+
+        createRecord({ data: dataTosend });
     }
 
     return (
@@ -75,25 +87,27 @@ const AccreditationProcessCreate = () => {
 
             <form className="card p-4" onSubmit={handleSubmit}>
                 <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-6 mb-3">
                         <div className="form-group">
-                            <label className="form-label">Usuario</label>
+                            <label className="form-label">Seleccione los trabajadores</label>
                             <AsyncSelect
                                 isClearable
+                                isMulti
                                 onFocus={() => {
                                     getUsers();
                                 }}
                                 defaultOptions={mapValues(users)}
+                                value={data?.users}
                                 isLoading={usersLoading}
                                 loadOptions={(e) => handleLoadSelectOptions(e, getUsers)}
                                 placeholder='Escriba el nombre para buscar...'
-                                onChange={(e) => { handleCurrentChange({ target: { value: e?.value, name: 'userId' } }) }}
+                                onChange={(e) => { handleCurrentChange({ target: { value: e, name: 'users' } }) }}
                             />
                         </div>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 mb-3">
                         <div className="form-group">
-                            <label className="form-label">Formulario</label>
+                            <label className="form-label">Seleccione el formulario</label>
                             <AsyncSelect
                                 isClearable
                                 onFocus={() => {
@@ -104,6 +118,40 @@ const AccreditationProcessCreate = () => {
                                 loadOptions={(e) => handleLoadSelectOptions(e, getForms)}
                                 placeholder='Escriba el nombre para buscar...'
                                 onChange={(e) => { handleCurrentChange({ target: { value: e?.value, name: 'formId' } }) }}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-md-6 mb-3">
+                        <div className="form-group">
+                            <label className="form-label">Seleccione los analistas</label>
+                            <AsyncSelect
+                                isClearable
+                                isMulti
+                                onFocus={() => {
+                                    getUsers();
+                                }}
+                                defaultOptions={mapValues(users)}
+                                value={data?.responsibles}
+                                isLoading={usersLoading}
+                                loadOptions={(e) => handleLoadSelectOptions(e, getUsers)}
+                                placeholder='Escriba el nombre para buscar...'
+                                onChange={(e) => { handleCurrentChange({ target: { value: e, name: 'responsibles' } }) }}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-md-6 mb-3">
+                        <div className="form-group">
+                            <label className="form-label">Seleccione el centro de costo</label>
+                            <AsyncSelect
+                                isClearable
+                                onFocus={() => {
+                                    getCostCenters();
+                                }}
+                                defaultOptions={mapValues(costCenters)}
+                                isLoading={costCentersLoading}
+                                loadOptions={(e) => handleLoadSelectOptions(e, getCostCenters)}
+                                placeholder='Escriba el nombre para buscar...'
+                                onChange={(e) => { handleCurrentChange({ target: { value: e?.value, name: 'costCenterId' } }) }}
                             />
                         </div>
                     </div>

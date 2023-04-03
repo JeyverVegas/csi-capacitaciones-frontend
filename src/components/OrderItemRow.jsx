@@ -24,7 +24,6 @@ const OrderItemRow = ({ orderItem, index, canUpdateStatus, selectValues, onCheck
     useEffect(() => {
         if (updateStatusData) {
             setCurrentItem(updateStatusData?.data);
-            console.log(updateStatusData);
         }
     }, [updateStatusData])
 

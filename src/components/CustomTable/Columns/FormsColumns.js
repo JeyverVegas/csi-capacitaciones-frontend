@@ -18,8 +18,14 @@ const FormsColumns = [
         accessor: 'name'
     },
     {
-        Label: () => 'Tareas',
+        Label: () => 'Pasos',
         Component: ({ value }) => value?.steps?.length || '0'
+    },
+    {
+        Label: () => 'Actividades',
+        Component: ({ value }) => value?.steps?.reduce((prevValue, step, i) => {
+            return prevValue + Number(step?.activities?.length);
+        }, 0) || '0'
     },
     {
         Label: () => 'Fecha de Creación',

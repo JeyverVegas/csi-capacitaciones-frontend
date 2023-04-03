@@ -42,7 +42,6 @@ const StatusesButtons = ({ order, orderStateFunct }) => {
                 show: true,
                 severity: 'success'
             });
-            console.log(response?.data?.data);
             orderStateFunct((oldOrdersDetails) => {
                 return {
                     ...oldOrdersDetails,

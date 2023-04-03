@@ -2,6 +2,8 @@ import ActionDropdown from "../../ActionDropdown";
 import TableCheck from "../TableCheck";
 import { dateFine } from "../../../util/Utilities";
 import DateFormatter from "../../DateFormatter";
+import ProgressComponent from "../../ProgressComponent";
+import { Dropdown } from "react-bootstrap";
 
 const AccreditationProcessesColumns = [
     {
@@ -18,8 +20,26 @@ const AccreditationProcessesColumns = [
         Component: ({ value }) => value?.user?.name || '--'
     },
     {
-        Label: () => 'Tareas',
+        Label: () => 'Pasos',
         Component: ({ value }) => value?.steps?.length || '0'
+    },
+    {
+        Label: () => 'Tareas',
+        Component: ({ value }) => value?.steps?.reduce((prevValue, step, i) => {
+            return prevValue + Number(step?.activities?.length);
+        }, 0) || '0'
+    },
+    {
+        Label: () => 'Progreso',
+        Component: ProgressComponent
+    },
+    {
+        Label: () => 'Estado',
+        Component: ({ value }) => <Dropdown>
+            <Dropdown.Toggle size="xs" variant={value?.status?.variant_color}>
+                {value?.status?.name}
+            </Dropdown.Toggle>
+        </Dropdown>
     },
     {
         Label: () => 'Duración',
