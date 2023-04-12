@@ -18,7 +18,8 @@ const AccreditationProcessCreate = () => {
         users: '',
         formId: '',
         costCenterId: '',
-        responsibles: ''
+        responsibles: '',
+        contractAdminId: ''
     });
 
     const { setLoading, setCustomAlert } = useFeedBack();
@@ -64,7 +65,8 @@ const AccreditationProcessCreate = () => {
             userIds: data?.users?.map(user => user?.value),
             formId: data.formId,
             costCenterId: data?.costCenterId,
-            responsibleIds: data?.responsibles?.map(responsible => responsible?.value)
+            responsibleIds: data?.responsibles?.map(responsible => responsible?.value),
+            contractAdminId: data?.contractAdminId?.value
         }
 
         createRecord({ data: dataTosend });
@@ -121,7 +123,7 @@ const AccreditationProcessCreate = () => {
                             />
                         </div>
                     </div>
-                    <div className="col-md-6 mb-3">
+                    <div className="col-md-12 mb-3">
                         <div className="form-group">
                             <label className="form-label">Seleccione los analistas</label>
                             <AsyncSelect
@@ -152,6 +154,23 @@ const AccreditationProcessCreate = () => {
                                 loadOptions={(e) => handleLoadSelectOptions(e, getCostCenters)}
                                 placeholder='Escriba el nombre para buscar...'
                                 onChange={(e) => { handleCurrentChange({ target: { value: e?.value, name: 'costCenterId' } }) }}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-md-6 mb-3">
+                        <div className="form-group">
+                            <label className="form-label">Seleccione el administrador de contrato</label>
+                            <AsyncSelect
+                                isClearable
+                                onFocus={() => {
+                                    getUsers();
+                                }}
+                                defaultOptions={mapValues(users)}
+                                value={data?.contractAdminId}
+                                isLoading={usersLoading}
+                                loadOptions={(e) => handleLoadSelectOptions(e, getUsers)}
+                                placeholder='Escriba el nombre para buscar...'
+                                onChange={(e) => { handleCurrentChange({ target: { value: e, name: 'contractAdminId' } }) }}
                             />
                         </div>
                     </div>

@@ -9,7 +9,10 @@ import { Button, Dropdown, Modal, ProgressBar } from "react-bootstrap";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { BsFillFileEarmarkArrowUpFill } from "react-icons/bs";
 import { useAuth } from "../../../context/AuthContext";
+import { BsFillChatLeftTextFill } from "react-icons/bs";
+import { AiOutlineCheck } from "react-icons/ai";
 import swal from "sweetalert";
+import clsx from "clsx";
 
 
 
@@ -20,6 +23,8 @@ const AccreditationProcessEdit = () => {
     const { user } = useAuth();
 
     const [data, setData] = useState({});
+
+    const [showObservationsChat, setShowObservationsChat] = useState(null);
 
     const [show, setShow] = useState(false);
 
@@ -36,11 +41,74 @@ const AccreditationProcessEdit = () => {
         percent: 0
     });
 
+    const [currentObservations, setCurrentObservations] = useState([]);
+
     const [{ data: dataToUpdate, loading: loadingData }, getRecord] = useAxios({ url: `/accreditation-processes/${id}` }, { useCache: false });
 
     const [{ data: updateData, loading }, updateRecord] = useAxios({ url: `/accreditation-processes/${id}`, method: 'PUT' }, { manual: true, useCache: false });
 
+    const [{ data: adminApproveData, loading: loadingAdminApprove }, adminApprove] = useAxios({ url: `/accreditation-processes/${id}/contract-admin-approved`, method: 'PUT' }, { manual: true, useCache: false });
+
     const [{ data: updateStatusData, loading: updateStatusLoading }, updateStatusRecord] = useAxios({ url: `/accreditation-processes/${id}/status`, method: 'PUT' }, { manual: true, useCache: false });
+
+    const [{ data: observations, loading: loadingObservations }, getObservations] = useAxios({ useCache: false, manual: true });
+
+    const [{ data: observationData, loading: loadingObservationCreate }, createObservation] = useAxios({ method: 'POST' }, { useCache: false, manual: true });
+
+    useEffect(() => {
+        if (adminApproveData) {
+            const { user, ...rest } = adminApproveData?.data;
+
+            setData((oldData) => {
+                return {
+                    ...oldData,
+                    ...rest
+                }
+            });
+
+            setCurrentUser(user);
+        }
+    }, [adminApproveData]);
+
+    useEffect(() => {
+        if (observationData) {
+            setCurrentObservations((oldObservations) => {
+                return [observationData?.data, ...oldObservations]
+            })
+            setShowObservationsChat((oldValues) => {
+                return {
+                    ...oldValues,
+                    message: ''
+                }
+            })
+        }
+    }, [observationData])
+
+    useEffect(() => {
+        if (observations) {
+            console.log(observations);
+            setCurrentObservations((oldObservations) => {
+                return [...oldObservations, ...observations?.data]
+            });
+        }
+    }, [observations])
+
+    useEffect(() => {
+        if (!showObservationsChat) {
+            setCurrentObservations([]);
+        }
+    }, [showObservationsChat])
+
+    useEffect(() => {
+        if (showObservationsChat?.filters) {
+            getObservations({
+                url: showObservationsChat?.filters?.accreditationProcessStepId ? '/accreditation-process-step-observations' : '/accreditation-process-observations',
+                params: {
+                    ...showObservationsChat?.filters
+                }
+            });
+        }
+    }, [showObservationsChat?.filters])
 
     useEffect(() => {
         setLoading({
@@ -183,6 +251,40 @@ const AccreditationProcessEdit = () => {
         });
     }
 
+    const handleSubmitMessage = (e) => {
+        e.preventDefault();
+
+        if (!showObservationsChat?.message) return alert('El mensaje es obligatorio.');
+
+        if (loadingObservationCreate) return;
+
+        const url = showObservationsChat?.filters?.accreditationProcessStepId ? '/accreditation-process-step-observations' : '/accreditation-process-observations'
+
+        var dataToSend = {
+            message: showObservationsChat?.message
+        };
+
+        if (showObservationsChat?.filters?.accreditationProcessStepId) {
+            dataToSend = {
+                ...dataToSend,
+                accreditationProcessStepId: showObservationsChat?.filters?.accreditationProcessStepId
+            }
+        }
+
+        if (showObservationsChat?.filters?.accreditationProcessId) {
+            dataToSend = {
+                ...dataToSend,
+                accreditationProcessId: showObservationsChat?.filters?.accreditationProcessId
+            }
+        }
+
+        createObservation({ url, data: dataToSend });
+    }
+
+    const handleApprove = () => {
+        adminApprove();
+    }
+
     return (
         <div>
             <div className="my-4 align-items-center justify-content-between d-flex">
@@ -221,6 +323,43 @@ const AccreditationProcessEdit = () => {
                             }
                         </Dropdown>
                     </div>
+                    {
+                        data?.contractAdminId === user?.id ?
+                            data?.adminApprovedAt ?
+                                <button
+                                    type="button"
+                                    className="btn btn-xs btn-success"
+                                >
+                                    Aprovado por el administrador
+                                </button>
+                                :
+                                <button
+                                    type="button"
+                                    className="btn btn-success"
+                                    title="Aprovar el proceso"
+                                    onClick={handleApprove}
+                                >
+                                    {loadingAdminApprove ? 'cargando' : <AiOutlineCheck />}
+                                </button>
+                            :
+                            null
+
+                    }
+
+                    <button
+                        type="button"
+                        onClick={() => setShowObservationsChat({
+                            filters: {
+                                accreditationProcessId: id,
+                                page: 1
+                            },
+                            message: ''
+                        })}
+                        className="btn btn-primary mx-2"
+                        title="Mostrar observaciones del proceso"
+                    >
+                        <BsFillChatLeftTextFill />
+                    </button>
                     <button onClick={() => setShow(old => !old)} type="button" className="btn btn-danger mx-2" title="Analistas encargados">
                         <BsFillFileEarmarkArrowUpFill />
                     </button>
@@ -291,10 +430,27 @@ const AccreditationProcessEdit = () => {
                             data?.steps?.map((step, i) => {
                                 return (
                                     <li key={i} className="mb-3" style={{ borderBottom: '1px solid gray' }}>
-                                        <div>
+                                        <div className="d-flex align-items-center justify-content-between mb-3">
                                             <h4>
                                                 {step?.description} <small style={{ fontSize: 10 }}>(Hasta el: <DateFormatter value={step?.end} dateFormat="dd-MM-yyyy" />)</small> <small style={{ fontSize: 10 }}>(Responsable: {step?.responsable?.name || 'Externo'})</small>
                                             </h4>
+                                            <div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowObservationsChat({
+                                                        filters: {
+                                                            accreditationProcessStepId: step?.id,
+                                                            page: 1
+                                                        },
+                                                        message: '',
+                                                        stepTitle: step?.description
+                                                    })}
+                                                    className="btn btn-xs btn-primary"
+                                                    title="Mostrar observaciones"
+                                                >
+                                                    <BsFillChatLeftTextFill />
+                                                </button>
+                                            </div>
                                         </div>
                                         <ul style={{ paddingLeft: '20px', width: '100%' }}>
                                             {
@@ -304,7 +460,8 @@ const AccreditationProcessEdit = () => {
                                                             <p className="m-0" style={{ textAlign: 'justify' }}>
                                                                 {activity?.description}
                                                             </p>
-                                                            <div title={activity?.checked ? 'Desmarcar' : 'Marcar'} style={{ marginLeft: '20px' }}>
+
+                                                            <div title={activity?.checked ? 'Desmarcar' : 'Marcar'} style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
                                                                 <input
                                                                     type="checkbox"
                                                                     name="checked"
@@ -357,7 +514,7 @@ const AccreditationProcessEdit = () => {
                                 {
                                     data?.responsibles?.map((responsible, i) => {
                                         return (
-                                            <tr>
+                                            <tr key={i}>
                                                 <td>
                                                     {i + 1}
                                                 </td>
@@ -382,6 +539,84 @@ const AccreditationProcessEdit = () => {
                     <Button variant="secondary" onClick={() => setShow(false)}>
                         Cerrar
                     </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showObservationsChat} onHide={() => setShowObservationsChat(null)} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Observaciones del {showObservationsChat?.filters?.accreditationProcessStepId ? `paso "${showObservationsChat?.stepTitle}"` : 'Proceso de acreditación'}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{ height: '60vh', overflowY: 'auto', display: 'flex', flexDirection: 'column-reverse' }}>
+                    {
+                        currentObservations?.map((observation, i) => {
+                            return (
+                                <div key={i} className={clsx(["row mb-3"], {
+                                    "justify-content-end": user?.id === observation?.userId
+                                })}>
+                                    <div className={clsx(["p-2 rounded col-md-6"], {
+                                        "bg-primary text-white": user?.id === observation?.userId,
+                                        "bg-light text-dark": user?.id !== observation?.userId
+                                    })}>
+                                        <div className="text-start">
+                                            <b>
+                                                {user?.id === observation?.userId ?
+                                                    'Tú'
+                                                    :
+                                                    observation?.user?.name
+                                                }
+                                            </b>
+                                        </div>
+                                        <p className={clsx({
+                                            "text-end": user?.id === observation?.userId,
+                                        })}
+                                            style={{ marginBottom: 0 }}
+                                        >
+                                            {observation?.message}
+                                        </p>
+                                        <p className="mb-0 text-end">
+                                            <small><DateFormatter value={observation?.createdAt} dateFormat={'dd-MM-yyyy hh:mm:ss'} /></small>
+                                        </p>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                    <div className="text-center mb-3">
+                        {
+                            loadingObservations ?
+                                'Cargando'
+                                :
+                                showObservationsChat?.filters?.page < observations?.meta?.last_page ?
+                                    <button onClick={() => setShowObservationsChat((oldValue) => {
+                                        return {
+                                            ...oldValue,
+                                            filters: {
+                                                ...oldValue?.filters,
+                                                page: oldValue?.filters?.page + 1
+                                            }
+                                        }
+                                    })} type="button" className="btn btn-secondary btn-xs">
+                                        Cargar mas
+                                    </button>
+                                    :
+                                    null
+                        }
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <form onSubmit={handleSubmitMessage} className="d-flex align-items-center w-100" style={{ width: '100%' }}>
+                        <input placeholder="Escribe un mensaje..." type="text" name="message" className="form-control" value={showObservationsChat?.message} onChange={(e) => {
+                            setShowObservationsChat(oldValues => {
+                                return {
+                                    ...oldValues,
+                                    message: e.target.value
+                                }
+                            })
+                        }} />
+                        <Button disabled={!showObservationsChat?.message || loadingObservationCreate} variant="secondary" style={{ marginLeft: 10 }}>
+                            {loadingObservationCreate ? 'Enviando' : 'Enviar'}
+                        </Button>
+                    </form>
                 </Modal.Footer>
             </Modal>
         </div>

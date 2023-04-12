@@ -1,6 +1,6 @@
 {
-  "name": "CSI-PEDIDOS",
-  "version": "0.1.0",
+  "name": "CSI-ACREDITACIONES",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",

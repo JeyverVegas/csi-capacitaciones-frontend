@@ -9,6 +9,9 @@ import { MdVerifiedUser } from "react-icons/md";
 import AccreditationProcess from "../pages/private/accreditation-process/AccreditationProcess";
 import AccreditationProcessEdit from "../pages/private/accreditation-process/AccreditationProcessEdit";
 import AccreditationProcessCreate from "../pages/private/accreditation-process/AccreditationProcessCreate";
+import Accreditations from "../pages/private/accreditations/Accreditations";
+import AccreditationsEdit from "../pages/private/accreditations/AccreditationsEdit";
+import AccreditationsCreate from "../pages/private/accreditations/AccreditationsCreate";
 
 
 
@@ -45,10 +48,10 @@ const MenuLinks = [
         createLink('Iniciar', null, <AccreditationProcessCreate />, null, '/proceso-de-acreditaciones/iniciar-proceso', null),
     ]),
 
-    createLink('Acreditación', null, null, MdVerifiedUser, '/acreditaciones', null, [
-        createLink('Listar', null, <Forms />, null, '/acreditaciones/listar', null),
-        createLink('Editar', true, <FormsEdit />, null, '/acreditaciones/:id', null),
-        createLink('Iniciar', null, <FormsCreate />, null, '/acreditaciones/iniciar-proceso', null),
+    createLink('Acreditaciones', null, null, MdVerifiedUser, '/acreditaciones', null, [
+        createLink('Listar', null, <Accreditations />, null, '/acreditaciones/listar', null),
+        createLink('Editar', true, <AccreditationsEdit />, null, '/acreditaciones/:id', null),
+        createLink('Iniciar', null, <AccreditationsCreate />, null, '/acreditaciones/crear', null),
     ]),
 
 ];

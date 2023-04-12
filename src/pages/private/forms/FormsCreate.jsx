@@ -8,6 +8,8 @@ import AsyncSelect from 'react-select/async';
 import mapValues from "../../../util/mapValues";
 import handleLoadSelectOptions from "../../../util/handleLoadSelectOptions";
 import useUsers from "../../../hooks/useUsers";
+import { Button, Modal } from "react-bootstrap";
+import useForms from "../../../hooks/useForms";
 
 const FormsCreate = () => {
 
@@ -18,6 +20,16 @@ const FormsCreate = () => {
         days: 1,
         steps: [],
     });
+
+    const [showForms, setShowForms] = useState(false);
+
+    const [filters, setFilters] = useState({
+        page: 1,
+        name: '',
+        perPage: 50
+    });
+
+    const [{ forms, total, numberOfPages, loading: loadingForms }, getRecords] = useForms({ params: { ...filters }, options: { useCache: false } });
 
     const { setLoading, setCustomAlert } = useFeedBack();
 
@@ -118,7 +130,42 @@ const FormsCreate = () => {
     const handleSubmit = (e) => {
         e?.preventDefault();
 
-        createRecord({ data });
+        const dataToSend = {
+            ...data,
+            steps: data?.steps?.map((step) => {
+                const { responsable, ...rest } = step;
+
+                return {
+                    ...rest,
+                    responsableId: responsable?.value
+                }
+            })
+        }
+
+        createRecord({ data: dataToSend });
+    }
+
+    const handleForm = (form) => {
+        setShowForms(false);
+        setData((oldData) => {
+            return {
+                ...oldData,
+                name: form?.name,
+                days: form?.days,
+                steps: form?.steps?.map((step, i) => {
+                    return {
+                        description: step?.description,
+                        days: step?.days,
+                        responsable: step?.responsable ? { label: step?.responsable?.name, value: step?.responsable?.id } : null,
+                        activities: step?.activities?.map((activity, i) => {
+                            return {
+                                description: activity?.description
+                            }
+                        }),
+                    }
+                })
+            }
+        })
     }
 
     return (
@@ -137,6 +184,16 @@ const FormsCreate = () => {
             </div>
 
             <form className="card p-4" onSubmit={handleSubmit}>
+                <div className="text-end">
+                    <button
+                        onClick={() => setShowForms(true)}
+                        type="button"
+                        className="btn btn-xs btn-primary"
+                        title="Duplicar un formulario"
+                    >
+                        Duplicar un formulario
+                    </button>
+                </div>
                 <div className="row">
                     <div className="col-md-6">
                         <div className="form-group">
@@ -208,11 +265,12 @@ const FormsCreate = () => {
                                                 onFocus={() => {
                                                     getUsers();
                                                 }}
+                                                value={step?.responsable}
                                                 defaultOptions={mapValues(users)}
                                                 isLoading={usersLoading}
                                                 loadOptions={(e) => handleLoadSelectOptions(e, getUsers)}
                                                 placeholder='Escriba el nombre para buscar...'
-                                                onChange={(e) => { handleArrayChange({ target: { value: e?.value, name: 'responsableId' } }, i, 'steps') }}
+                                                onChange={(e) => { handleArrayChange({ target: { value: e, name: 'responsable' } }, i, 'steps') }}
                                             />
                                         </div>
                                         <div className="col-md-2 mb-3">
@@ -295,6 +353,75 @@ const FormsCreate = () => {
                     </div>
                 </div>
             </form>
+            <Modal show={showForms} onHide={() => setShowForms(false)} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Seleccione el formulario</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="mb-2">
+                        <input type="text" placeholder="Buscar por nombre..." className="form-control" value={filters?.name} onChange={(e) => {
+                            setFilters(oldFilters => {
+                                return {
+                                    ...oldFilters,
+                                    page: 1,
+                                    name: e.target.value
+                                }
+                            })
+                        }} />
+                    </div>
+                    <div className="table-responsive">
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>Nombre</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    loadingForms ?
+                                        <tr>
+                                            <td colSpan={3} className="text-center">
+                                                Cargando...
+                                            </td>
+                                        </tr>
+                                        :
+                                        forms?.length > 0 ?
+                                            forms?.map((form, i) => {
+                                                return (
+                                                    <tr key={i}>
+                                                        <td>
+                                                            {form?.id}
+                                                        </td>
+                                                        <td>
+                                                            {form?.name}
+                                                        </td>
+                                                        <td>
+                                                            <button onClick={() => handleForm(form)} className="btn btn-xs btn-danger">
+                                                                descargar
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                            :
+                                            <tr>
+                                                <td colSpan={3} className="text-center">
+                                                    No se encontrarón resultados.
+                                                </td>
+                                            </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowForms(false)}>
+                        Cerrar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     )
 }
