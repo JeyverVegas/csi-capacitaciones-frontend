@@ -15,7 +15,7 @@ const AccreditationsCreate = () => {
     const navigate = useNavigate();
 
     const [data, setData] = useState({
-        userId: '',
+        user: '',
         costCenterId: '',
     });
 
@@ -56,7 +56,12 @@ const AccreditationsCreate = () => {
     const handleSubmit = (e) => {
         e?.preventDefault();
 
-        createRecord({ data });
+        createRecord({
+            data: {
+                userId: data?.user?.value,
+                costCenterId: data?.costCenterId
+            }
+        });
     }
 
     return (
@@ -85,11 +90,11 @@ const AccreditationsCreate = () => {
                                     getUsers();
                                 }}
                                 defaultOptions={mapValues(users)}
-                                value={data?.userId}
+                                value={data?.user}
                                 isLoading={usersLoading}
                                 loadOptions={(e) => handleLoadSelectOptions(e, getUsers)}
                                 placeholder='Escriba el nombre para buscar...'
-                                onChange={(e) => { handleCurrentChange({ target: { value: e, name: 'userId' } }) }}
+                                onChange={(e) => { handleCurrentChange({ target: { value: e, name: 'user' } }) }}
                             />
                         </div>
                     </div>

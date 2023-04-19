@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import AccreditationProcessesColumns from "../../../components/CustomTable/Columns/AccreditationProcessesColumns";
+import AnalystsColumns from "../../../components/CustomTable/Columns/AnalystsColumns";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import { useFeedBack } from "../../../context/FeedBackContext";
-import useAccreditationProcess from "../../../hooks/useAccreditationProcess";
+import useAnalysts from "../../../hooks/useAnalysts";
 import useAxios from "../../../hooks/useAxios";
-import useForms from "../../../hooks/useForms";
 import { mainPermissions } from "../../../util/MenuLinks";
 import UserHavePermission from "../../../util/UserHavePermission";
 
-const AccreditationProcess = () => {
+const Analysts = () => {
 
     const { setCustomAlert, setLoading } = useFeedBack();
 
@@ -22,7 +21,7 @@ const AccreditationProcess = () => {
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [{ accreditationProcess: records, total, numberOfPages, loading }, getRecords] = useAccreditationProcess({ params: { ...filters }, options: { useCache: false } });
+    const [{ analysts: records, total, numberOfPages, loading }, getRecords] = useAnalysts({ params: { ...filters }, options: { useCache: false } });
 
     const [{ error: deleteError, loading: deleteLoading }, deleteRecord] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
@@ -57,11 +56,11 @@ const AccreditationProcess = () => {
     }, [selectAll])
 
     const handleDelete = (value) => {
-        deleteRecord({ url: `forms/${value?.id}` }).then((data) => {
+        deleteRecord({ url: `analysts/${value?.id}` }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
-                message: 'El registros ha sido eliminado exitosamente.',
+                message: 'El registro ha sido eliminado exitosamente.',
                 show: true
             });
             getRecords();
@@ -94,7 +93,7 @@ const AccreditationProcess = () => {
     }
 
     const handleDeleteSelected = () => {
-        deleteRecord({ url: `forms/multiple`, data: { ids: selectedValues } }).then((data) => {
+        deleteRecord({ url: `analysts/multiple`, data: { ids: selectedValues } }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
@@ -108,15 +107,6 @@ const AccreditationProcess = () => {
 
     return (
         <div>
-            <div className="my-4 justify-content-end d-flex">
-                {
-                    <>
-                        <Link to={"/proceso-de-acreditaciones/iniciar-proceso"} className="btn btn-primary">
-                            Iniciar Proceso
-                        </Link>
-                    </>
-                }
-            </div>
 
             <CustomTable
                 onDeleteSelected={handleDeleteSelected}
@@ -124,21 +114,21 @@ const AccreditationProcess = () => {
                 onSelectAll={handleSelectALL}
                 loading={loading}
                 selectAll={selectAll}
-                title={'Procesos de acreditación'}
-                entity={"accreditationProcesses"}
-                updatePath={'/proceso-de-acreditaciones'}
-                updateOptionString={'Editar'}
+                title={'Analistas'}
+                entity={"analysts"}
+                updatePath={'/analistas'}
+                updateOptionString={'Ver'}
                 onDelete={handleDelete}
                 selectedValues={selectedValues}
                 pages={numberOfPages}
                 total={total}
                 values={records}
                 currentPage={filters?.page}
-                collumns={AccreditationProcessesColumns}
+                collumns={AnalystsColumns}
                 changePage={handlePageChange}
             />
         </div>
     )
 }
 
-export default AccreditationProcess;
+export default Analysts;

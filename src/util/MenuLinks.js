@@ -1,7 +1,7 @@
 import Dashboard from "../pages/private/Dashboard";
 import SystemInfo from "./SystemInfo";
 import { AiOutlineDashboard, AiOutlineIssuesClose } from "react-icons/ai";
-import { FaWpforms } from "react-icons/fa";
+import { FaWpforms, FaUserSecret } from "react-icons/fa";
 import Forms from "../pages/private/forms/Forms";
 import FormsEdit from "../pages/private/forms/FormsEdit";
 import FormsCreate from "../pages/private/forms/FormsCreate";
@@ -12,6 +12,14 @@ import AccreditationProcessCreate from "../pages/private/accreditation-process/A
 import Accreditations from "../pages/private/accreditations/Accreditations";
 import AccreditationsEdit from "../pages/private/accreditations/AccreditationsEdit";
 import AccreditationsCreate from "../pages/private/accreditations/AccreditationsCreate";
+import { FiUser } from "react-icons/fi";
+import AccountAccreditations from "../pages/private/account/accreditations/AccountAccreditations";
+import AccountAccreditationsEdit from "../pages/private/account/accreditations/AccountAccreditationsEdit";
+import AccountAccreditationProcesses from "../pages/private/account/accreditation-process/AccountAccreditationProcesses";
+import AccountAccreditationProcessesEdit from "../pages/private/account/accreditation-process/AccountAccreditationProcessesEdit";
+import Analysts from "../pages/private/analysts/Analysts";
+import AnalystsEdit from "../pages/private/analysts/AnalystsEdit";
+
 
 
 
@@ -51,7 +59,19 @@ const MenuLinks = [
     createLink('Acreditaciones', null, null, MdVerifiedUser, '/acreditaciones', null, [
         createLink('Listar', null, <Accreditations />, null, '/acreditaciones/listar', null),
         createLink('Editar', true, <AccreditationsEdit />, null, '/acreditaciones/:id', null),
-        createLink('Iniciar', null, <AccreditationsCreate />, null, '/acreditaciones/crear', null),
+        createLink('Crear', null, <AccreditationsCreate />, null, '/acreditaciones/crear', null),
+    ]),
+
+    createLink('Analistas', null, null, FaUserSecret, '/analistas', null, [
+        createLink('Listar', null, <Analysts />, null, '/analistas/listar', null),
+        createLink('Editar', true, <AnalystsEdit />, null, '/analistas/:id', null),
+    ]),
+
+    createLink('Mi Cuenta', null, null, FiUser, '/mi-cuenta', null, [
+        createLink('Acreditaciones', null, <AccountAccreditations />, null, '/mi-cuenta/acreditaciones', null),
+        createLink('Acreditaciones', true, <AccountAccreditationsEdit />, null, '/mi-cuenta/acreditaciones/:id', null),
+        createLink('Procesos de acreditación', null, <AccountAccreditationProcesses />, null, '/mi-cuenta/proceso-de-acreditaciones', null),
+        createLink('Procesos de acreditación', true, <AccountAccreditationProcessesEdit />, null, '/mi-cuenta/proceso-de-acreditaciones/:id', null),
     ]),
 
 ];

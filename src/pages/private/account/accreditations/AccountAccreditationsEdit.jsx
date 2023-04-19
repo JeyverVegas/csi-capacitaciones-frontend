@@ -1,19 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import update from 'immutability-helper';
-import useAxios from "../../../hooks/useAxios";
-import { useFeedBack } from "../../../context/FeedBackContext";
-import imgUrl from "../../../util/imgUrl";
-import DateFormatter from "../../../components/DateFormatter";
-import { Button, Dropdown, Modal, ProgressBar } from "react-bootstrap";
-import { MdAdminPanelSettings } from "react-icons/md";
-import { BsFillFileEarmarkArrowUpFill } from "react-icons/bs";
-import { useAuth } from "../../../context/AuthContext";
-import swal from "sweetalert";
+import { Link, useParams } from "react-router-dom";
+import useAxios from "../../../../hooks/useAxios";
+import { useFeedBack } from "../../../../context/FeedBackContext";
+import DateFormatter from "../../../../components/DateFormatter";
 
 
 
-const AccreditationsEdit = () => {
+const AccountAccreditationsEdit = () => {
 
     const [data, setData] = useState({});
 
@@ -24,7 +17,7 @@ const AccreditationsEdit = () => {
 
     const { setLoading, setCustomAlert } = useFeedBack();
 
-    const [{ data: dataToUpdate, loading: loadingData }, getRecord] = useAxios({ url: `/accreditations/${id}` }, { useCache: false });
+    const [{ data: dataToUpdate, loading: loadingData }, getRecord] = useAxios({ url: `/my-account/accreditations/${id}` }, { useCache: false });
 
     useEffect(() => {
         setLoading({
@@ -92,13 +85,13 @@ const AccreditationsEdit = () => {
                                     </div>
                                     <div className="col-md-6 text-center">
                                         <Link className="btn btn-primary" to={`/proceso-de-acreditaciones/${data?.accreditationProcess?.id}`}>
-                                            Ver Detalle del proceso
+                                            Ver detalle del proceso
                                         </Link>
                                     </div>
                                 </>
                                 :
-                                <div className="col-md-12 mt-3">
-                                    <h3 className="text-center">Acreditación directa</h3>
+                                <div className="col-md-12">
+                                    <label>Acreditación directa</label>
                                 </div>
                         }
                     </div>
@@ -108,4 +101,4 @@ const AccreditationsEdit = () => {
     )
 }
 
-export default AccreditationsEdit;
+export default AccountAccreditationsEdit;

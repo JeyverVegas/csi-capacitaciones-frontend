@@ -1,21 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import update from 'immutability-helper';
-import useAxios from "../../../hooks/useAxios";
-import { useFeedBack } from "../../../context/FeedBackContext";
-import imgUrl from "../../../util/imgUrl";
-import DateFormatter from "../../../components/DateFormatter";
+import useAxios from "../../../../hooks/useAxios";
+import { useFeedBack } from "../../../../context/FeedBackContext";
+import imgUrl from "../../../../util/imgUrl";
+import DateFormatter from "../../../../components/DateFormatter";
 import { Button, Dropdown, Modal, ProgressBar } from "react-bootstrap";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../../context/AuthContext";
 import { BsFillChatLeftTextFill } from "react-icons/bs";
-import { AiOutlineCheck } from "react-icons/ai";
-import swal from "sweetalert";
 import clsx from "clsx";
-import AccreditationProccessFilesComponent from "../../../components/AccreditationProccessFilesComponent";
 
 
 
-const AccreditationProcessEdit = () => {
+const AccountAccreditationProcessesEdit = () => {
 
     const navigate = useNavigate();
 
@@ -24,8 +20,6 @@ const AccreditationProcessEdit = () => {
     const [data, setData] = useState({});
 
     const [showObservationsChat, setShowObservationsChat] = useState(null);
-
-    const [showFilesModal, setShowFilesModal] = useState(false);
 
     const [show, setShow] = useState(false);
 
@@ -44,32 +38,11 @@ const AccreditationProcessEdit = () => {
 
     const [currentObservations, setCurrentObservations] = useState([]);
 
-    const [{ data: dataToUpdate, loading: loadingData }, getRecord] = useAxios({ url: `/accreditation-processes/${id}` }, { useCache: false });
-
-    const [{ data: updateData, loading }, updateRecord] = useAxios({ url: `/accreditation-processes/${id}`, method: 'PUT' }, { manual: true, useCache: false });
-
-    const [{ data: adminApproveData, loading: loadingAdminApprove }, adminApprove] = useAxios({ url: `/accreditation-processes/${id}/contract-admin-approved`, method: 'PUT' }, { manual: true, useCache: false });
-
-    const [{ data: updateStatusData, loading: updateStatusLoading }, updateStatusRecord] = useAxios({ url: `/accreditation-processes/${id}/status`, method: 'PUT' }, { manual: true, useCache: false });
+    const [{ data: dataToUpdate, loading: loadingData }, getRecord] = useAxios({ url: `/my-account/accreditation-processes/${id}` }, { useCache: false });
 
     const [{ data: observations, loading: loadingObservations }, getObservations] = useAxios({ useCache: false, manual: true });
 
     const [{ data: observationData, loading: loadingObservationCreate }, createObservation] = useAxios({ method: 'POST' }, { useCache: false, manual: true });
-
-    useEffect(() => {
-        if (adminApproveData) {
-            const { user, ...rest } = adminApproveData?.data;
-
-            setData((oldData) => {
-                return {
-                    ...oldData,
-                    ...rest
-                }
-            });
-
-            setCurrentUser(user);
-        }
-    }, [adminApproveData]);
 
     useEffect(() => {
         if (observationData) {
@@ -112,20 +85,6 @@ const AccreditationProcessEdit = () => {
     }, [showObservationsChat?.filters])
 
     useEffect(() => {
-        setLoading({
-            show: loading,
-            message: 'Actualizando el registro'
-        })
-    }, [loading]);
-
-    useEffect(() => {
-        setLoading({
-            show: updateStatusLoading,
-            message: 'Actualizando el estado.'
-        })
-    }, [updateStatusLoading])
-
-    useEffect(() => {
         if (data?.steps?.length > 0) {
             var completeTasks = 0;
             var inCompleteTasks = 0;
@@ -159,21 +118,6 @@ const AccreditationProcessEdit = () => {
         })
     }, [loadingData]);
 
-    useEffect(() => {
-        if (updateStatusData) {
-            const { user, ...rest } = updateStatusData?.data;
-
-            setData((oldData) => {
-                return {
-                    ...oldData,
-                    ...rest
-                }
-            });
-
-            setCurrentUser(user);
-        }
-    }, [updateStatusData])
-
 
     useEffect(() => {
         if (dataToUpdate) {
@@ -189,68 +133,6 @@ const AccreditationProcessEdit = () => {
             setCurrentUser(user);
         }
     }, [dataToUpdate]);
-
-    useEffect(() => {
-        if (updateData) {
-            setCustomAlert({
-                show: true,
-                severity: 'success',
-                title: 'Operación Exitosa',
-                message: 'El registro fue actualizado exitosamente.'
-            });
-        }
-    }, [updateData]);
-
-    const handleActivityChange = (e, stepIndex, activityIndex) => {
-        var newArrayValues = [];
-
-        newArrayValues = update(data?.steps, { [stepIndex]: { ['activities']: { [activityIndex]: { [e.target.name]: { $set: e.target.type === 'file' ? e.target.files[0] : e.target.value } } } } });
-
-        setData((oldData) => {
-            return {
-                ...oldData,
-                steps: newArrayValues
-            }
-        });
-    }
-
-    const handleStatusId = (statusId) => {
-        swal({
-            title: "¿Estás Seguro?",
-            text: "Esta acción es irreversible",
-            icon: "warning",
-            buttons: true,
-        }).then((willUpdate) => {
-            if (willUpdate) {
-                updateStatusRecord({
-                    data: {
-                        statusId
-                    }
-                });
-            }
-        });
-    }
-
-    const handleSubmit = (e) => {
-        e?.preventDefault();
-
-        const activities = [];
-
-        data?.steps?.forEach((step, i) => {
-            activities.push(...step?.activities?.map((activity) => {
-                return {
-                    id: activity?.id,
-                    checked: activity?.checked
-                }
-            }));
-        });
-
-        updateRecord({
-            data: {
-                activities
-            }
-        });
-    }
 
     const handleSubmitMessage = (e) => {
         e.preventDefault();
@@ -282,10 +164,6 @@ const AccreditationProcessEdit = () => {
         createObservation({ url, data: dataToSend });
     }
 
-    const handleApprove = () => {
-        adminApprove();
-    }
-
     return (
         <div>
             <div className="my-4 align-items-center justify-content-between d-flex">
@@ -301,7 +179,7 @@ const AccreditationProcessEdit = () => {
                 }
             </div>
 
-            <form className="card p-4" onSubmit={handleSubmit}>
+            <div className="card p-4">
                 <div className="d-flex align-items-center justify-content-end mb-3 flex-wrap">
                     <span style={{ marginRight: 5 }}>Estado:</span>
                     <div className="basic-dropdown" style={{ marginRight: 10 }}>
@@ -309,19 +187,6 @@ const AccreditationProcessEdit = () => {
                             <Dropdown.Toggle size="xs" variant={data?.status?.variant_color}>
                                 {data?.status?.name}
                             </Dropdown.Toggle>
-                            {
-                                data?.status?.id === 1 && data?.responsibles?.map(responsible => responsible?.id).includes(user?.id) ?
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item onClick={() => handleStatusId(2)} href="#">
-                                            Finalizar Proceso
-                                        </Dropdown.Item>
-                                        <Dropdown.Item onClick={() => handleStatusId(3)} href="#">
-                                            Cancelar Proceso
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                    :
-                                    null
-                            }
                         </Dropdown>
                     </div>
                     {
@@ -333,18 +198,7 @@ const AccreditationProcessEdit = () => {
                                 Aprobado por el administrador
                             </button>
                             :
-                            data?.contractAdminId === user?.id ?
-                                <button
-                                    type="button"
-                                    className="btn btn-success"
-                                    title="Aprobar el proceso"
-                                    onClick={handleApprove}
-                                >
-                                    {loadingAdminApprove ? 'cargando' : <AiOutlineCheck />}
-                                </button>
-                                :
-                                null
-
+                            null
                     }
                     <div className="basic-dropdown mx-2" style={{ marginRight: 10 }}>
                         <Dropdown>
@@ -364,7 +218,7 @@ const AccreditationProcessEdit = () => {
                                 <Dropdown.Item onClick={() => setShow(old => !old)} >
                                     Mostrar Analistas
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => setShowFilesModal(old => !old)}>
+                                <Dropdown.Item>
                                     Ver archivos
                                 </Dropdown.Item>
                             </Dropdown.Menu>
@@ -482,7 +336,6 @@ const AccreditationProcessEdit = () => {
                                                                     type="checkbox"
                                                                     name="checked"
                                                                     checked={activity?.checked}
-                                                                    onChange={(e) => handleActivityChange({ target: { value: !activity?.checked, name: 'checked' } }, i, i2)}
                                                                 />
                                                             </div>
                                                         </li>
@@ -496,21 +349,16 @@ const AccreditationProcessEdit = () => {
                         }
                     </ul>
                     <div className="row mt-5 align-items-center">
-                        <div className="col-md-8 mb-3 mb-md-0">
+                        <div className="col-md-12 mb-3 mb-md-0">
                             <h4 className="text-center">Progreso {tasksInfo?.percent}%</h4>
                             <ProgressBar
                                 now={tasksInfo?.percent}
                                 variant={'primary'}
                             />
                         </div>
-                        <div className="col-md-4 text-end">
-                            <button className="btn btn-primary">
-                                Actualizar Proceso
-                            </button>
-                        </div>
                     </div>
                 </div>
-            </form>
+            </div>
             <Modal show={show} onHide={() => setShow(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Analistas encargados</Modal.Title>
@@ -635,14 +483,8 @@ const AccreditationProcessEdit = () => {
                     </form>
                 </Modal.Footer>
             </Modal>
-            <AccreditationProccessFilesComponent
-                show={showFilesModal}
-                accreditationProcessId={id}
-                onClose={() => setShowFilesModal(false)}
-                defaultFiles={data?.files}
-            />
         </div>
     )
 }
 
-export default AccreditationProcessEdit;
+export default AccountAccreditationProcessesEdit;
