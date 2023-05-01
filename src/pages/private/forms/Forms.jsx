@@ -14,7 +14,10 @@ const Forms = () => {
 
     const [filters, setFilters] = useState({
         page: 1,
-        serviceIds: ''
+        serviceIds: '',
+        name: '',
+        start: '',
+        end: ''
     });
 
     const [selectedValues, setSelectedValues] = useState([]);
@@ -115,6 +118,76 @@ const Forms = () => {
                         </Link>
                     </>
                 }
+            </div>
+
+            <div className="row">
+                <div className="col-md-6">
+                    <div className="card p-3">
+                        <div className="form-group">
+                            <label htmlFor="" className="form-label">Buscar</label>
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Escriba el nombre..."
+                                value={filters?.name}
+                                onChange={(e) => setFilters(oldFilters => {
+                                    return {
+                                        ...oldFilters,
+                                        [e.target.name]: e.target.value,
+                                        page: 1
+                                    }
+                                })}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6">
+
+                    <div className="card p-3">
+                        <h6>Fecha de creación</h6>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label className="form-label">Desde:</label>
+                                    <input
+                                        type="date"
+                                        name="start"
+                                        placeholder="Escriba el nombre..."
+                                        value={filters?.start}
+                                        onChange={(e) => setFilters(oldFilters => {
+                                            return {
+                                                ...oldFilters,
+                                                [e.target.name]: e.target.value,
+                                                page: 1
+                                            }
+                                        })}
+                                        className="form-control"
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label className="form-label">Hasta:</label>
+                                    <input
+                                        type="date"
+                                        name="end"
+                                        placeholder="Escriba el nombre..."
+                                        value={filters?.end}
+                                        onChange={(e) => setFilters(oldFilters => {
+                                            return {
+                                                ...oldFilters,
+                                                [e.target.name]: e.target.value,
+                                                page: 1
+                                            }
+                                        })}
+                                        className="form-control"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <CustomTable

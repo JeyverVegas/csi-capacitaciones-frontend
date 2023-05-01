@@ -15,7 +15,10 @@ const AccountAccreditations = () => {
 
     const [filters, setFilters] = useState({
         page: 1,
-        serviceIds: ''
+        start: '',
+        end: '',
+        costCenterName: '',
+        accreditateByName: ''
     });
 
     const [selectedValues, setSelectedValues] = useState([]);
@@ -106,8 +109,87 @@ const AccountAccreditations = () => {
         });
     }
 
+    const handleChange = (e) => {
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                [e.target.name]: e.target.value,
+                page: 1
+            }
+        })
+    }
+
     return (
         <div>
+
+            <div className="row">
+                <div className="col-md-12">
+                    <div className="card p-3">
+                        <div className="form-group">
+                            <label htmlFor="" className="form-label">Nombre del centro de costo</label>
+                            <input
+                                type="text"
+                                name="costCenterName"
+                                placeholder="Centro de costo..."
+                                value={filters?.costCenterName}
+                                onChange={handleChange}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-md-6">
+                    <div className="card p-3">
+                        <div className="form-group">
+                            <label htmlFor="" className="form-label">Nombre del acreditador</label>
+                            <input
+                                type="text"
+                                name="accreditateByName"
+                                placeholder="Nombre del acreditador..."
+                                value={filters?.accreditateByName}
+                                onChange={handleChange}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-md-6">
+                    <div className="card p-3">
+                        <h6>Fecha de creación</h6>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label className="form-label">Desde:</label>
+                                    <input
+                                        type="date"
+                                        name="start"
+                                        placeholder="Desde..."
+                                        value={filters?.start}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label className="form-label">Hasta:</label>
+                                    <input
+                                        type="date"
+                                        name="end"
+                                        placeholder="Hasta..."
+                                        value={filters?.end}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <CustomTable
                 onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}

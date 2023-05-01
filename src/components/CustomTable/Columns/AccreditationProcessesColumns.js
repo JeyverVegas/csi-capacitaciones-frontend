@@ -24,12 +24,6 @@ const AccreditationProcessesColumns = [
         Component: ({ value }) => value?.steps?.length || '0'
     },
     {
-        Label: () => 'Tareas',
-        Component: ({ value }) => value?.steps?.reduce((prevValue, step, i) => {
-            return prevValue + Number(step?.activities?.length);
-        }, 0) || '0'
-    },
-    {
         Label: () => 'Progreso',
         Component: ProgressComponent
     },
@@ -40,6 +34,14 @@ const AccreditationProcessesColumns = [
                 {value?.status?.name}
             </Dropdown.Toggle>
         </Dropdown>
+    },
+    {
+        Label: () => 'Aprobado por el A/C',
+        Component: ({ value }) => value?.adminApprovedAt ? 'Si' : 'No'
+    },
+    {
+        Label: () => 'Centro de costo',
+        Component: ({ value }) => value?.costCenter?.name || '--'
     },
     {
         Label: () => 'Duración',

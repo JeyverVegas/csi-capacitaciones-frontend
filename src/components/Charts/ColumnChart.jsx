@@ -7,7 +7,8 @@ const ColumnChart = ({
     defaultSeries = [],
     label = 'value',
     labelEndAdornment = '',
-    labelStartAdornment = ''
+    labelStartAdornment = '',
+    height = 400
 }) => {
 
     const [options, setOptions] = useState({
@@ -75,7 +76,7 @@ const ColumnChart = ({
     });
 
     return (
-        <Chart options={options} series={defaultSeries} type="bar" height={400} />
+        <Chart options={options} series={defaultSeries} type="bar" height={height} />
     )
 }
 
