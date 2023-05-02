@@ -134,3 +134,7 @@ code {
 .table-order>thead>tr>th {
     font-size: 12px;
 }
+
+.notification_dropdown.show {
+    display: flex!important;
+}  
