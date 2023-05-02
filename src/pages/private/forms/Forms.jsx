@@ -7,6 +7,7 @@ import useAxios from "../../../hooks/useAxios";
 import useForms from "../../../hooks/useForms";
 import { mainPermissions } from "../../../util/MenuLinks";
 import UserHavePermission from "../../../util/UserHavePermission";
+import { format } from "date-fns";
 
 const Forms = () => {
 
@@ -208,6 +209,8 @@ const Forms = () => {
                 currentPage={filters?.page}
                 collumns={FormsColumns}
                 changePage={handlePageChange}
+                filters={filters}
+                excelUrl={'/forms/export/excel'}
             />
         </div>
     )

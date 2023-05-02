@@ -234,6 +234,8 @@ const Accreditations = () => {
                 currentPage={filters?.page}
                 collumns={AccreditationsColumns}
                 changePage={handlePageChange}
+                filters={filters}
+                excelUrl={'/accreditations/export/excel'}
             />
         </div>
     )

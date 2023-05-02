@@ -172,6 +172,8 @@ const Analysts = () => {
                 currentPage={filters?.page}
                 collumns={AnalystsColumns}
                 changePage={handlePageChange}
+                filters={filters}
+                excelUrl={'/analysts/export/excel'}
             />
         </div>
     )

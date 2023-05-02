@@ -221,6 +221,8 @@ const AccountAccreditationProcesses = () => {
                 currentPage={filters?.page}
                 collumns={AccreditationProcessesColumns}
                 changePage={handlePageChange}
+                filters={filters}
+                excelUrl={'/my-account/accreditation-processes/export/excel'}
             />
         </div>
     )

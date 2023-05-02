@@ -5,6 +5,8 @@ import CustomTableBodyRow from "./CustomTableBodyRow";
 import CustomTableHeadColumn from "./CustomTableHeadColumn";
 import swal from "sweetalert";
 import clsx from "clsx";
+import { useEffect, useState } from "react";
+import useAxios from "../../hooks/useAxios";
 
 const CustomTable = ({
     title,
@@ -27,10 +29,34 @@ const CustomTable = ({
     variant = 'card',
     hideSelectAll,
     entity,
-    updateOptionString
+    updateOptionString,
+    excelUrl,
+    filters,
+    excelName
 }) => {
 
     const { setCustomAlertDialog } = useFeedBack();
+
+    const [currentFilters, setCurrentFilters] = useState('');
+
+    const [{ data: excelData, loading: excelLoading }, getExcel] = useAxios({ url: excelUrl, method: 'GET', responseType: 'blob', params: { ...filters } }, { manual: true, useCache: false });
+
+    useEffect(() => {
+        if (excelData) {
+            const excelBlobUrl = URL.createObjectURL(excelData);
+            const aToDownload = document.getElementById('downloadLink');
+            aToDownload.href = excelBlobUrl;
+            aToDownload?.click();
+            window.URL.revokeObjectURL(excelBlobUrl);
+        }
+    }, [excelData])
+
+    useEffect(() => {
+        if (filters) {
+            const { page, ...rest } = filters;
+            setCurrentFilters(rest);
+        }
+    }, [filters])
 
     const handleDeleteSelected = () => {
         swal({
@@ -76,6 +102,19 @@ const CustomTable = ({
                     {
                         title &&
                         <h4 className="card-title">{title}</h4>
+                    }
+                    {
+                        excelUrl &&
+                        <button onClick={() => {
+                            getExcel({ params: { ...currentFilters } });
+                        }} disabled={excelLoading} className="btn btn-success btn-sm">
+                            {
+                                excelLoading ?
+                                    'Loading...'
+                                    :
+                                    'Descargar Excel'
+                            }
+                        </button>
                     }
                     {
                         !withoutGlobalActions &&
