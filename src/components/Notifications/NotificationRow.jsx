@@ -2,10 +2,12 @@ import { formatDistance } from "date-fns";
 import { useEffect, useState } from "react";
 import useAxios from "../../hooks/useAxios";
 import {
+    AccreditationProcessWasAdminApproved,
     NewAccreditationProcess,
 } from "../../util/NotificationsTypes";
 import { es } from "date-fns/locale";
 import { Link } from "react-router-dom";
+import { NewAccreditationProcessStepObservation } from "../../util/NotificationsTypes";
 
 const NotificationRow = ({ notification, onReadNotification }) => {
 
@@ -23,6 +25,8 @@ const NotificationRow = ({ notification, onReadNotification }) => {
 
     switch (notification.type) {
         case NewAccreditationProcess:
+        case NewAccreditationProcessStepObservation:
+        case AccreditationProcessWasAdminApproved:
             notificationUrl = `/proceso-de-acreditaciones/${notification.data.accreditationProcessId}`
             break;
 
