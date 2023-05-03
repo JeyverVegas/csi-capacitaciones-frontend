@@ -19,6 +19,7 @@ import AccountAccreditationProcesses from "../pages/private/account/accreditatio
 import AccountAccreditationProcessesEdit from "../pages/private/account/accreditation-process/AccountAccreditationProcessesEdit";
 import Analysts from "../pages/private/analysts/Analysts";
 import AnalystsEdit from "../pages/private/analysts/AnalystsEdit";
+import AccountCredential from "../pages/private/account/AccountCredential";
 
 
 
@@ -68,6 +69,7 @@ const MenuLinks = [
     ]),
 
     createLink('Mi Cuenta', null, null, FiUser, '/mi-cuenta', null, [
+        createLink('Credencial', null, <AccountCredential />, null, '/mi-cuenta/credencial', null),
         createLink('Acreditaciones', null, <AccountAccreditations />, null, '/mi-cuenta/acreditaciones', null),
         createLink('Acreditaciones', true, <AccountAccreditationsEdit />, null, '/mi-cuenta/acreditaciones/:id', null),
         createLink('Procesos de acreditación', null, <AccountAccreditationProcesses />, null, '/mi-cuenta/proceso-de-acreditaciones', null),

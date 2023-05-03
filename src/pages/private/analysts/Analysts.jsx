@@ -14,7 +14,8 @@ const Analysts = () => {
 
     const [filters, setFilters] = useState({
         page: 1,
-        serviceIds: ''
+        costCenterName: '',
+        name: ''
     });
 
     const [selectedValues, setSelectedValues] = useState([]);
@@ -105,8 +106,53 @@ const Analysts = () => {
         });
     }
 
+    const handleChange = (e) => {
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                [e.target.name]: e.target.value,
+                page: 1
+            }
+        })
+    }
+
     return (
         <div>
+
+            <div className="row">
+                <div className="col-md-6">
+                    <div className="card p-3">
+                        <div className="form-group">
+                            <label htmlFor="" className="form-label">Nombre del trabajador</label>
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Escriba el nombre..."
+                                value={filters?.name}
+                                onChange={handleChange}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-md-6">
+                    <div className="card p-3">
+                        <div className="form-group">
+                            <label htmlFor="" className="form-label">Nombre del centro de costo</label>
+                            <input
+                                type="text"
+                                name="costCenterName"
+                                placeholder="Centro de costo..."
+                                value={filters?.costCenterName}
+                                onChange={handleChange}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
 
             <CustomTable
                 onDeleteSelected={handleDeleteSelected}
@@ -126,6 +172,8 @@ const Analysts = () => {
                 currentPage={filters?.page}
                 collumns={AnalystsColumns}
                 changePage={handlePageChange}
+                filters={filters}
+                excelUrl={'/analysts/export/excel'}
             />
         </div>
     )

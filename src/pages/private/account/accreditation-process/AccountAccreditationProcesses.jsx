@@ -15,7 +15,10 @@ const AccountAccreditationProcesses = () => {
 
     const [filters, setFilters] = useState({
         page: 1,
-        serviceIds: ''
+        statusId: '',
+        start: '',
+        end: '',
+        costCenterName: ''
     });
 
     const [selectedValues, setSelectedValues] = useState([]);
@@ -106,8 +109,100 @@ const AccountAccreditationProcesses = () => {
         });
     }
 
+    const handleChange = (e) => {
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                [e.target.name]: e.target.value,
+                page: 1
+            }
+        })
+    }
+
     return (
         <div>
+
+            <div className="row">
+                <div className="col-md-6">
+                    <div className="card p-3">
+                        <div className="form-group">
+                            <label htmlFor="" className="form-label">Nombre del centro de costo</label>
+                            <input
+                                type="text"
+                                name="costCenterName"
+                                placeholder="Centro de costo..."
+                                value={filters?.costCenterName}
+                                onChange={handleChange}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-md-6">
+                    <div className="card p-3">
+                        <h6>Fecha de creación</h6>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label className="form-label">Desde:</label>
+                                    <input
+                                        type="date"
+                                        name="start"
+                                        placeholder="Escriba el nombre..."
+                                        value={filters?.start}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label className="form-label">Hasta:</label>
+                                    <input
+                                        type="date"
+                                        name="end"
+                                        placeholder="Escriba el nombre..."
+                                        value={filters?.end}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-md-6">
+                    <div className="card p-3">
+                        <div className="form-group">
+                            <label className="form-label">Estatus</label>
+                            <select name="statusId" className="form-control" value={filters?.statusId} onChange={handleChange}>
+                                <option value="">Seleccione una opción</option>
+                                <option value="1">En proceso</option>
+                                <option value="2">Finalizado</option>
+                                <option value="3">Cancelado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6">
+                    <div className="card p-3">
+                        <div className="form-group">
+                            <label className="form-label">Duración en días</label>
+                            <input
+                                type="number"
+                                name="days"
+                                value={filters?.days}
+                                onChange={handleChange}
+                                className="form-control"
+                                placeholder="Ej. 1"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <CustomTable
                 onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
@@ -126,6 +221,8 @@ const AccountAccreditationProcesses = () => {
                 currentPage={filters?.page}
                 collumns={AccreditationProcessesColumns}
                 changePage={handlePageChange}
+                filters={filters}
+                excelUrl={'/my-account/accreditation-processes/export/excel'}
             />
         </div>
     )
