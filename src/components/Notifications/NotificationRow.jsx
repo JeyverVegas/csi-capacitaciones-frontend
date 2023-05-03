@@ -13,7 +13,7 @@ const NotificationRow = ({ notification, onReadNotification }) => {
 
     const [currentNotification, setCurrentNotification] = useState(null);
 
-    const [{ }, setReadNotification] = useAxios({ url: `notifications/${currentNotification?.id}/read`, method: 'put' }, { manual: true, useCache: false });
+    const [{ }, setReadNotification] = useAxios({ url: `my-account/notifications/${currentNotification?.id}/read`, method: 'put' }, { manual: true, useCache: false });
 
     useEffect(() => {
         if (notification) {
