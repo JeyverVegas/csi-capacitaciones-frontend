@@ -11,15 +11,18 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeContextProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { FeedBackProvider } from './context/FeedBackContext';
+import { EchoProvider } from './context/EchoContext';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <ThemeContextProvider>
         <AuthProvider>
-          <FeedBackProvider>
-            <App />
-          </FeedBackProvider>
+          <EchoProvider>
+            <FeedBackProvider>
+              <App />
+            </FeedBackProvider>
+          </EchoProvider>
         </AuthProvider>
       </ThemeContextProvider>
     </BrowserRouter>
