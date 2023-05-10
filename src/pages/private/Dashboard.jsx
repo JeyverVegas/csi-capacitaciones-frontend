@@ -250,7 +250,7 @@ const Dashboard = () => {
                         loading={loading}
                         icon='fa fa-box'
                         value={data?.accreditationProccesesCountByStatus?.cancel}
-                        gradient="gradient-4"
+                        gradient="gradient-19"
                     />
                 </div>
                 <div className="col-xl-4 col-sm-6">
@@ -259,7 +259,7 @@ const Dashboard = () => {
                         loading={loading}
                         icon='fa fa-box'
                         value={data?.accreditationProccesesCountByStatus?.proccess}
-                        gradient="gradient-3"
+                        gradient="gradient-20"
                     />
                 </div>
                 <div className="col-xl-4 col-sm-6">
@@ -268,7 +268,7 @@ const Dashboard = () => {
                         loading={loading}
                         icon='fa fa-box'
                         value={data?.accreditationProccesesCountByStatus?.finish}
-                        gradient="gradient-12"
+                        gradient="gradient-21"
                     />
                 </div>
                 <div className="col-md-12">

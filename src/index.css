@@ -134,3 +134,15 @@ code {
 .table-order>thead>tr>th {
     font-size: 12px;
 }
+
+.gradient-19 {
+    background: linear-gradient(45deg, #bd0643, var(--bs-pink));
+}
+
+.gradient-20 {
+    background: linear-gradient(45deg, var(--bs-indigo), var(--rgba-primary-8));
+}
+
+.gradient-21 {
+    background: linear-gradient(90deg, var(--bs-green) 0, var(--bs-success));
+}
