@@ -2,19 +2,18 @@ import { formatDistance } from "date-fns";
 import { useEffect, useState } from "react";
 import useAxios from "../../hooks/useAxios";
 import {
-    ORDER_NOTIFICATION,
-    ORDER_NOTIFICATION_FOR_OWNER,
-    QUOTE_NOTIFICATION,
-    QUOTE_NOTIFICATION_FOR_OWNER
+    AccreditationProcessWasAdminApproved,
+    NewAccreditationProcess,
 } from "../../util/NotificationsTypes";
 import { es } from "date-fns/locale";
 import { Link } from "react-router-dom";
+import { NewAccreditationProcessStepObservation } from "../../util/NotificationsTypes";
 
 const NotificationRow = ({ notification, onReadNotification }) => {
 
     const [currentNotification, setCurrentNotification] = useState(null);
 
-    const [{ }, setReadNotification] = useAxios({ url: `notifications/${currentNotification?.id}/read`, method: 'put' }, { manual: true, useCache: false });
+    const [{ }, setReadNotification] = useAxios({ url: `my-account/notifications/${currentNotification?.id}/read`, method: 'put' }, { manual: true, useCache: false });
 
     useEffect(() => {
         if (notification) {
@@ -22,20 +21,13 @@ const NotificationRow = ({ notification, onReadNotification }) => {
         }
     }, [notification])
 
-    var notificationUrl = '#';
+    let notificationUrl = '#';
 
-    switch (notification?.notification_type) {
-        case ORDER_NOTIFICATION_FOR_OWNER:
-            notificationUrl = `/mis-pedidos/${notification?.notificable_id}`
-            break;
-        case ORDER_NOTIFICATION:
-            notificationUrl = `/pedidos/detalles/${notification?.notificable_id}`
-            break;
-        case QUOTE_NOTIFICATION_FOR_OWNER:
-            notificationUrl = `/mis-cotizaciones/${notification?.notificable_id}`
-            break;
-        case QUOTE_NOTIFICATION:
-            notificationUrl = `/cotizaciones/detalles/${notification?.notificable_id}`
+    switch (notification.type) {
+        case NewAccreditationProcess:
+        case NewAccreditationProcessStepObservation:
+        case AccreditationProcessWasAdminApproved:
+            notificationUrl = `/proceso-de-acreditaciones/${notification.data.accreditationProcessId}`
             break;
 
     }

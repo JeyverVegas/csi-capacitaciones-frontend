@@ -4,8 +4,12 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import useAxios from "../../hooks/useAxios";
 import useUserNotifications from "../../hooks/useUserNotifications";
 import NotificationRow from "./NotificationRow";
+import { useEcho } from "../../context/EchoContext";
+import { useAuth } from "../../context/AuthContext";
 
 const NotificationsComponent = () => {
+    const echo = useEcho();
+    const { user } = useAuth();
 
     const [notificationsFilters, setNotificationsFilters] = useState({
         perPage: 10,
@@ -19,6 +23,29 @@ const NotificationsComponent = () => {
     const [currentNotifications, setCurrentNotifications] = useState([]);
 
     const [notificationsCount, setNotificationsCount] = useState(0);
+
+    useEffect(() => {
+        const channel = `App.Models.User.${user?.id}`;
+
+        echo?.private(channel)
+            ?.notification(({ id, title, message, type, ...rest }) => {
+                const newNotification = {
+                    id,
+                    title,
+                    message,
+                    type,
+                    data: rest,
+                    isRead: false,
+                    createdAt: new Date(),
+                }
+
+                setCurrentNotifications(prevNotifications => [newNotification, ...prevNotifications]);
+
+                setNotificationsCount(prevCount => prevCount + 1)
+            })
+
+        return () => echo?.leave(channel);
+    }, [echo])
 
     useEffect(() => {
         if (notificationsCountData) {

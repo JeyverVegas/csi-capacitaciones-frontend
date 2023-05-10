@@ -629,7 +629,12 @@ const AccreditationProcessEdit = () => {
                                 }
                             })
                         }} />
-                        <Button disabled={!showObservationsChat?.message || loadingObservationCreate} variant="secondary" style={{ marginLeft: 10 }}>
+                        <Button
+                            type="submit"
+                            disabled={!showObservationsChat?.message || loadingObservationCreate}
+                            variant="secondary"
+                            style={{ marginLeft: 10 }}
+                        >
                             {loadingObservationCreate ? 'Enviando' : 'Enviar'}
                         </Button>
                     </form>
