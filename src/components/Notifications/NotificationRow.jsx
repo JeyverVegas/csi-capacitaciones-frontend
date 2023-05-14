@@ -2,12 +2,15 @@ import { formatDistance } from "date-fns";
 import { useEffect, useState } from "react";
 import useAxios from "../../hooks/useAxios";
 import {
+    AccreditationProcessStepHasExpired,
+    AccreditationProcessStepIsAlmostExpired,
     AccreditationProcessWasAdminApproved,
     NewAccreditationProcess,
+    NewAccreditationProcessObservation,
+    NewAccreditationProcessStepObservation,
 } from "../../util/NotificationsTypes";
 import { es } from "date-fns/locale";
 import { Link } from "react-router-dom";
-import { NewAccreditationProcessStepObservation } from "../../util/NotificationsTypes";
 
 const NotificationRow = ({ notification, onReadNotification }) => {
 
@@ -26,10 +29,12 @@ const NotificationRow = ({ notification, onReadNotification }) => {
     switch (notification.type) {
         case NewAccreditationProcess:
         case NewAccreditationProcessStepObservation:
+        case NewAccreditationProcessObservation:
         case AccreditationProcessWasAdminApproved:
+        case AccreditationProcessStepIsAlmostExpired:
+        case AccreditationProcessStepHasExpired:
             notificationUrl = `/proceso-de-acreditaciones/${notification.data.accreditationProcessId}`
             break;
-
     }
 
     const timeDistance = (date, length) => {
