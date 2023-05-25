@@ -6,15 +6,17 @@ import useUserNotifications from "../../hooks/useUserNotifications";
 import NotificationRow from "./NotificationRow";
 import { useEcho } from "../../context/EchoContext";
 import { useAuth } from "../../context/AuthContext";
+import notificationSound from '../../assets/sounds/notification.wav';
 
 const NotificationsComponent = () => {
+
     const echo = useEcho();
     const { user } = useAuth();
 
     const [notificationsFilters, setNotificationsFilters] = useState({
         perPage: 10,
         page: 1
-    })
+    });
 
     const [{ data: notificationsCountData, loading: loadingNotificationCount }, getCount] = useAxios({ url: `my-account/notifications/not-read/count` }, { useCache: false });
 
@@ -40,6 +42,9 @@ const NotificationsComponent = () => {
                 }
 
                 setCurrentNotifications(prevNotifications => [newNotification, ...prevNotifications]);
+
+                const audio = new Audio(notificationSound);
+                audio.play();
 
                 setNotificationsCount(prevCount => prevCount + 1)
             })

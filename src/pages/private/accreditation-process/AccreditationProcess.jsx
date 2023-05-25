@@ -5,9 +5,6 @@ import CustomTable from "../../../components/CustomTable/CustomTable";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAccreditationProcess from "../../../hooks/useAccreditationProcess";
 import useAxios from "../../../hooks/useAxios";
-import useForms from "../../../hooks/useForms";
-import { mainPermissions } from "../../../util/MenuLinks";
-import UserHavePermission from "../../../util/UserHavePermission";
 
 const AccreditationProcess = () => {
 
@@ -62,7 +59,7 @@ const AccreditationProcess = () => {
     }, [selectAll])
 
     const handleDelete = (value) => {
-        deleteRecord({ url: `forms/${value?.id}` }).then((data) => {
+        deleteRecord({ url: `accreditation-processes/${value?.id}` }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
@@ -99,7 +96,7 @@ const AccreditationProcess = () => {
     }
 
     const handleDeleteSelected = () => {
-        deleteRecord({ url: `forms/multiple`, data: { ids: selectedValues } }).then((data) => {
+        deleteRecord({ url: `accreditation-processes/multiple`, data: { ids: selectedValues } }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',

@@ -125,7 +125,10 @@ const Accreditations = () => {
             <div className="my-4 justify-content-end d-flex">
                 {
                     <>
-                        <Link to={"/acreditaciones/crear"} className="btn btn-primary">
+                        <Link to={"/acreditaciones/importar"} className="btn btn-success mx-1">
+                            Importar Excel
+                        </Link>
+                        <Link to={"/acreditaciones/crear"} className="btn btn-primary mx-1">
                             Crear Acreditación
                         </Link>
                     </>

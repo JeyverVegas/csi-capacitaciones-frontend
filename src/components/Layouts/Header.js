@@ -68,8 +68,12 @@ const Header = ({ onNote }) => {
                         <ul className="navbar-nav header-right main-notification" style={{ alignItems: "center" }}>
                             <li className="nav-item" style={{ margin: '0 10px' }}>
                                 <div className="input-group search-area">
-                                    <input type="text" className="form-control" placeholder="Search Here" />
-                                    <span className="input-group-text"><Link to={"#"}><i className="flaticon-381-search-2"></i></Link></span>
+                                    <input type="text" className="form-control" placeholder="Buscar" />
+                                    <span className="input-group-text">
+                                        <Link to={"#"}>
+                                            <i className="flaticon-381-search-2"></i>
+                                        </Link>
+                                    </span>
                                 </div>
                             </li>
                             <NotificationsComponent />

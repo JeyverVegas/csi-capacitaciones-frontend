@@ -50,7 +50,7 @@ const AccountCredential = () => {
                     >
                         <div className="mx-auto" style={{ marginTop: 100 }}>
                             <QRCode
-                                value={user?.id}
+                                value={user?.documentNumber}
                                 style={{ height: "auto", maxWidth: 100, width: 100 }}
                             />
                         </div>

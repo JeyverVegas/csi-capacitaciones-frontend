@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { useFeedBack } from '../context/FeedBackContext';
 import NotVerified from '../pages/public/email-verification/NotVerified';
 import Verify from '../pages/public/email-verification/Verify';
+import Consult from '../pages/public/Consult';
 
 const RoutesLinks = () => {
 
@@ -28,6 +29,8 @@ const RoutesLinks = () => {
 
             <Route path="/email/verificar/:id/:hash" element={<Verify />} />
             <Route path="/email/no-verificado" element={<NotVerified />} />
+
+            <Route path="/consultar" element={<Consult />} />
 
             <Route element={<SystemLayout />}>
                 {

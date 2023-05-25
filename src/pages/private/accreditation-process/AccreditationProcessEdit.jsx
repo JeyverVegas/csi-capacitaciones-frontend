@@ -29,6 +29,8 @@ const AccreditationProcessEdit = () => {
 
     const [show, setShow] = useState(false);
 
+    const [showContractAdmin, setShowContractAdmin] = useState(false);
+
     const [currentUser, setCurrentUser] = useState(null);
 
     const { id } = useParams();
@@ -361,6 +363,9 @@ const AccreditationProcessEdit = () => {
                                 })}>
                                     Abrir chat de observaciones
                                 </Dropdown.Item>
+                                <Dropdown.Item onClick={() => setShowContractAdmin(old => !old)} >
+                                    Mostrar Administrador de contrato
+                                </Dropdown.Item>
                                 <Dropdown.Item onClick={() => setShow(old => !old)} >
                                     Mostrar Analistas
                                 </Dropdown.Item>
@@ -638,6 +643,60 @@ const AccreditationProcessEdit = () => {
                             {loadingObservationCreate ? 'Enviando' : 'Enviar'}
                         </Button>
                     </form>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showContractAdmin} onHide={() => setShowContractAdmin(null)} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Información del administrador de contrato</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{ overflowY: 'auto' }}>
+                    <div className="row">
+                        <div className="col-md-6 mb-3">
+                            <div className="form-group">
+                                <label className="text-primary">Nombre</label>
+                                <input type="text" className="form-control" readOnly value={data?.contractAdmin?.name || '--'} />
+                            </div>
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <div className="form-group">
+                                <label className="text-primary">Rut</label>
+                                <input type="text" className="form-control" readOnly value={data?.contractAdmin?.documentNumber || '--'} />
+                            </div>
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <div className="form-group">
+                                <label className="text-primary">Email de contacto</label>
+                                <input type="text" className="form-control" readOnly value={data?.contractAdmin?.email || '--'} />
+                            </div>
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <div className="form-group">
+                                <label className="text-primary">Telefono</label>
+                                <input type="text" className="form-control" readOnly value={data?.contractAdmin?.phoneNumber || '--'} />
+                            </div>
+                        </div>
+                        <div className="col-md-12 mb-3">
+                            <div className="form-group">
+                                <label className="text-primary">Cargo</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    readOnly
+                                    value={data?.contractAdmin?.position?.name || '--'}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        onClick={() => setShowContractAdmin(null)}
+                        variant="secondary"
+                        style={{ marginLeft: 10 }}
+                    >
+                        Cerrar
+                    </Button>
                 </Modal.Footer>
             </Modal>
             <AccreditationProccessFilesComponent

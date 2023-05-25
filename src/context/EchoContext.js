@@ -21,7 +21,7 @@ export const EchoProvider = ({ children }) => {
                 cluster: env('PUSHER_CLUSTER'),
                 forceTLS: true,
                 channelAuthorization: {
-                    endpoint: `${env('API_URL')}broadcasting/auth`,
+                    endpoint: `${env('API_URL')}/broadcasting/auth`,
                     headers: {
                         Authorization: `Bearer ${token}`,
                         Accept: 'application/json',

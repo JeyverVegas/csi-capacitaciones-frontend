@@ -20,6 +20,7 @@ import AccountAccreditationProcessesEdit from "../pages/private/account/accredit
 import Analysts from "../pages/private/analysts/Analysts";
 import AnalystsEdit from "../pages/private/analysts/AnalystsEdit";
 import AccountCredential from "../pages/private/account/AccountCredential";
+import AccreditationsImport from "../pages/private/accreditations/AccreditationsImport";
 
 
 
@@ -59,6 +60,7 @@ const MenuLinks = [
 
     createLink('Acreditaciones', null, null, MdVerifiedUser, '/acreditaciones', null, [
         createLink('Listar', null, <Accreditations />, null, '/acreditaciones/listar', null),
+        createLink('Importar', true, <AccreditationsImport />, null, '/acreditaciones/importar', null),
         createLink('Editar', true, <AccreditationsEdit />, null, '/acreditaciones/:id', null),
         createLink('Crear', null, <AccreditationsCreate />, null, '/acreditaciones/crear', null),
     ]),
