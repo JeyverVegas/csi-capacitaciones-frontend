@@ -13,7 +13,8 @@ const ActionDropdown = ({
     withOutUpdate,
     roleDisplayText,
     value,
-    entity
+    entity,
+    showDelete = true
 }) => {
 
     const { permissions } = useAuth();
@@ -56,8 +57,11 @@ const ActionDropdown = ({
             </Dropdown.Toggle>
             <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
                 {
-                    UserHavePermission(`${SystemInfo?.systemCode}-delete-${entity}`) || true ?
-                        <Dropdown.Item onClick={handleDelete}>Eliminar</Dropdown.Item>
+                    showDelete ?
+                        UserHavePermission(`${SystemInfo?.systemCode}-delete-${entity}`) ?
+                            <Dropdown.Item onClick={handleDelete}>Eliminar</Dropdown.Item>
+                            :
+                            null
                         :
                         null
                 }

@@ -60,8 +60,8 @@ const CustomTable = ({
 
     const handleDeleteSelected = () => {
         swal({
-            title: "¿are you sure?",
-            text: "¿You want to delete all selected records?",
+            title: "¿Estas Seguro(a)?",
+            text: "¿Quieres eliminar todos los registros seleccionados?",
             icon: "warning",
             buttons: true,
             dangerMode: true,
@@ -76,8 +76,8 @@ const CustomTable = ({
 
     const handleDelete = (value) => {
         swal({
-            title: "¿are you sure?",
-            text: `¿You want to delete ${value?.name} record?`,
+            title: "¿Estas Seguro(a)?",
+            text: `¿Quieres eliminar el registro ${value?.name}?`,
             icon: "warning",
             buttons: true,
             dangerMode: true,

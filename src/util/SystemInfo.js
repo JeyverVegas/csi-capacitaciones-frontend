@@ -4,16 +4,16 @@ import logoShort from "../images/logo-short.png";
 import env from "./env";
 
 const SystemInfo = {
-    name: "Control de Acreditaciones",
-    description: "Sistema para el manejo de las acreditaciones.",
+    name: "Planificación de gastos",
+    description: "Sistema de planificación de gastos anual.",
     logo: logo,
     logoBlanco: logoBlanco,
     logoShort: logoShort,
     host: env('HOST_URL'),
     api: env('API_URL'),
     usersApi: env('USERS_API_URL'),
-    systemCode: 'sys-005',
-    authKey: 'csi-acreditaciones-auth'
+    systemCode: 'sys-009',
+    authKey: 'csi-planificacion-auth'
 }
 
 export default SystemInfo;

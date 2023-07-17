@@ -244,7 +244,7 @@ const Dashboard = () => {
 
 
             <div className="row">
-                <div className="col-xl-4 col-sm-6">
+                <div className="col-xl-3 col-sm-6">
                     <DetailsCard
                         title={'Procesos de acreditación Anulados'}
                         loading={loading}
@@ -253,7 +253,7 @@ const Dashboard = () => {
                         gradient="gradient-19"
                     />
                 </div>
-                <div className="col-xl-4 col-sm-6">
+                <div className="col-xl-3 col-sm-6">
                     <DetailsCard
                         title={'Procesos de acreditación Pendientes'}
                         loading={loading}
@@ -262,13 +262,22 @@ const Dashboard = () => {
                         gradient="gradient-20"
                     />
                 </div>
-                <div className="col-xl-4 col-sm-6">
+                <div className="col-xl-3 col-sm-6">
                     <DetailsCard
                         title={'Procesos de acreditación Finalizados'}
                         loading={loading}
                         icon='fa fa-box'
                         value={data?.accreditationProccesesCountByStatus?.finish}
                         gradient="gradient-21"
+                    />
+                </div>
+                <div className="col-xl-3 col-sm-6">
+                    <DetailsCard
+                        title={'Procesos de acreditación Vencidos'}
+                        loading={loading}
+                        icon='fa fa-box'
+                        value={data?.accreditationProccesesExpiredCount}
+                        gradient="gradient-3"
                     />
                 </div>
                 <div className="col-md-12">

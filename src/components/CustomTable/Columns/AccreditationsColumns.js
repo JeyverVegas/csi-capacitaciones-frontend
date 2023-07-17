@@ -24,6 +24,10 @@ const AccreditationsColumns = [
         Component: ({ value }) => value?.costCenter?.name || '--'
     },
     {
+        Label: () => 'Jefe del centro de costo',
+        Component: ({ value }) => value?.costCenter?.boss?.name || '--'
+    },
+    {
         Label: () => 'Acreditado por',
         Component: ({ value }) => value?.accreditateBy?.name || '--'
     },

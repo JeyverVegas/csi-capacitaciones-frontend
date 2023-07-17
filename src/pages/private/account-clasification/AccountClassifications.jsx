@@ -1,28 +1,38 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import AnalystsColumns from "../../../components/CustomTable/Columns/AnalystsColumns";
+import FormsColumns from "../../../components/CustomTable/Columns/FormsColumns";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import { useFeedBack } from "../../../context/FeedBackContext";
-import useAnalysts from "../../../hooks/useAnalysts";
 import useAxios from "../../../hooks/useAxios";
+import useForms from "../../../hooks/useForms";
 import { mainPermissions } from "../../../util/MenuLinks";
 import UserHavePermission from "../../../util/UserHavePermission";
+import { format } from "date-fns";
 
-const Analysts = () => {
+const AccountClassifications = () => {
+
+    const entity = {
+        name: 'Clasificación de cuentas',
+        url: 'account-classifications',
+        frontendUrl: '/clasificación-de-cuentas',
+        camelName: 'accountClassifications',
+    };
 
     const { setCustomAlert, setLoading } = useFeedBack();
 
     const [filters, setFilters] = useState({
         page: 1,
-        costCenterName: '',
-        name: ''
+        serviceIds: '',
+        name: '',
+        start: '',
+        end: ''
     });
 
     const [selectedValues, setSelectedValues] = useState([]);
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [{ analysts: records, total, numberOfPages, loading }, getRecords] = useAnalysts({ params: { ...filters }, options: { useCache: false } });
+    const [{ [entity.camelName]: records, total, numberOfPages, loading }, getRecords] = useAccountClassifications({ params: { ...filters }, options: { useCache: false } });
 
     const [{ error: deleteError, loading: deleteLoading }, deleteRecord] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
@@ -57,11 +67,11 @@ const Analysts = () => {
     }, [selectAll])
 
     const handleDelete = (value) => {
-        deleteRecord({ url: `analysts/${value?.id}` }).then((data) => {
+        deleteRecord({ url: `${entity.url}/${value?.id}` }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
-                message: 'El registro ha sido eliminado exitosamente.',
+                message: 'El registros ha sido eliminado exitosamente.',
                 show: true
             });
             getRecords();
@@ -94,7 +104,7 @@ const Analysts = () => {
     }
 
     const handleDeleteSelected = () => {
-        deleteRecord({ url: `analysts/multiple`, data: { ids: selectedValues } }).then((data) => {
+        deleteRecord({ url: `${entity.url}/multiple`, data: { ids: selectedValues } }).then((data) => {
             setCustomAlert({
                 title: '¡Operación Exitosa!',
                 severity: 'success',
@@ -106,77 +116,40 @@ const Analysts = () => {
         });
     }
 
-    const handleChange = (e) => {
-        setFilters((oldFilters) => {
-            return {
-                ...oldFilters,
-                [e.target.name]: e.target.value,
-                page: 1
-            }
-        })
-    }
-
     return (
         <div>
-
-            <div className="row">
-                <div className="col-md-6">
-                    <div className="card p-3">
-                        <div className="form-group">
-                            <label htmlFor="" className="form-label">Nombre del trabajador</label>
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="Escriba el nombre..."
-                                value={filters?.name}
-                                onChange={handleChange}
-                                className="form-control"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="col-md-6">
-                    <div className="card p-3">
-                        <div className="form-group">
-                            <label htmlFor="" className="form-label">Nombre del centro de costo</label>
-                            <input
-                                type="text"
-                                name="costCenterName"
-                                placeholder="Centro de costo..."
-                                value={filters?.costCenterName}
-                                onChange={handleChange}
-                                className="form-control"
-                            />
-                        </div>
-                    </div>
-                </div>
-
+            <div className="my-4 justify-content-end d-flex">
+                {
+                    <>
+                        <Link to={`${entity.frontendUrl}/crear`} className="btn btn-primary">
+                            Crear {entity.name}
+                        </Link>
+                    </>
+                }
             </div>
-
             <CustomTable
                 onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}
                 onSelectAll={handleSelectALL}
                 loading={loading}
                 selectAll={selectAll}
-                title={'Analistas'}
-                entity={"analysts"}
-                updatePath={'/analistas'}
-                updateOptionString={'Ver'}
+                title={entity?.name}
+                entity={entity.url}
+                updatePath={entity.frontendUrl}
+                updateOptionString={'Editar'}
                 onDelete={handleDelete}
                 selectedValues={selectedValues}
                 pages={numberOfPages}
                 total={total}
                 values={records}
                 currentPage={filters?.page}
-                collumns={AnalystsColumns}
+                collumns={FormsColumns}
                 changePage={handlePageChange}
                 filters={filters}
-                excelUrl={'/analysts/export/excel'}
+                excelUrl={`${entity.url}/export/excel`}
             />
         </div>
     )
 }
 
-export default Analysts;
+export default AccountClassifications;
