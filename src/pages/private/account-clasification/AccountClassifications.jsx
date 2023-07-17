@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import FormsColumns from "../../../components/CustomTable/Columns/FormsColumns";
+import AccountClassificationColumns from "../../../components/CustomTable/Columns/AccountClassificationColumns";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
@@ -140,7 +140,7 @@ const AccountClassifications = () => {
                 total={total}
                 values={records}
                 currentPage={filters?.page}
-                collumns={FormsColumns}
+                collumns={AccountClassificationColumns}
                 changePage={handlePageChange}
                 filters={filters}
                 excelUrl={`${entity.url}/export/excel`}

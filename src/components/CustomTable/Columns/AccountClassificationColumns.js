@@ -3,7 +3,7 @@ import TableCheck from "../TableCheck";
 import { dateFine } from "../../../util/Utilities";
 import DateFormatter from "../../DateFormatter";
 
-const FormsColumns = [
+const AccountClassificationColumns = [
     {
         Label: TableCheck,
         Component: TableCheck
@@ -18,16 +18,6 @@ const FormsColumns = [
         accessor: 'name'
     },
     {
-        Label: () => 'Pasos',
-        Component: ({ value }) => value?.steps?.length || '0'
-    },
-    {
-        Label: () => 'Actividades',
-        Component: ({ value }) => value?.steps?.reduce((prevValue, step, i) => {
-            return prevValue + Number(step?.activities?.length);
-        }, 0) || '0'
-    },
-    {
         Label: () => 'Fecha de Creación',
         Component: ({ value }) => <DateFormatter value={dateFine(value?.createdAt)} dateFormat="dd/MM/yyyy hh:mm:ss" />
     },
@@ -37,5 +27,5 @@ const FormsColumns = [
     }
 ];
 
-export default FormsColumns;
+export default AccountClassificationColumns;
 
