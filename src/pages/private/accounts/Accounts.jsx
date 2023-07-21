@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import AccountClassificationColumns from "../../../components/CustomTable/Columns/AccountClassificationColumns";
+import AccountColumns from "../../../components/CustomTable/Columns/AccountColumns";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
-import useAccountClassifications from "../../../hooks/useAccountClassifications";
+import useAccounts from "../../../hooks/useAccounts";
 
-const AccountClassifications = () => {
+const Accounts = () => {
 
     const entity = {
-        name: 'Clasificación de cuentas',
-        url: 'account-classifications',
-        frontendUrl: '/clasificacion-de-cuentas',
-        camelName: 'accountClassifications',
+        name: 'Cuentas',
+        url: 'accounts',
+        frontendUrl: '/cuentas',
+        camelName: 'accounts',
     };
 
     const { setCustomAlert, setLoading } = useFeedBack();
@@ -29,7 +29,7 @@ const AccountClassifications = () => {
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [{ [entity.camelName]: records, total, numberOfPages, loading }, getRecords] = useAccountClassifications({ params: { ...filters }, options: { useCache: false } });
+    const [{ [entity.camelName]: records, total, numberOfPages, loading }, getRecords] = useAccounts({ params: { ...filters }, options: { useCache: false } });
 
     const [{ error: deleteError, loading: deleteLoading }, deleteRecord] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
@@ -140,7 +140,7 @@ const AccountClassifications = () => {
                 total={total}
                 values={records}
                 currentPage={filters?.page}
-                collumns={AccountClassificationColumns}
+                collumns={AccountColumns}
                 changePage={handlePageChange}
                 filters={filters}
                 excelUrl={`${entity.url}/export/excel`}
@@ -149,4 +149,4 @@ const AccountClassifications = () => {
     )
 }
 
-export default AccountClassifications;
+export default Accounts;

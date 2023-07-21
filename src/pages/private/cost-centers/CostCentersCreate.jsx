@@ -4,13 +4,13 @@ import useAxios from "../../../hooks/useAxios";
 import { useFeedBack } from "../../../context/FeedBackContext";
 
 
-const AccountClassificationsCreate = () => {
+const CostCentersCreate = () => {
 
     const entity = {
-        name: 'Clasificación de cuentas',
-        url: 'account-classifications',
-        frontendUrl: '/clasificacion-de-cuentas',
-        camelName: 'accountClassifications',
+        name: 'Centros de costo',
+        url: 'cost-centers',
+        frontendUrl: '/centros-de-costos',
+        camelName: 'costCenters',
     };
 
     const navigate = useNavigate();
@@ -44,15 +44,6 @@ const AccountClassificationsCreate = () => {
         }
     }, [createData])
 
-    const handleChange = (e) => {
-        setData((oldData) => {
-            return {
-                ...oldData,
-                [e.target.name]: e.target.value
-            }
-        });
-    }
-
     const handleSubmit = (e) => {
         e?.preventDefault();
 
@@ -75,17 +66,6 @@ const AccountClassificationsCreate = () => {
             </div>
 
             <form className="card p-4" onSubmit={handleSubmit}>
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="form-group">
-                            <label className="text-primary">
-                                Nombre <small className="text-danger">*</small>
-                            </label>
-                            <input placeholder="Por favor ingrese el nombre..." type="text" className="form-control" name="name" value={data?.name} onChange={handleChange} />
-                        </div>
-                    </div>
-                </div>
-
                 <br />
                 <div className="text-end">
                     <button className="btn btn-primary">
@@ -97,4 +77,4 @@ const AccountClassificationsCreate = () => {
     )
 }
 
-export default AccountClassificationsCreate;
+export default CostCentersCreate;

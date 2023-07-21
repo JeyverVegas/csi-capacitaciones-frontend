@@ -4,15 +4,15 @@ import useAxios from "../../../hooks/useAxios";
 import { useFeedBack } from "../../../context/FeedBackContext";
 
 
-const AccountClassificationsEdit = () => {
+const CostCentersEdit = () => {
 
     const { id } = useParams();
 
     const entity = {
-        name: 'Editar Clasificación de cuentas',
-        url: 'account-classifications',
-        frontendUrl: '/clasificacion-de-cuentas',
-        camelName: 'accountClassifications',
+        name: 'Centros de costos',
+        url: 'cost-centers',
+        frontendUrl: '/centros-de-costos',
+        camelName: 'costCenters',
     };
 
     const navigate = useNavigate();
@@ -43,7 +43,7 @@ const AccountClassificationsEdit = () => {
     useEffect(() => {
         setLoading({
             show: loading,
-            message: 'Actualizando el registro'
+            message: 'Creando el registro'
         })
     }, [loading]);
 
@@ -61,20 +61,11 @@ const AccountClassificationsEdit = () => {
                 show: true,
                 severity: 'success',
                 title: 'Operación Exitosa',
-                message: 'El registro fue actualizado exitosamente.'
+                message: 'El registro fue creado exitosamente.'
             });
             navigate(`${entity?.frontendUrl}/listar`);
         }
     }, [updateData])
-
-    const handleChange = (e) => {
-        setData((oldData) => {
-            return {
-                ...oldData,
-                [e.target.name]: e.target.value
-            }
-        });
-    }
 
     const handleSubmit = (e) => {
         e?.preventDefault();
@@ -86,7 +77,7 @@ const AccountClassificationsEdit = () => {
         <div>
             <div className="my-4 align-items-center justify-content-between d-flex">
                 <h3>
-                    Editar {entity?.name}
+                    Crear {entity?.name}
                 </h3>
                 {
                     <>
@@ -98,21 +89,10 @@ const AccountClassificationsEdit = () => {
             </div>
 
             <form className="card p-4" onSubmit={handleSubmit}>
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="form-group">
-                            <label className="text-primary">
-                                Nombre <small className="text-danger">*</small>
-                            </label>
-                            <input placeholder="Por favor ingrese el nombre..." type="text" className="form-control" name="name" value={data?.name} onChange={handleChange} />
-                        </div>
-                    </div>
-                </div>
-
                 <br />
                 <div className="text-end">
                     <button className="btn btn-primary">
-                        Actualizar
+                        Crear
                     </button>
                 </div>
             </form>
@@ -120,4 +100,4 @@ const AccountClassificationsEdit = () => {
     )
 }
 
-export default AccountClassificationsEdit;
+export default CostCentersEdit;

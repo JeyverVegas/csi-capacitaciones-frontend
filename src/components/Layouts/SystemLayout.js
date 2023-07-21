@@ -5,10 +5,11 @@ import { useTheme } from "../../context/ThemeContext";
 import alertEmojis from "../../util/AlertsEmojis";
 import Footer from "./Footers";
 import Nav from "./Nav";
+import clsx from "clsx";
 
 const SystemLayout = () => {
 
-    const { menuToggle } = useTheme();
+    const { menuToggle, sidebarLayout } = useTheme();
     const { customAlert, setCustomAlert } = useFeedBack();
     const pagePath = false;
 
@@ -19,9 +20,13 @@ const SystemLayout = () => {
         >
             {!pagePath && <Nav />}
 
-            <div className={`${!pagePath ? "content-body" : ""}`}>
+            <div className={clsx({
+                "content-body": !pagePath && sidebarLayout === 'vertical'
+            })}>
                 <div
-                    className={`${!pagePath ? "container-fluid" : ""}`}
+                    className={clsx({
+                        "container-fluid": !pagePath && sidebarLayout !== 'vertical'
+                    })}
                     style={{ minHeight: window.screen.height - 60 }}
                 >
                     {

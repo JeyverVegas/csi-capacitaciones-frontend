@@ -1,11 +1,23 @@
 import Dashboard from "../pages/private/Dashboard";
 import SystemInfo from "./SystemInfo";
 import { AiOutlineDashboard, AiOutlineIssuesClose } from "react-icons/ai";
-import { FaWpforms, FaUserSecret } from "react-icons/fa";
+import { FaWpforms } from "react-icons/fa";
+import { MdAccountTree } from "react-icons/md";
+
 import { FiUser } from "react-icons/fi";
 import AccountClassifications from "../pages/private/account-clasification/AccountClassifications";
 import AccountClassificationsCreate from "../pages/private/account-clasification/AccountClassificationsCreate";
 import AccountClassificationsEdit from "../pages/private/account-clasification/AccountClassificationsEdit";
+import Accounts from "../pages/private/accounts/Accounts";
+import AccountsCreate from "../pages/private/accounts/AccountsCreate";
+import AccountsEdit from "../pages/private/accounts/AccountsEdit";
+import CostCenters from "../pages/private/cost-centers/CostCenters";
+import CostCentersEdit from "../pages/private/cost-centers/CostCentersEdit";
+import CostCentersCreate from "../pages/private/cost-centers/CostCentersCreate";
+import CostCenterManagement from "../pages/private/cost-centers/CostCenterManagement";
+import Planifications from "../pages/private/planifications/Planifications";
+import PlanificationsEdit from "../pages/private/planifications/PlanificationsEdit";
+import PlanificationsCreate from "../pages/private/planifications/PlanificationsCreate";
 
 const createLink = (
     title,
@@ -20,20 +32,41 @@ const createLink = (
 const { systemCode } = SystemInfo;
 
 export const mainPermissions = {
-    dashboard: [`${systemCode}-view-dashboard`]
+    accountClassifications: [`${systemCode}-view-account-classifications`, `${systemCode}-create-account-classifications`, `${systemCode}-update-account-classifications`, `${systemCode}-delete-account-classifications`],
+    accounts: [`${systemCode}-view-accounts`, `${systemCode}-create-accounts`, `${systemCode}-update-accounts`, `${systemCode}-delete-accounts`],
+    costCenters: [`${systemCode}-view-cost-centers`, `${systemCode}-update-cost-centers`, `${systemCode}-delete-cost-centers`],
+    planningProcesses: [`${systemCode}-view-planning-processes`, `${systemCode}-create-planning-processes`, `${systemCode}-update-planning-processes`, `${systemCode}-delete-planning-processes`],
+    plans: [`${systemCode}-view-planning-processes`],
+    planAccounts: [`${systemCode}-view-plan-accounts`, `${systemCode}-create-plan-accounts`, `${systemCode}-update-plan-accounts`, `${systemCode}-delete-plan-accounts`]
 }
 
 const MenuLinks = [
-    createLink('DashBoard', null, <Dashboard />, AiOutlineDashboard, '/dashboard', null),
+    createLink('Resumen', null, <Dashboard />, AiOutlineDashboard, '/dashboard', null),
 
-    createLink('Clasificación de cuentas', null, null, FaWpforms, '/clasificación-de-cuentas', null, [
-        createLink('Listar', null, <AccountClassifications />, null, '/clasificación-de-cuentas/listar', null),
-        createLink('Editar', true, <AccountClassificationsEdit />, null, '/clasificación-de-cuentas/:id', null),
-        createLink('Crear', null, <AccountClassificationsCreate />, null, '/clasificación-de-cuentas/crear', null),
+    createLink('Gestionar centro de costo', true, <CostCenterManagement />, AiOutlineDashboard, '/gestionar-centro-de-costo/:id', null),
+
+    createLink('Clasificación de cuentas', null, null, MdAccountTree, '/clasificacion-de-cuentas', null, [
+        createLink('Listar', null, <AccountClassifications />, null, '/clasificacion-de-cuentas/listar', null),
+        createLink('Editar', true, <AccountClassificationsEdit />, null, '/clasificacion-de-cuentas/:id', null),
+        createLink('Crear', null, <AccountClassificationsCreate />, null, '/clasificacion-de-cuentas/crear', null),
     ]),
 
-    createLink('Mi Cuenta', null, null, FiUser, '/mi-cuenta', null, [
+    createLink('Planificación de gastos', null, null, MdAccountTree, '/planificacion-de-gastos', null, [
+        createLink('Listar', null, <Planifications />, null, '/planificacion-de-gastos/listar', null),
+        createLink('Editar', true, <PlanificationsEdit />, null, '/planificacion-de-gastos/:id', null),
+        createLink('Iniciar Proceso', null, <PlanificationsCreate />, null, '/planificacion-de-gastos/crear', null),
     ]),
+
+    createLink('Cuentas', null, null, FaWpforms, '/cuentas', null, [
+        createLink('Listar', null, <Accounts />, null, '/cuentas/listar', null),
+        createLink('Editar', true, <AccountsEdit />, null, '/cuentas/:id', null),
+        createLink('Crear', null, <AccountsCreate />, null, '/cuentas/crear', null),
+    ]),
+
+    createLink('Centros de costos', null, null, FaWpforms, '/centros-de-costos', null, [
+        createLink('Listar', null, <CostCenters />, null, '/centros-de-costos/listar', null),
+        createLink('Editar', true, <CostCentersEdit />, null, '/centros-de-costos/:id', null),
+    ])
 
 ];
 

@@ -2,12 +2,18 @@ import React, { Fragment, useState } from "react";
 import SideBar from "./SideBar";
 import Header from "./Header";
 import NavHeader from "./NavHeader";
+import { useTheme } from "../../context/ThemeContext";
+import HorizontalBar from "./HorizontalBar";
 
 const Nav = ({ title, onClick: ClickToAddEvent, onClick2, onClick3 }) => {
     const [toggle, setToggle] = useState("");
+
+    const { sidebarLayout } = useTheme();
+
     const onClick = (name) => setToggle(toggle === name ? "" : name);
+
     return (
-        <Fragment>
+        <>
             <NavHeader />
             <Header
                 onNote={() => onClick("chatbox")}
@@ -18,8 +24,17 @@ const Nav = ({ title, onClick: ClickToAddEvent, onClick2, onClick3 }) => {
                 onBox={() => onClick("box")}
                 onClick={() => ClickToAddEvent()}
             />
-            <SideBar />
-        </Fragment>
+            {
+                sidebarLayout === 'vertical' &&
+                <SideBar />
+            }
+
+            {
+                sidebarLayout === 'horizontal' &&
+                <HorizontalBar />
+            }
+
+        </>
     );
 };
 

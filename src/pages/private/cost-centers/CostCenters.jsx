@@ -1,35 +1,32 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import AccountClassificationColumns from "../../../components/CustomTable/Columns/AccountClassificationColumns";
+import CostCenterColumns from "../../../components/CustomTable/Columns/CostCenterColumns";
 import CustomTable from "../../../components/CustomTable/CustomTable";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
-import useAccountClassifications from "../../../hooks/useAccountClassifications";
+import useCostCenters from "../../../hooks/useCostCenters";
 
-const AccountClassifications = () => {
+const CostCenters = () => {
 
     const entity = {
-        name: 'Clasificación de cuentas',
-        url: 'account-classifications',
-        frontendUrl: '/clasificacion-de-cuentas',
-        camelName: 'accountClassifications',
+        name: 'Centros de costos',
+        url: 'cost-centers',
+        frontendUrl: '/centros-de-costos',
+        camelName: 'costCenters',
     };
 
     const { setCustomAlert, setLoading } = useFeedBack();
 
     const [filters, setFilters] = useState({
         page: 1,
-        serviceIds: '',
-        name: '',
-        start: '',
-        end: ''
+        name: ''
     });
 
     const [selectedValues, setSelectedValues] = useState([]);
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [{ [entity.camelName]: records, total, numberOfPages, loading }, getRecords] = useAccountClassifications({ params: { ...filters }, options: { useCache: false } });
+    const [{ [entity.camelName]: records, total, numberOfPages, loading }, getRecords] = useCostCenters({ params: { ...filters }, options: { useCache: false } });
 
     const [{ error: deleteError, loading: deleteLoading }, deleteRecord] = useAxios({ method: 'DELETE' }, { manual: true, useCache: false });
 
@@ -140,7 +137,7 @@ const AccountClassifications = () => {
                 total={total}
                 values={records}
                 currentPage={filters?.page}
-                collumns={AccountClassificationColumns}
+                collumns={CostCenterColumns}
                 changePage={handlePageChange}
                 filters={filters}
                 excelUrl={`${entity.url}/export/excel`}
@@ -149,4 +146,4 @@ const AccountClassifications = () => {
     )
 }
 
-export default AccountClassifications;
+export default CostCenters;

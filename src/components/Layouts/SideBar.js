@@ -7,8 +7,6 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 
 /// Link
 import { Link, useLocation } from "react-router-dom";
-import { useScrollPosition } from 'react-use-scroll-position';
-import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import MenuLinks from "../../util/MenuLinks";
 import SystemInfo from "../../util/SystemInfo";
@@ -36,11 +34,7 @@ const SideBar = () => {
 
     const location = useLocation();
 
-    const { iconHover, sidebarposition, headerposition, sidebarLayout } = useTheme();
-
-    const { permissions } = useAuth();
-
-    const scrollPosition = useScrollPosition();
+    const { iconHover } = useTheme();
 
     const [path, setPath] = useState('');
 
@@ -68,14 +62,7 @@ const SideBar = () => {
 
     return (
         <div
-            className={`deznav ${iconHover} ${sidebarposition.value === "fixed" &&
-                sidebarLayout.value === "horizontal" &&
-                headerposition.value === "static"
-                ? scrollPosition?.y > 120
-                    ? "fixed"
-                    : ""
-                : ""
-                }`}
+            className={`deznav ${iconHover}`}
         >
             <PerfectScrollbar className="deznav-scroll">
                 <MM className="metismenu" id="menu">

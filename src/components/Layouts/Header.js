@@ -51,7 +51,7 @@ const Header = ({ onNote }) => {
     }, [darkMode]);
 
     return (
-        <div className="header">
+        <div className="header" style={{ paddingLeft: 0 }}>
             <div className="header-content">
                 <nav className="navbar navbar-expand">
                     <div className="collapse navbar-collapse justify-content-between">
