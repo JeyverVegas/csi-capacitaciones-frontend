@@ -146,3 +146,7 @@ code {
 .gradient-21 {
     background: linear-gradient(90deg, var(--bs-green) 0, var(--bs-success));
 }
+
+.custom-responsible-option:hover {
+    background: rgba(0, 0, 0, .1);
+}
