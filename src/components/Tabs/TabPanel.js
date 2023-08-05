@@ -1,9 +1,8 @@
-import { useTabs } from "../contexts/TabsContext";
 
-const TabPanel = ({ children, className, value }) => {
-    const { value: contextValue } = useTabs();
 
-    if (value !== contextValue) return null;
+const TabPanel = ({ children, className, value, eventKey }) => {
+
+    if (value !== eventKey) return null;
 
     return <div className={className}>{children}</div>;
 };

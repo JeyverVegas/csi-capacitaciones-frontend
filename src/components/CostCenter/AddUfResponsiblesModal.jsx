@@ -4,28 +4,24 @@ import { useEffect, useState } from "react";
 import { AiFillCheckCircle } from "react-icons/ai";
 import { useFeedBack } from "../../context/FeedBackContext";
 
-const AddResponsiblesModal = ({ costCenterId, accountClassification, show, onClose }) => {
+const AddUfResponsiblesModal = ({ costCenterId, show, onClose }) => {
 
     const { setCustomAlert } = useFeedBack();
 
     const [filters, setFilters] = useState({
         page: 1,
         perPage: 10,
-        search: '',
-        costCenterId: costCenterId,
-        accountClassificationId: accountClassification?.id
+        costCenterId,
+        search: ''
     });
 
     const [data, setData] = useState({
-        responsibleIds: [],
-        costCenterId: costCenterId,
-        type: 'WRITER',
-        accountClassificationId: accountClassification?.id
+        userIds: []
     });
 
-    const [{ data: response, loading }, getUsers] = useAxios({ url: `/cost-centers/users-for-responsible`, params: filters }, { manual: true, useCache: false });
+    const [{ data: response, loading }, getUsers] = useAxios({ url: `/cost-centers/users-for-uf-responsible`, params: filters }, { manual: true, useCache: false });
 
-    const [{ data: createResponse, loading: createLoading }, createResponsibles] = useAxios({ url: `/cost-centers/responsibles`, method: 'POST' }, { manual: true, useCache: false });
+    const [{ data: createResponse, loading: createLoading }, createResponsibles] = useAxios({ url: `/cost-centers/${costCenterId}/uf-responsibles`, method: 'POST' }, { manual: true, useCache: false });
 
     const [currentUsers, setCurrentUsers] = useState([]);
 
@@ -37,7 +33,7 @@ const AddResponsiblesModal = ({ costCenterId, accountClassification, show, onClo
                 title: 'Operación Exitosa',
                 message: 'El registro fue creado exitosamente.'
             });
-            onClose?.();
+            onClose?.(true);
         }
     }, [createResponse])
 
@@ -63,15 +59,13 @@ const AddResponsiblesModal = ({ costCenterId, accountClassification, show, onClo
                     page: 1,
                     perPage: 10,
                     search: '',
+                    costCenterId
                 }
             });
             setCurrentUsers([]);
 
             setData({
-                responsibleIds: [],
-                costCenterId: costCenterId,
-                accountClassificationId: accountClassification?.id,
-                type: 'WRITER'
+                userIds: []
             });
         }
     }, [show])
@@ -96,27 +90,25 @@ const AddResponsiblesModal = ({ costCenterId, accountClassification, show, onClo
         })
     }
 
-    const handleResponsible = (responsibleId) => {
+    const handleResponsible = (userId) => {
 
-        const haveValue = data?.responsibleIds?.includes(responsibleId);
+        const haveValue = data?.userIds?.includes(userId);
 
         var newValues = [];
 
-        if (haveValue) newValues = data?.responsibleIds?.filter(value => value !== responsibleId);
+        if (haveValue) newValues = data?.userIds?.filter(value => value !== userId);
 
-        if (!haveValue) newValues = [...data?.responsibleIds, responsibleId];
+        if (!haveValue) newValues = [...data?.userIds, userId];
 
         setData((oldData) => {
             return {
                 ...oldData,
-                responsibleIds: newValues
+                userIds: newValues
             }
         });
     }
 
     const handleCreate = () => {
-
-        console.log(data);
 
         createResponsibles({ data });
     }
@@ -131,7 +123,7 @@ const AddResponsiblesModal = ({ costCenterId, accountClassification, show, onClo
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Añadir Responsable
+                    Añadir Responsables para el UF
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -144,20 +136,8 @@ const AddResponsiblesModal = ({ costCenterId, accountClassification, show, onClo
                     placeholder="Buscar..."
                 />
                 <br />
-                <select name="type" className="form-control" value={data?.type} onChange={(e) => {
-                    setData((oldData) => {
-                        return {
-                            ...oldData,
-                            [e.target.name]: e.target.value
-                        }
-                    })
-                }}>
-                    <option value="WRITER">Editor</option>
-                    <option value="READER">Lector</option>
-                </select>
-                <br />
                 <small>
-                    Por favor seleccione a los responsables de realizar la planificación de gastos:
+                    Por favor seleccione a los responsables de insertar los valores UF al momento de realizar una planificación:
                 </small>
                 <br />
                 <br />
@@ -185,7 +165,7 @@ const AddResponsiblesModal = ({ costCenterId, accountClassification, show, onClo
                                             </div>
                                         </div>
                                         {
-                                            data?.responsibleIds?.includes(user?.id) &&
+                                            data?.userIds?.includes(user?.id) &&
                                             <div>
                                                 <AiFillCheckCircle className="text-primary" style={{ fontSize: 22 }} />
                                             </div>
@@ -224,7 +204,7 @@ const AddResponsiblesModal = ({ costCenterId, accountClassification, show, onClo
             <Modal.Footer>
                 <button
                     className="btn btn-primary btn-block"
-                    disabled={createLoading || !data?.responsibleIds || data?.responsibleIds?.length === 0 || !data?.costCenterId || !data?.accountClassificationId}
+                    disabled={createLoading || !data?.userIds || data?.userIds?.length === 0 || !costCenterId}
                     onClick={handleCreate}
                 >
                     {
@@ -242,4 +222,4 @@ const AddResponsiblesModal = ({ costCenterId, accountClassification, show, onClo
     )
 }
 
-export default AddResponsiblesModal;
+export default AddUfResponsiblesModal;

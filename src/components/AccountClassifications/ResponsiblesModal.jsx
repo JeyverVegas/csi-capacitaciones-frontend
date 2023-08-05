@@ -1,6 +1,7 @@
-import { Button, Image, Modal, Table } from "react-bootstrap";
+import { Button, Modal, Table } from "react-bootstrap";
 import useAxios from "../../hooks/useAxios";
 import { useEffect } from "react";
+import ResponsibleRow from "./ResponsibleRow";
 
 const ResponsiblesModal = ({ costCenterId, accountClassification, show, onClose }) => {
 
@@ -42,6 +43,7 @@ const ResponsiblesModal = ({ costCenterId, accountClassification, show, onClose 
                             <th>Rut</th>
                             <th>Telefono</th>
                             <th>Email</th>
+                            <th>Rol</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -49,21 +51,13 @@ const ResponsiblesModal = ({ costCenterId, accountClassification, show, onClose 
                         {
                             data?.data?.map((responsible, i) => {
                                 return (
-                                    <tr key={i}>
-                                        <td>{i + 1}</td>
-                                        <td>
-                                            <Image style={{ height: 50, width: 50, marginRight: 5 }} src={responsible?.user?.imagePath} roundedCircle />
-                                            {responsible?.user?.name || '--'}
-                                        </td>
-                                        <td>{responsible?.user?.documentNumber || '--'}</td>
-                                        <td>{responsible?.user?.phoneNumber || '--'}</td>
-                                        <td>{responsible?.user?.email || '--'}</td>
-                                        <td>
-                                            <button className="btn btn-danger btn-xs">
-                                                Eliminar
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    <ResponsibleRow
+                                        costCenterId={costCenterId}
+                                        responsible={responsible}
+                                        key={i}
+                                        index={i}
+                                        onDelete={() => getResponsibles()}
+                                    />
                                 )
                             })
                         }

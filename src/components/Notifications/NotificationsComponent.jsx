@@ -18,9 +18,9 @@ const NotificationsComponent = () => {
         page: 1
     });
 
-    const [{ data: notificationsCountData, loading: loadingNotificationCount }, getCount] = useAxios({ url: `my-account/notifications/not-read/count` }, { useCache: false });
+    const [{ data: notificationsCountData, loading: loadingNotificationCount }, getCount] = useAxios({ url: `my-account/notifications/not-read/count` }, { manual: true, useCache: false });
 
-    const [{ userNotifications, numberOfPages, loading }, getUserNotifications] = useUserNotifications({ axiosConfig: { params: { ...notificationsFilters } }, options: { useCache: false } });
+    const [{ userNotifications, numberOfPages, loading }, getUserNotifications] = useUserNotifications({ axiosConfig: { params: { ...notificationsFilters } }, options: { manual: true, useCache: false } });
 
     const [currentNotifications, setCurrentNotifications] = useState([]);
 
