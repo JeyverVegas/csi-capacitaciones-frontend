@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAxios from "../../../hooks/useAxios";
 import { useFeedBack } from "../../../context/FeedBackContext";
+import { generateArray } from "../../../util/Utilities";
+import DateFormatter from "../../../components/DateFormatter";
+import update from 'immutability-helper';
 
 
 const PlanificationsCreate = () => {
@@ -20,7 +23,8 @@ const PlanificationsCreate = () => {
     const [data, setData] = useState({
         start: '',
         end: '',
-        forYear: new Date().getFullYear()
+        forYear: new Date().getFullYear(),
+        ufs: generateArray(12, 1).map(value => 0)
     });
 
     const { setLoading, setCustomAlert } = useFeedBack();
@@ -71,6 +75,17 @@ const PlanificationsCreate = () => {
                 [e.target.name]: e.target.value
             }
         });
+    }
+
+    const handleUpdateUfValue = (e, index) => {
+        const newArray = update(data?.ufs, { [index]: { $set: Number(e.target.value) } });
+
+        setData((oldData) => {
+            return {
+                ...oldData,
+                ufs: newArray
+            }
+        })
     }
 
     const handleSubmit = (e) => {
@@ -146,6 +161,32 @@ const PlanificationsCreate = () => {
                             </select>
                         </div>
                     </div>
+                    <div className="col-md-12 mb-2">
+                        <h3>
+                            Valores UF por mes
+                        </h3>
+                        <small>Por favor ingrese el valor uf para cada mes.</small>
+                    </div>
+                    {
+                        data?.ufs?.map((monthNumber, i) => {
+                            return (
+                                <div className="col-md-3 mb-3" key={i}>
+                                    <div className="form-group">
+                                        <label className="text-primary" style={{ textTransform: 'capitalize' }}>
+                                            <DateFormatter value={`2023-${i + 1}-15 12:00:00`} dateFormat='LLLL' />
+                                        </label>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            value={monthNumber}
+                                            onChange={(e) => handleUpdateUfValue(e, i)}
+                                            step=".01"
+                                        />
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
                 </div>
                 <br />
                 <div className="text-center">

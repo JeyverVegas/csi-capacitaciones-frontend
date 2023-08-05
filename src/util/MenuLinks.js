@@ -18,6 +18,7 @@ import CostCenterManagement from "../pages/private/cost-centers/CostCenterManage
 import Planifications from "../pages/private/planifications/Planifications";
 import PlanificationsEdit from "../pages/private/planifications/PlanificationsEdit";
 import PlanificationsCreate from "../pages/private/planifications/PlanificationsCreate";
+import PlansDetail from "../pages/private/plans/PlansDetail";
 
 const createLink = (
     title,
@@ -66,8 +67,9 @@ const MenuLinks = [
     createLink('Centros de costos', null, null, FaWpforms, '/centros-de-costos', null, [
         createLink('Listar', null, <CostCenters />, null, '/centros-de-costos/listar', null),
         createLink('Editar', true, <CostCentersEdit />, null, '/centros-de-costos/:id', null),
-    ])
+    ]),
 
+    createLink('Detalle del plan', true, <PlansDetail />, null, '/centros-de-costos/plans/:id', null),
 ];
 
 export default MenuLinks;
