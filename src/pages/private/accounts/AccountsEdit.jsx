@@ -25,6 +25,7 @@ const AccountsEdit = () => {
         name: '',
         code: '',
         type: '',
+        staff: '',
         accountClassification: ''
     });
 
@@ -39,11 +40,11 @@ const AccountsEdit = () => {
 
     useEffect(() => {
         if (dataToUpdate) {
-            console.log(dataToUpdate);
             setData((oldData) => {
                 return {
                     ...oldData,
                     ...dataToUpdate?.data,
+                    staff: dataToUpdate?.data?.staff ? 'si' : 'no',
                     accountClassification: { label: dataToUpdate?.data?.accountClassification?.name, value: dataToUpdate?.data?.accountClassification?.id }
                 }
             });
@@ -150,6 +151,18 @@ const AccountsEdit = () => {
                     <div className="col-md-6 mb-3">
                         <div className="form-group">
                             <label className="text-primary">
+                                ¿Esta cuenta es afectada por la dotación? <small className="text-danger">*</small>
+                            </label>
+                            <select name="staff" className="form-control" value={data?.staff} onChange={handleChange}>
+                                <option value="" disabled>Seleccione una opción</option>
+                                <option value="si">Si</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="col-md-6 mb-3">
+                        <div className="form-group">
+                            <label className="text-primary">
                                 Tipo de cuenta <small className="text-danger">*</small>
                             </label>
                             <select name="type" className="form-control" value={data?.type} onChange={handleChange}>
@@ -159,7 +172,7 @@ const AccountsEdit = () => {
                             </select>
                         </div>
                     </div>
-                    <div className="col-md-6 mb-3">
+                    <div className="col-md-12 mb-3">
                         <div className="form-group">
                             <label className="text-primary">
                                 Clasificación de la cuenta <small className="text-danger">*</small>

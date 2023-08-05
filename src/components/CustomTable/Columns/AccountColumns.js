@@ -33,6 +33,10 @@ const AccountColumns = [
         </p>
     },
     {
+        Label: () => '¿Afecta la dotación?',
+        Component: ({ value }) => value?.staff ? 'Si' : 'No'
+    },
+    {
         Label: () => 'Fecha de Creación',
         Component: ({ value }) => <DateFormatter value={dateFine(value?.createdAt)} dateFormat="dd/MM/yyyy hh:mm:ss" />
     },
