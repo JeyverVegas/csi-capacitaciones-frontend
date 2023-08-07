@@ -64,10 +64,8 @@ const MenuLinks = [
         createLink('Crear', null, <AccountsCreate />, null, '/cuentas/crear', null),
     ]),
 
-    createLink('Centros de costos', null, null, FaWpforms, '/centros-de-costos', null, [
-        createLink('Listar', null, <CostCenters />, null, '/centros-de-costos/listar', null),
-        createLink('Editar', true, <CostCentersEdit />, null, '/centros-de-costos/:id', null),
-    ]),
+    createLink('Centros de costos', null, <CostCenters />, FaWpforms, '/centros-de-costos/listar', null),
+    createLink('Editar', true, <CostCentersEdit />, null, '/centros-de-costos/:id', null),
 
     createLink('Detalle del plan', true, <PlansDetail />, null, '/centros-de-costos/plans/:id', null),
 ];

@@ -23,6 +23,10 @@ const AccountColumns = [
         Component: ({ value }) => <DateFormatter value={dateFine(value?.end)} dateFormat="dd/MM/yyyy" />
     },
     {
+        Label: () => 'Año',
+        Component: ({ value }) => value?.forYear || '--'
+    },
+    {
         Label: () => 'Estatus',
         Component: ({ value }) => <button className={clsx(["btn btn-xs"], {
             'btn-danger': !value?.open,

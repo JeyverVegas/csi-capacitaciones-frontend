@@ -7,6 +7,7 @@ import AccountClassificationOption from "../../../components/AccountClassificati
 import CostCenterPlansHistory from "../../../components/CostCenter/CostCenterPlansHistory";
 import AddUfResponsiblesModal from "../../../components/CostCenter/AddUfResponsiblesModal";
 import { Image } from "react-bootstrap";
+import StaffForm from "../../../components/CostCenter/StaffForm";
 
 
 const CostCentersEdit = () => {
@@ -214,6 +215,19 @@ const CostCentersEdit = () => {
                                 </li>
                             }
                         </ul>
+                    </div>
+                </div>
+
+                <div className="col-md-6">
+                    <div className="card p-3">
+                        <div className="d-flex align-items-center justify-content-between">
+                            <h3>Dotación por mes</h3>
+                        </div>
+                        <br />
+                        <StaffForm
+                            costCenterId={id}
+                            staff={data?.staff}
+                        />
                     </div>
                 </div>
             </div>

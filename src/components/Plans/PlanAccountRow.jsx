@@ -5,7 +5,7 @@ import swal from "sweetalert";
 import DateFormatter from "../DateFormatter";
 import { dateFine } from "../../util/Utilities";
 
-const PlanAccountRow = ({ planAccount, planAccountClassificationName }) => {
+const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear }) => {
 
     const [currentPlanAccount, setCurrentPlanAccount] = useState(null);
 
@@ -14,7 +14,7 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName }) => {
     const [{ data: updatePlanAccountData, loading: loadingUpdatePlanAccount }, updatePlanAccount] = useAxios({ url: `/cost-centers/plan-accounts/${planAccount?.id}`, method: 'PUT' }, { useCache: false, manual: true });
 
     useEffect(() => {
-        if (canEdit && currentPlanAccount?.userCanUpdate) {
+        if (canEdit && currentPlanAccount?.userCanUpdate && !forYear) {
             updatePlanAccount({
                 data: {
                     amount: Number(currentPlanAccount?.amount),
@@ -35,7 +35,7 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName }) => {
     }, [planAccount])
 
     const handleChange = async (e) => {
-        if (currentPlanAccount?.userCanUpdate) {
+        if (currentPlanAccount?.userCanUpdate && !forYear) {
             setCurrentPlanAccount((oldValues) => {
                 return {
                     ...oldValues,
@@ -46,7 +46,7 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName }) => {
     }
 
     const handleApply = () => {
-        if (currentPlanAccount?.userCanUpdate) {
+        if (currentPlanAccount?.userCanUpdate && !forYear) {
             swal({
                 title: "¿Estas Seguro(a)?",
                 text: "Esto sobreescribira los valores de los demas meses.",
@@ -83,11 +83,11 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName }) => {
                         className="form-control"
                         name="amount"
                         placeholder="Por favor ingrese el monto..."
-                        value={currentPlanAccount?.amount || ''}
+                        value={forYear ? currentPlanAccount?.total : currentPlanAccount?.amount || ''}
                         onChange={handleChange}
                         step=".01"
-                        readOnly={!currentPlanAccount?.userCanUpdate}
-                        disabled={!currentPlanAccount?.userCanUpdate}
+                        readOnly={!currentPlanAccount?.userCanUpdate && forYear}
+                        disabled={!currentPlanAccount?.userCanUpdate && forYear}
                     />
                     {
                         loadingUpdatePlanAccount &&
@@ -97,10 +97,12 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName }) => {
                         </div>
                     }
                     {
-                        currentPlanAccount?.userCanUpdate &&
-                        <button onClick={handleApply} title="Aplicar valor a todos los meses" style={{ marginLeft: 10 }} className="btn btn-outline-primary btn-xs">
-                            <TbCalendarStats />
-                        </button>
+                        currentPlanAccount?.userCanUpdate && !forYear ?
+                            <button onClick={handleApply} title="Aplicar valor a todos los meses" style={{ marginLeft: 10 }} className="btn btn-outline-primary btn-xs">
+                                <TbCalendarStats />
+                            </button>
+                            :
+                            null
                     }
                 </div>
                 {

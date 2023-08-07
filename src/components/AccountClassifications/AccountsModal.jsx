@@ -40,6 +40,7 @@ const AccountsModal = ({ costCenterId, accountClassification, show, onClose }) =
                             <th>#</th>
                             <th>Nombre</th>
                             <th>Codigo</th>
+                            <th>Afecta la dotación</th>
                             <th>Tipo</th>
                         </tr>
                     </thead>
@@ -53,6 +54,9 @@ const AccountsModal = ({ costCenterId, accountClassification, show, onClose }) =
                                             {account?.name || '--'}
                                         </td>
                                         <td>{account?.code || '--'}</td>
+                                        <td>
+                                            {account?.staff ? 'Si' : 'No'}
+                                        </td>
                                         <td>
                                             {account?.type === 'income' && 'Ingreso'}
                                             {account?.type === 'spent' && 'Gasto'}

@@ -8,6 +8,9 @@ import clsx from "clsx";
 import PlanAccountsForm from "../../../components/Plans/PlanAccountsForm";
 import Toggle from "react-toggle";
 
+import { BsFilter } from "react-icons/bs";
+import useAccountClassifications from "../../../hooks/useAccountClassifications";
+
 const PlansDetail = () => {
 
     const { id } = useParams();
@@ -16,7 +19,18 @@ const PlansDetail = () => {
 
     const [{ loading: updatePlanStatusLoading }, updatePlanStatus] = useAxios({ url: `/cost-centers/plans/${id}/toggle-status`, method: 'PUT' }, { manual: true, useCache: false });
 
+    const [{ accountClassifications }, getAccountClassifications] = useAccountClassifications({ params: { perPage: 50 }, options: { useCache: false } });
+
     const [currentMonth, setCurrentMonth] = useState(1);
+
+    const [filters, setFilters] = useState({
+        name: '',
+        classificationId: '',
+        code: '',
+        type: ''
+    });
+
+    const [showFilters, setShowFilters] = useState(false);
 
     const [currentPlanStatus, setCurrentPlanStatus] = useState(null);
 
@@ -35,6 +49,15 @@ const PlansDetail = () => {
         } catch (error) {
             alert('Ha ocurrido un error al actualizar');
         }
+    }
+
+    const handleChange = (e) => {
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                [e.target.name]: e.target.value
+            }
+        })
     }
 
     return (
@@ -125,12 +148,76 @@ const PlansDetail = () => {
                 </li>
             </ul>
             <br /><br />
+            <div className="card p-3" style={{ position: 'fixed', top: '30vh', left: showFilters ? '0' : '-15vw', width: '15vw', background: 'white', height: 'fit-content' }}>
+                <button onClick={() => setShowFilters(old => !old)} className="btn btn-primary" title="Filtrar cuentas" style={{ position: 'absolute', left: '100%', top: 0 }}>
+                    <BsFilter />
+                </button>
+                <h4>Filtrar Cuentas</h4>
+                <div>
+                    <input
+                        name="name"
+                        value={filters?.name}
+                        onChange={handleChange}
+                        type="text"
+                        className="form-control"
+                        placeholder="Nombre"
+                    />
+                    <br />
+                    <input
+                        name="code"
+                        value={filters?.code}
+                        onChange={handleChange}
+                        type="text"
+                        className="form-control"
+                        placeholder="Código"
+                    />
+                    <br />
+                    <select
+                        name="classificationId"
+                        value={filters?.classificationId}
+                        className="form-control"
+                        onChange={handleChange}
+                    >
+                        <option value="">Clasificación</option>
+                        {
+                            accountClassifications?.map((classification, i) => {
+                                return (
+                                    <option value={classification?.id} key={i}>{classification?.name}</option>
+                                )
+                            })
+                        }
+                    </select>
+                    <br />
+                    <select
+                        name="type"
+                        value={filters?.type}
+                        className="form-control"
+                        onChange={handleChange}
+                    >
+                        <option value="">Tipo</option>
+                        <option value="spent">Gasto</option>
+                        <option value="income">Ingreso</option>
+                    </select>
+                    <br />
+                    <div className="text-center">
+                        <button
+                            onClick={() => setFilters({ name: '', type: '', classificationId: '', code: '' })}
+                            className="btn btn-primary btn-xs"
+                        >
+                            Reestablecer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             {
                 generateArray(12, 1).map((monthNumber, i) => {
                     return (
                         <TabPanel eventKey={monthNumber} value={currentMonth} key={i}>
                             <PlanAccountsForm
+                                costCenterId={planResponse?.data?.costCenter?.id}
                                 planId={id}
+                                additionalFilters={filters}
                                 month={monthNumber}
                                 pathForUfAccounts="/cost-centers/plans/uf-accounts"
                                 pathForAccounts="/cost-centers/plans/accounts"
@@ -142,9 +229,11 @@ const PlansDetail = () => {
 
             <TabPanel eventKey={'year'} value={currentMonth}>
                 <PlanAccountsForm
+                    costCenterId={planResponse?.data?.costCenter?.id}
                     planId={id}
-                    month={null}
-                    pathForAccounts="/cost-centers/plans/accounts-total"
+                    additionalFilters={filters}
+                    forYear
+                    pathForAccounts="/cost-centers/plans/accounts"
                 />
             </TabPanel>
 
