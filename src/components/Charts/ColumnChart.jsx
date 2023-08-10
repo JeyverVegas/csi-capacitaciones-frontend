@@ -8,70 +8,82 @@ const ColumnChart = ({
     label = 'value',
     labelEndAdornment = '',
     labelStartAdornment = '',
-    height = 400
+    height = 400,
+    title = ""
 }) => {
 
     const [options, setOptions] = useState({
         chart: {
+            height: 350,
             type: 'bar',
-            height: 400,
-            stacked: true,
-            toolbar: {
-                show: true
-            },
-            zoom: {
-                enabled: true
-            }
         },
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                legend: {
-                    position: 'bottom',
-                    offsetX: -10,
-                    offsetY: 0
-                }
-            }
-        }],
         plotOptions: {
             bar: {
-                horizontal: false,
                 borderRadius: 10,
                 dataLabels: {
-                    total: {
-                        enabled: true,
-                        style: {
-                            fontSize: '13px',
-                            fontWeight: 900
-                        },
-                        formatter(val, opts) {
-                            return `${labelStartAdornment}${val}${labelEndAdornment}`
-                        }
+                    position: 'top', // top, center, bottom
+                },
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (val) {
+                return labelStartAdornment + val + labelEndAdornment;
+            },
+            style: {
+                fontSize: '12px',
+                colors: ["#ffffff"]
+            }
+        },
+
+        xaxis: {
+            categories: categories,
+            position: 'top',
+            axisBorder: {
+                show: false
+            },
+            axisTicks: {
+                show: false
+            },
+            crosshairs: {
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        colorFrom: '#D8E3F0',
+                        colorTo: '#BED1E6',
+                        stops: [0, 100],
+                        opacityFrom: 0.4,
+                        opacityTo: 0.5,
                     }
                 }
             },
-        },
-        dataLabels: {
-            formatter(val, opts) {
-                if (label === 'value') {
-                    return `${labelStartAdornment}${opts.w.config.series[opts.seriesIndex].data[opts?.dataPointIndex]}${labelEndAdornment}`
-                }
-
-                if (label === 'valueAndPercent') {
-                    return `${labelStartAdornment}${opts.w.config.series[opts.seriesIndex].data[opts?.dataPointIndex]}${labelEndAdornment} - ${val.toFixed(1)}%`
-                }
+            tooltip: {
+                enabled: true,
             }
         },
-        xaxis: {
-            type: 'string',
-            categories: categories,
+        yaxis: {
+            axisBorder: {
+                show: false
+            },
+            axisTicks: {
+                show: false,
+            },
+            labels: {
+                show: false,
+                formatter: function (val) {
+                    return labelStartAdornment + val + labelEndAdornment;
+                }
+            }
+
         },
-        legend: {
-            position: 'right',
-            offsetY: 40
-        },
-        fill: {
-            opacity: 1
+        title: {
+            text: title,
+            floating: true,
+            offsetY: 330,
+            align: 'center',
+            style: {
+                color: '#444'
+            }
         }
     });
 

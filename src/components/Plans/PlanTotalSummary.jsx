@@ -3,9 +3,9 @@ import DateFormatter from "../DateFormatter";
 import PlanStaffComponent from "./PlanStaffComponent";
 import PlanUfComponent from "./PlanUfComponent";
 
-const PlanTotalSummary = ({ planId, month, pathForUfAccounts }) => {
+const PlanTotalSummary = ({ month, pathForUfAccounts, pathForSummary }) => {
 
-    const [{ data, loading: planSummaryLoading }, getSummary] = useAxios({ params: { month }, url: `cost-centers/plans/${planId}/summary` }, { useCache: false });
+    const [{ data, loading: planSummaryLoading }, getSummary] = useAxios({ params: { month }, url: pathForSummary }, { useCache: false });
 
 
 

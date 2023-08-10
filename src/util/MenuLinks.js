@@ -19,6 +19,7 @@ import Planifications from "../pages/private/planifications/Planifications";
 import PlanificationsEdit from "../pages/private/planifications/PlanificationsEdit";
 import PlanificationsCreate from "../pages/private/planifications/PlanificationsCreate";
 import PlansDetail from "../pages/private/plans/PlansDetail";
+import PlansManagement from "../pages/private/plans/PlansManagement";
 
 const createLink = (
     title,
@@ -68,6 +69,8 @@ const MenuLinks = [
     createLink('Editar', true, <CostCentersEdit />, null, '/centros-de-costos/:id', null),
 
     createLink('Detalle del plan', true, <PlansDetail />, null, '/centros-de-costos/plans/:id', null),
+
+    createLink('Gestionar Plan', true, <PlansManagement />, null, '/gestionar-centro-de-costo/:costCenterId/plans/:id', null),
 ];
 
 export default MenuLinks;

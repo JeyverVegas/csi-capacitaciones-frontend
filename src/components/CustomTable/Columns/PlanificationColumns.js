@@ -27,6 +27,14 @@ const AccountColumns = [
         Component: ({ value }) => value?.forYear || '--'
     },
     {
+        Label: () => <span className="text-danger">Planificaciones Pendientes</span>,
+        Component: ({ value }) => value?.plansOpenCount
+    },
+    {
+        Label: () => <span className="text-success">Planificaciones Finalizadas</span>,
+        Component: ({ value }) => value?.plansClosedCount
+    },
+    {
         Label: () => 'Estatus',
         Component: ({ value }) => <button className={clsx(["btn btn-xs"], {
             'btn-danger': !value?.open,

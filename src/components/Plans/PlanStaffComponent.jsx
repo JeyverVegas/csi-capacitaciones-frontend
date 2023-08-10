@@ -64,7 +64,7 @@ const PlanStaffComponent = ({ staff, userCanUpdate }) => {
             </h4>
             <div className="form-group mb-3">
                 <label className="text-primary">
-                    Asignada al centro de costo:
+                    Asignada:
                 </label>
                 <input readOnly type="text" value={currentStaff?.assigned} className="form-control" />
             </div>

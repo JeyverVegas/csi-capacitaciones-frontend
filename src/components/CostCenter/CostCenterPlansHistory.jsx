@@ -21,7 +21,6 @@ const CostCenterPlansHistory = ({ costCenterId }) => {
 
     useEffect(() => {
         if (plansResponse) {
-            console.log(plansResponse);
             setCurrentPlans((oldPlans) => {
                 return [...oldPlans, ...plansResponse?.data]
             });

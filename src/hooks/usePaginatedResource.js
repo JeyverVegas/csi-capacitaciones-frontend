@@ -11,10 +11,10 @@ const usePaginatedResource = (url, { options, ...axiosConfig } = {}) => {
 
     useEffect(() => {
         if (data) {
-            setResults(data.results);
-            setTotal(data.total);
-            setNumberOfPages(data.numberOfPages);
-            setSize(data.size);
+            setResults(data.data);
+            setTotal(data.meta.total);
+            setNumberOfPages(data.meta.last_page);
+            setSize(data.meta.per_page);
         }
     }, [data]);
 

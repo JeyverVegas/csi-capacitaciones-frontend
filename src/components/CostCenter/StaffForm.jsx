@@ -54,7 +54,7 @@ const StaffForm = ({ staff, costCenterId }) => {
         <form onSubmit={handleSubmit}>
 
             <ul className="row align-items-center">
-                <Alert show={responseMessage}>{responseMessage}</Alert>
+                <Alert show={responseMessage} transition={false}>{responseMessage}</Alert>
                 {
                     currentStaff?.map((staffValue, i) => {
                         return (

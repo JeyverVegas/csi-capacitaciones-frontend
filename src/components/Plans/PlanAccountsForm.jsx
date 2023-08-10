@@ -6,7 +6,17 @@ import UfAccountForm from "./UfAccountForm";
 import PlanStaffForm from "./PlanStaffForm";
 import PlanTotalSummary from "./PlanTotalSummary";
 
-const PlanAccountsForm = ({ planId, month, pathForAccounts, pathForUfAccounts, costCenterId, forYear, additionalFilters }) => {
+const PlanAccountsForm = ({
+    planId,
+    month,
+    pathForAccounts,
+    pathForUfAccounts,
+    costCenterId,
+    forYear,
+    additionalFilters,
+    pathForSummary,
+    pathForUpdatePlanAccount
+}) => {
 
     const [filters, setFilters] = useState({
         planId,
@@ -31,6 +41,7 @@ const PlanAccountsForm = ({ planId, month, pathForAccounts, pathForUfAccounts, c
                 planId={planId}
                 month={month}
                 pathForUfAccounts={pathForUfAccounts}
+                pathForSummary={pathForSummary}
             />
 
             {
@@ -73,6 +84,7 @@ const PlanAccountsForm = ({ planId, month, pathForAccounts, pathForUfAccounts, c
                                     planAccounts?.map((planAccount, i) => {
                                         return (
                                             <PlanAccountRow
+                                                pathForUpdatePlanAccount={pathForUpdatePlanAccount}
                                                 forYear={forYear}
                                                 planAccountClassificationName={planAccount?.accountClassification?.name || planAccount?.accountClassificationName || '--'}
                                                 planAccount={planAccount}

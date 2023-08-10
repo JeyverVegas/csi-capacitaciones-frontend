@@ -60,30 +60,6 @@ const CostCentersEdit = () => {
         });
     }, [loadingDataToUpdate]);
 
-    const handleToggleAccountClassification = (accountClassification) => {
-
-        const accountExists = data?.accountClassificationIds?.includes(accountClassification?.id);
-
-        if (accountExists) {
-            const filtersAccountClassifications = data?.accountClassificationIds?.filter((value) => value != accountClassification?.id);
-
-            setData((oldData) => {
-                return {
-                    ...oldData,
-                    accountClassificationIds: filtersAccountClassifications
-                }
-            });
-
-        } else {
-            setData((oldData) => {
-                return {
-                    ...oldData,
-                    accountClassificationIds: [...oldData?.accountClassificationIds, accountClassification?.id]
-                }
-            });
-        }
-    }
-
     const handleClose = (e) => {
         setShowUfResponsiblesModal(false);
         if (e) {
@@ -140,7 +116,6 @@ const CostCentersEdit = () => {
                                         <AccountClassificationOption
                                             defaultValues={data?.accountClassificationIds}
                                             accountClassification={accountClassification} key={i}
-                                            onChange={(e) => handleToggleAccountClassification(accountClassification)}
                                             costCenterId={id}
                                         />
                                     )

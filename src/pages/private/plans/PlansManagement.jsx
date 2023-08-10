@@ -10,13 +10,13 @@ import Toggle from "react-toggle";
 import { BsFilter } from "react-icons/bs";
 import useAccountClassifications from "../../../hooks/useAccountClassifications";
 
-const PlansDetail = () => {
+const PlansManagement = () => {
 
     const { id } = useParams();
 
-    const [{ data: planResponse, loading: planLoading }, getPlan] = useAxios({ url: `/cost-centers/plans/${id}` }, { useCache: false });
+    const [{ data: planResponse, loading: planLoading }, getPlan] = useAxios({ url: `/plans/${id}` }, { useCache: false });
 
-    const [{ loading: updatePlanStatusLoading }, updatePlanStatus] = useAxios({ url: `/cost-centers/plans/${id}/toggle-status`, method: 'PUT' }, { manual: true, useCache: false });
+    const [{ loading: updatePlanStatusLoading }, updatePlanStatus] = useAxios({ url: `/plans/${id}/toggle-status`, method: 'PUT' }, { manual: true, useCache: false });
 
     const [{ accountClassifications }, getAccountClassifications] = useAccountClassifications({ params: { perPage: 50 }, options: { useCache: false } });
 
@@ -214,14 +214,15 @@ const PlansDetail = () => {
                     return (
                         <TabPanel eventKey={monthNumber} value={currentMonth} key={i}>
                             <PlanAccountsForm
+
                                 costCenterId={planResponse?.data?.costCenter?.id}
                                 planId={id}
                                 additionalFilters={filters}
                                 month={monthNumber}
-                                pathForUpdatePlanAccount="/cost-centers/plan-accounts/"
-                                pathForUfAccounts="/cost-centers/plans/uf-accounts"
-                                pathForAccounts="/cost-centers/plans/accounts"
-                                pathForSummary={`cost-centers/plans/${id}/summary`}
+                                pathForUpdatePlanAccount={`/plan-accounts`}
+                                pathForUfAccounts={`/plans/${id}/uf-accounts`}
+                                pathForAccounts={`/plans/${id}/accounts`}
+                                pathForSummary={`/plans/${id}/summary`}
                             />
                         </TabPanel>
                     )
@@ -234,8 +235,8 @@ const PlansDetail = () => {
                     planId={id}
                     additionalFilters={filters}
                     forYear
-                    pathForAccounts="/cost-centers/plans/accounts"
-                    pathForSummary={`cost-centers/plans/${id}/summary`}
+                    pathForAccounts="/plans/accounts"
+                    pathForSummary={`plans/${id}/summary`}
                 />
             </TabPanel>
 
@@ -243,4 +244,4 @@ const PlansDetail = () => {
     )
 }
 
-export default PlansDetail;
+export default PlansManagement;

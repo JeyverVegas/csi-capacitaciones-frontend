@@ -5,28 +5,11 @@ import swal from "sweetalert";
 import DateFormatter from "../DateFormatter";
 import { dateFine } from "../../util/Utilities";
 
-const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear }) => {
+const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear, pathForUpdatePlanAccount }) => {
 
     const [currentPlanAccount, setCurrentPlanAccount] = useState(null);
 
-    const [canEdit, setCanEdit] = useState(false);
-
-    const [{ data: updatePlanAccountData, loading: loadingUpdatePlanAccount }, updatePlanAccount] = useAxios({ url: `/cost-centers/plan-accounts/${planAccount?.id}`, method: 'PUT' }, { useCache: false, manual: true });
-
-    useEffect(() => {
-        if (canEdit && currentPlanAccount?.userCanUpdate && !forYear) {
-            updatePlanAccount({
-                data: {
-                    amount: Number(currentPlanAccount?.amount),
-                    applyForAllMonths: 'no'
-                }
-            });
-        }
-    }, [currentPlanAccount])
-
-    useEffect(() => {
-        if (currentPlanAccount) setCanEdit(true);
-    }, [currentPlanAccount])
+    const [{ data: updatePlanAccountData, loading: loadingUpdatePlanAccount }, updatePlanAccount] = useAxios({ url: `${pathForUpdatePlanAccount}/${planAccount?.id}`, method: 'PUT' }, { useCache: false, manual: true });
 
     useEffect(() => {
         if (planAccount) {
@@ -35,6 +18,9 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear })
     }, [planAccount])
 
     const handleChange = async (e) => {
+
+        if (!currentPlanAccount?.userCanUpdate) return alert('No tienes permisos para editar esta cuenta.');
+
         if (currentPlanAccount?.userCanUpdate && !forYear) {
             setCurrentPlanAccount((oldValues) => {
                 return {
@@ -42,10 +28,20 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear })
                     [e.target.name]: e.target.value
                 }
             });
+
+            updatePlanAccount({
+                data: {
+                    amount: Number(e.target.value),
+                    applyForAllMonths: 'no'
+                }
+            });
         }
     }
 
     const handleApply = () => {
+
+        if (!currentPlanAccount?.userCanUpdate) return alert('No tienes permisos para editar esta cuenta.');
+
         if (currentPlanAccount?.userCanUpdate && !forYear) {
             swal({
                 title: "¿Estas Seguro(a)?",
@@ -77,6 +73,15 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear })
                 {currentPlanAccount?.name || '--'}
             </td>
             <td>
+                {
+                    currentPlanAccount?.staff &&
+                    <div className="mb-2">
+                        <span className="text-danger" style={{ fontWeight: 'bold', marginRight: 5 }}>
+                            Importante:
+                        </span>
+                        El monto de esta cuenta será multiplicado por la dotación solicitada al calcular el total.
+                    </div>
+                }
                 <div className="d-flex align-items-center">
                     <input
                         type="number"
@@ -114,7 +119,7 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear })
                     </div>
                 }
             </td>
-        </tr>
+        </tr >
     )
 }
 

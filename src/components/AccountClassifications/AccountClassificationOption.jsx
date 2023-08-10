@@ -7,9 +7,10 @@ import useAxios from "../../hooks/useAxios";
 import ResponsiblesModal from "./ResponsiblesModal";
 import AccountsModal from "./AccountsModal";
 import AddResponsiblesModal from "./AddResponsiblesModal";
+import swal from "sweetalert";
 
 
-const AccountClassificationOption = ({ accountClassification, defaultValues = [], onChange, costCenterId }) => {
+const AccountClassificationOption = ({ accountClassification, defaultValues = [], costCenterId }) => {
 
     const [showAccounts, setShowAccounts] = useState(false);
 
@@ -19,9 +20,40 @@ const AccountClassificationOption = ({ accountClassification, defaultValues = []
 
     const [checked, setChecked] = useState(false);
 
+    const [{ data, loading }, toggleAccountClassification] = useAxios({ url: `/cost-centers/account-classifications/toggle`, method: 'PUT' }, { manual: true, useCache: false });
+
     useEffect(() => {
         if (defaultValues.includes(accountClassification?.id)) setChecked(true);
     }, [defaultValues])
+
+    const handleChange = async (e) => {
+
+        try {
+
+            if (!e.target.checked) {
+                const wantDelete = await swal({
+                    title: "¿Estás Seguro?",
+                    text: "Esto eliminara todos los responsables y tendras que volver a asignarlos luego.",
+                    icon: "warning",
+                    buttons: true,
+                });
+
+                if (!wantDelete) return;
+            }
+
+            await toggleAccountClassification({
+                data: {
+                    costCenterId,
+                    accountClassificationId: accountClassification?.id
+                }
+            });
+
+            setChecked((old) => !old);
+
+        } catch (error) {
+            alert('Ha ocurrido un error');
+        }
+    }
 
     return (
         <li className="d-flex align-items-center py-2 justify-content-between" style={{ borderBottom: '1px solid' }}>
@@ -29,7 +61,7 @@ const AccountClassificationOption = ({ accountClassification, defaultValues = []
                 className="d-flex align-items-center cursor-pointer"
             >
                 <input
-                    onChange={(e) => onChange?.(e)}
+                    onChange={handleChange}
                     checked={checked}
                     type="checkbox"
                     style={{ borderRadius: '100%', height: 20, width: 20, marginRight: 5 }}

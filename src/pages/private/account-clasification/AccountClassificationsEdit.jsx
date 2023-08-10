@@ -30,7 +30,6 @@ const AccountClassificationsEdit = () => {
 
     useEffect(() => {
         if (dataToUpdate) {
-            console.log(dataToUpdate);
             setData((oldData) => {
                 return {
                     ...oldData,

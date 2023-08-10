@@ -116,8 +116,6 @@ const AddResponsiblesModal = ({ costCenterId, accountClassification, show, onClo
 
     const handleCreate = () => {
 
-        console.log(data);
-
         createResponsibles({ data });
     }
 
