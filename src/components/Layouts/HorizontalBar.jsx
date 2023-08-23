@@ -7,10 +7,13 @@ import UserHavePermission from '../../util/UserHavePermission';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
+import { useTheme } from '../../context/ThemeContext';
 
 const HorizontalBar = () => {
 
     const location = useLocation();
+
+    const { darkMode } = useTheme();
 
     const navigate = useNavigate();
 
@@ -29,7 +32,8 @@ const HorizontalBar = () => {
                             UserHavePermission(menuLink?.permissions) && !menuLink.hidden && menuLink?.children?.length > 0 ?
                                 <NavDropdown key={i} title={<>
                                     <button className={clsx(["btn"], {
-                                        'btn-primary': path.includes(menuLink?.path)
+                                        'btn-primary': path.includes(menuLink?.path),
+                                        'text-white': darkMode
                                     })}>
                                         <Icon />
                                         {menuLink?.title}
@@ -42,7 +46,7 @@ const HorizontalBar = () => {
                                             return (
                                                 UserHavePermission(childrenMenu?.permissions) && !childrenMenu.hidden ?
                                                     <NavDropdown.Item
-                                                        onClick={() => navigate(childrenMenu?.path)}
+                                                        href={childrenMenu?.path}
                                                         key={`children-${i}-${i2}`}
                                                         className={clsx({
                                                             'text-primary': path.includes(childrenMenu?.path)
@@ -58,9 +62,10 @@ const HorizontalBar = () => {
                                 </NavDropdown>
                                 :
                                 UserHavePermission(menuLink?.permissions) && !menuLink.hidden ?
-                                    <Nav.Link key={i}>
-                                        <button onClick={() => navigate(menuLink?.path)} className={clsx(["btn"], {
-                                            'btn-primary': path.includes(menuLink?.path)
+                                    <Nav.Link key={i} href={menuLink?.path}>
+                                        <button className={clsx(["btn"], {
+                                            'btn-primary': path.includes(menuLink?.path),
+                                            'text-white': darkMode
                                         })}>
                                             <Icon />
                                             {menuLink?.title}

@@ -218,7 +218,7 @@ const PlansDetail = () => {
                                 planId={id}
                                 additionalFilters={filters}
                                 month={monthNumber}
-                                pathForUpdatePlanAccount="/cost-centers/plan-accounts/"
+                                pathForUpdatePlanAccount="/cost-centers/plan-accounts"
                                 pathForUfAccounts="/cost-centers/plans/uf-accounts"
                                 pathForAccounts="/cost-centers/plans/accounts"
                                 pathForSummary={`cost-centers/plans/${id}/summary`}

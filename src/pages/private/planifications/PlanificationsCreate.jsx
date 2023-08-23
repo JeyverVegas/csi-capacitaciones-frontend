@@ -5,6 +5,8 @@ import { useFeedBack } from "../../../context/FeedBackContext";
 import { generateArray } from "../../../util/Utilities";
 import DateFormatter from "../../../components/DateFormatter";
 import update from 'immutability-helper';
+import { BiLinkExternal } from "react-icons/bi";
+
 
 
 const PlanificationsCreate = () => {
@@ -189,7 +191,31 @@ const PlanificationsCreate = () => {
                     }
                 </div>
                 <br />
-                <div className="text-center">
+                <div>
+                    <div>
+                        <h5 className="text-danger">
+                            Importante:
+                        </h5>
+                        <p>Antes de continuar asegurece de haber realizado las siguientes configuraciones:</p>
+                        <ul className="text-start">
+                            <li>
+                                - Haber <b>asignado la dotación por contrato</b> correspondiente a cada centro de costo. <a target="_blank" href="/centros-de-costos/agregar-dotacion" title="agregar dotación a los centros de costo"><BiLinkExternal /></a>
+                            </li>
+                            <li>
+                                - Haber asignado los <b>responsables de ingresar los valores a las cuentas</b> de cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="Asignar responsables"><BiLinkExternal /></a>
+                            </li>
+                            <li>
+                                - Haber asignado un <b>responsable general</b> a cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="asignar responsable general"><BiLinkExternal /></a>
+                            </li>
+                            <li>
+                                - Haber asignado los <b>responsables de agregar los montos uf</b> a cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="Agregar responsables de montos uf"><BiLinkExternal /></a>
+                            </li>
+                            <li>
+                                - Haber actualizado las <b>instrucciones del sistema</b>. <a target="_blank" href="/instrucciones" title="Editar instrucciones"><BiLinkExternal /></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <br /><br />
                     <button className="btn btn-block btn-primary">
                         Iniciar
                     </button>

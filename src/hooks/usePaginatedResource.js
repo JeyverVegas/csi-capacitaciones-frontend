@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import useAxios from './useAxios';
 
 const usePaginatedResource = (url, { options, ...axiosConfig } = {}) => {
+
     const [{ data, error, loading }, getResource] = useAxios({ ...axiosConfig, url }, { useCache: false, ...options });
 
     const [results, setResults] = useState([]);

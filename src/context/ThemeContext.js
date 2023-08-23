@@ -14,6 +14,7 @@ export const ThemeContextProvider = (props) => {
   const [menuToggle, setMenuToggle] = useState(false);
   const [background, setBackground] = useState({ value: "light", label: "Light", });
   const [containerPosition_, setcontainerPosition_] = useState({ value: "wide-boxed", label: "Wide Boxed", });
+  const [darkMode, setDarkMode] = useState(false);
 
   const sideBarOption = [
     { value: "compact", label: "Compact" },
@@ -150,6 +151,8 @@ export const ThemeContextProvider = (props) => {
         background,
         containerPosition_,
         setDemoTheme,
+        setDarkMode,
+        darkMode
       }}
     >
       {props.children}

@@ -12,6 +12,7 @@ import PlanAccountsForm from "../../../components/Plans/PlanAccountsForm";
 import TabPanel from "../../../components/Tabs/TabPanel";
 import { BsFilter } from "react-icons/bs";
 import ColumnChart from "../../../components/Charts/ColumnChart";
+import fileDownload from "js-file-download";
 
 
 const PlanificationsEdit = () => {
@@ -58,6 +59,10 @@ const PlanificationsEdit = () => {
     const [{ data: planCount, loading: planCountLoading }, getPlanCount] = useAxios({ url: `/${entity?.url}/${id}/plans/count` }, { useCache: false });
 
     const [{ data: accountClassificationsAmount, loading: loadingAccountClassificationsAmount }, getAccountClassificationsAmount] = useAxios({ url: `/${entity?.url}/${id}/total-by-account-classifications` }, { useCache: false });
+
+    const [{ loading: loadingPlanExport }, exportPlanExcel] = useAxios({ url: `/${entity?.url}/${id}/excel`, responseType: 'blob' }, { useCache: false, manual: true })
+
+    const [{ loading: loadingPlanKpiExport }, exportPlanKpiExcel] = useAxios({ url: `/${entity?.url}/${id}/kpi/excel`, responseType: 'blob' }, { useCache: false, manual: true })
 
     const { loadMore, results: plans, loading: loadingPlans, canLoadMore } = usePaginatedResourceWithAppend(`/planning-processes/${id}/plans`);
 
@@ -143,6 +148,28 @@ const PlanificationsEdit = () => {
         e?.preventDefault();
 
         updateRecord({ data });
+    }
+
+    const handleExport = async (e) => {
+        try {
+            const exportPlanExcelResponse = await exportPlanExcel();
+
+            fileDownload(exportPlanExcelResponse?.data, `Planificación de gastos (Resumen) - ${data?.forYear}.xlsx`);
+
+        } catch (error) {
+            alert('Ha ocurrido un error al descargar el excel.');
+        }
+    }
+
+    const handleExportKpi = async (e) => {
+        try {
+            const exportPlanKpiExcelResponse = await exportPlanKpiExcel();
+
+            fileDownload(exportPlanKpiExcelResponse?.data, `Planificación de gastos (KPI) - ${data?.forYear}.xlsx`);
+
+        } catch (error) {
+            alert('Ha ocurrido un error al descargar el excel.');
+        }
     }
 
     return (
@@ -367,13 +394,32 @@ const PlanificationsEdit = () => {
                 </div>
                 <div className="col-md-12">
                     <div className="card p-4">
-                        <div className="d-flex align-items-center justify-content-between">
+                        <div className="d-flex align-items-center justify-content-between mb-5">
                             <h3 className="mb-4">
                                 Resumen del plan:
                             </h3>
-                            <button className="btn btn-primary btn-xs" onClick={() => setShowPlanningAccountsTotal(old => !old)}>
-                                {showPlanningAccountsTotal ? 'Ocultar' : 'Mostrar'}
-                            </button>
+                            <div>
+                                <button disabled={loadingPlanKpiExport} className="btn btn-success btn-xs mx-3" onClick={handleExportKpi}>
+                                    {
+                                        loadingPlanKpiExport ?
+                                            'Cargando...'
+                                            :
+                                            'Generar excel KPI'
+                                    }
+                                </button>
+                                <button disabled={loadingPlanExport} className="btn btn-success btn-xs mx-3" onClick={handleExport}>
+                                    {
+                                        loadingPlanExport ?
+                                            'Cargando'
+                                            :
+                                            'Generar excel Resumen'
+                                    }
+
+                                </button>
+                                <button className="btn btn-primary btn-xs mx-3" onClick={() => setShowPlanningAccountsTotal(old => !old)}>
+                                    {showPlanningAccountsTotal ? 'Ocultar' : 'Mostrar'}
+                                </button>
+                            </div>
                         </div>
                         {
                             showPlanningAccountsTotal &&

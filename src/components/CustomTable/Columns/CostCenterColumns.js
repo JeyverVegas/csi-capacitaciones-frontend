@@ -18,6 +18,10 @@ const CostCenterColumns = [
         accessor: 'name'
     },
     {
+        Label: () => 'Responsable General',
+        Component: ({ value }) => value?.generalResponsible?.name || '--'
+    },
+    {
         Label: () => 'Fecha de Creación',
         Component: ({ value }) => <DateFormatter value={dateFine(value?.createdAt)} dateFormat="dd/MM/yyyy hh:mm:ss" />
     },

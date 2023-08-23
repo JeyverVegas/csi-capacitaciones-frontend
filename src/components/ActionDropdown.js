@@ -4,6 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import { mainPermissions } from "../util/MenuLinks";
 import SystemInfo from "../util/SystemInfo";
 import UserHavePermission from "../util/UserHavePermission";
+import { BsThreeDots } from "react-icons/bs";
+import { useTheme } from "../context/ThemeContext";
+
 
 const ActionDropdown = ({
     updateOptionString = 'Actualizar',
@@ -14,8 +17,11 @@ const ActionDropdown = ({
     roleDisplayText,
     value,
     entity,
+    style,
     showDelete = true
 }) => {
+
+    const { darkMode } = useTheme();
 
     const { permissions } = useAuth();
 
@@ -30,30 +36,15 @@ const ActionDropdown = ({
     }
 
     return (
-        <Dropdown className="dropdown ms-auto text-right">
+        <Dropdown className="dropdown ms-auto text-right" style={{
+            ...style,
+        }}>
             <Dropdown.Toggle
                 variant=""
                 className="btn-link i-false"
                 data-toggle="dropdown"
             >
-                <svg
-                    width="24px"
-                    height="24px"
-                    viewBox="0 0 24 24"
-                    version="1.1"
-                >
-                    <g
-                        stroke="none"
-                        strokeWidth={1}
-                        fill="none"
-                        fillRule="evenodd"
-                    >
-                        <rect x={0} y={0} width={24} height={24} />
-                        <circle fill="#000000" cx={5} cy={12} r={2} />
-                        <circle fill="#000000" cx={12} cy={12} r={2} />
-                        <circle fill="#000000" cx={19} cy={12} r={2} />
-                    </g>
-                </svg>
+                <BsThreeDots style={{ color: darkMode ? 'white' : '', fontSize: 20 }} />
             </Dropdown.Toggle>
             <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
                 {

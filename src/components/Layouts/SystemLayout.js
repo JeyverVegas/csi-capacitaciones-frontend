@@ -9,12 +9,14 @@ import clsx from "clsx";
 
 const SystemLayout = () => {
 
-    const { menuToggle, sidebarLayout } = useTheme();
+    const { menuToggle, sidebarLayout, darkMode } = useTheme();
     const { customAlert, setCustomAlert } = useFeedBack();
+
     const pagePath = false;
 
     return (
         <div
+            style={{ background: darkMode ? '#171622' : '' }}
             id={`${!pagePath ? "main-wrapper" : ""}`}
             className={`${!pagePath ? "show" : "vh-100"}  ${menuToggle ? "menu-toggle" : ""}`}
         >

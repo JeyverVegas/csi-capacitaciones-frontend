@@ -115,12 +115,19 @@ const CostCenters = () => {
             <div className="my-4 justify-content-end d-flex">
                 {
                     <>
-                        <Link to={`${entity.frontendUrl}/crear`} className="btn btn-primary">
-                            Crear {entity.name}
+                        <Link to={`${entity.frontendUrl}/cargar-remuneraciones`} className="btn btn-primary mx-3">
+                            Cargar remuneraciones de un plan
+                        </Link>
+                        <Link to={`${entity.frontendUrl}/agregar-ingresos-us`} className="btn btn-primary mx-3">
+                            Cargar ingresos uf de un plan
+                        </Link>
+                        <Link to={`${entity.frontendUrl}/agregar-dotacion`} className="btn btn-primary mx-3">
+                            Asignar dotación a los {entity.name}
                         </Link>
                     </>
                 }
             </div>
+            <br />
             <CustomTable
                 onDeleteSelected={handleDeleteSelected}
                 onSelectValue={handleSelectValue}

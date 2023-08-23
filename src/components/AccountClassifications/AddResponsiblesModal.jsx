@@ -232,7 +232,7 @@ const AddResponsiblesModal = ({ costCenterId, accountClassification, show, onClo
                                 <div className="double-bounce2 bg-light"></div>
                             </div>
                             :
-                            'Agregar Responsables'
+                            'Agregar Responsable'
                     }
                 </button>
             </Modal.Footer>

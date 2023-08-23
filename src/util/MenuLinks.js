@@ -20,6 +20,10 @@ import PlanificationsEdit from "../pages/private/planifications/PlanificationsEd
 import PlanificationsCreate from "../pages/private/planifications/PlanificationsCreate";
 import PlansDetail from "../pages/private/plans/PlansDetail";
 import PlansManagement from "../pages/private/plans/PlansManagement";
+import AddCostCentersStaff from "../pages/private/cost-centers/AddCostCentersStaff";
+import AddCostCentersUf from "../pages/private/cost-centers/AddCostCentersUf";
+import Instructions from "../pages/private/instructions/Instructions";
+import AddCostCentersAccountValues from "../pages/private/cost-centers/AddCostCentersAccountValues";
 
 const createLink = (
     title,
@@ -66,10 +70,14 @@ const MenuLinks = [
     ]),
 
     createLink('Centros de costos', null, <CostCenters />, FaWpforms, '/centros-de-costos/listar', null),
+    createLink('Agregar ingresos uf', true, <AddCostCentersUf />, null, '/centros-de-costos/agregar-ingresos-us', null),
+    createLink('Agregar dotación', true, <AddCostCentersStaff />, null, '/centros-de-costos/agregar-dotacion', null),
+    createLink('Cargar Remuneraciones', true, <AddCostCentersAccountValues />, null, '/centros-de-costos/cargar-remuneraciones', null),
     createLink('Editar', true, <CostCentersEdit />, null, '/centros-de-costos/:id', null),
 
-    createLink('Detalle del plan', true, <PlansDetail />, null, '/centros-de-costos/plans/:id', null),
 
+    createLink('Instrucciones del sistema', null, <Instructions />, FaWpforms, '/instrucciones', null),
+    createLink('Detalle del plan', true, <PlansDetail />, null, '/centros-de-costos/plans/:id', null),
     createLink('Gestionar Plan', true, <PlansManagement />, null, '/gestionar-centro-de-costo/:costCenterId/plans/:id', null),
 ];
 

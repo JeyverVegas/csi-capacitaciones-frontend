@@ -3,10 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import SystemInfo from "../util/SystemInfo";
 import profile from '../images/profile.png';
+import { useTheme } from "../context/ThemeContext";
 
 const UserAccountInfo = () => {
 
     const navigate = useNavigate();
+
+    const { darkMode } = useTheme();
 
     const { user, setAuthInfo } = useAuth();
 
@@ -20,8 +23,12 @@ const UserAccountInfo = () => {
             <Dropdown.Toggle variant="" as="a" className="nav-link i-false c-pointer">
                 <img src={user?.imagePath ? `${user?.imagePath}` : profile} width={20} alt="profile-image" />
                 <div className="header-info ms-3">
-                    <span>{user?.name.length > 16 ? `${user?.name.slice(0, 16)}...` : user?.name}</span>
-                    <small>{user?.role?.displayText}</small>
+                    <span style={{ color: darkMode ? 'white' : '' }}>
+                        {user?.name.length > 16 ? `${user?.name.slice(0, 16)}...` : user?.name}
+                    </span>
+                    <small style={{ color: darkMode ? 'white' : '' }}>
+                        {user?.role?.displayText}
+                    </small>
                 </div>
             </Dropdown.Toggle>
             <Dropdown.Menu align="right" className="mt-3 dropdown-menu dropdown-menu-end">

@@ -7,6 +7,7 @@ import swal from "sweetalert";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import useAxios from "../../hooks/useAxios";
+import { useTheme } from "../../context/ThemeContext";
 
 const CustomTable = ({
     title,
@@ -36,6 +37,8 @@ const CustomTable = ({
 }) => {
 
     const { setCustomAlertDialog } = useFeedBack();
+
+    const { darkMode } = useTheme();
 
     const [currentFilters, setCurrentFilters] = useState('');
 
@@ -92,7 +95,7 @@ const CustomTable = ({
 
     return (
         <div className="col-12">
-            <div className={clsx({
+            <div style={{ background: 'transparent' }} className={clsx({
                 'card': variant === 'card',
             })}>
 
@@ -101,7 +104,7 @@ const CustomTable = ({
                 })}>
                     {
                         title &&
-                        <h4 className="card-title">{title}</h4>
+                        <h4 className="card-title" style={{ color: darkMode ? 'white' : '' }}>{title}</h4>
                     }
                     {
                         excelUrl &&
@@ -119,12 +122,12 @@ const CustomTable = ({
                     {
                         !withoutGlobalActions &&
                         <div>
-                            <h5>Global Acción:</h5>
+                            <h5 style={{ color: darkMode ? 'white' : '' }}>Acciones globales:</h5>
                             {
                                 selectedValues?.length > 0 ?
                                     <ActionDropdown entity={entity} withOutUpdate onDelete={handleDeleteSelected} />
                                     :
-                                    <span>you must select at least one record</span>
+                                    <span>Debes seleccionar al menos un registro.</span>
                             }
                         </div>
                     }
@@ -146,10 +149,10 @@ const CustomTable = ({
                                         {
                                             collumns?.map(({ Label, filter }, i) => {
                                                 return (
-                                                    <CustomTableHeadColumn key={i}>
+                                                    <CustomTableHeadColumn style={{ color: darkMode ? 'white' : '' }} key={i}>
                                                         <div className="custom-checkbox">
                                                             {
-                                                                <Label checked={selectAll} onChange={() => { onSelectAll?.() }} />
+                                                                <Label style={{ color: darkMode ? 'white' : '' }} checked={selectAll} onChange={() => { onSelectAll?.() }} />
                                                             }
                                                             {filter ?
                                                                 <input></input>
@@ -179,7 +182,7 @@ const CustomTable = ({
                                                             {
                                                                 collumns?.map(({ Component, accessor }, i2) => {
                                                                     return (
-                                                                        <CustomTableBodyCollumn key={i2}>
+                                                                        <CustomTableBodyCollumn style={{ color: darkMode ? 'white' : '' }} key={i2}>
                                                                             {
                                                                                 Component ?
                                                                                     <Component
@@ -205,6 +208,7 @@ const CustomTable = ({
                                                                                         optionsCount={value?.options?.length}
                                                                                         updateParamAccesor={updateParamAccesor}
                                                                                         value={value}
+                                                                                        style={{ color: darkMode ? 'white' : '' }}
                                                                                     />
                                                                                     :
                                                                                     accessor ?
@@ -230,7 +234,7 @@ const CustomTable = ({
                             </table>
 
                             <div className="d-sm-flex text-center justify-content-between align-items-center mt-3">
-                                <div className="dataTables_info">
+                                <div className="dataTables_info" style={{ color: darkMode ? 'white' : '' }}>
                                     Total de registros: {total}
                                 </div>
                                 <div
@@ -247,7 +251,7 @@ const CustomTable = ({
                                         <i className="fa fa-angle-double-left" aria-hidden="true"></i>
                                         Anterior
                                     </button>
-                                    <span className="p-1 custom-horizontal-scrollbar scrollbar-primary" style={{ maxWidth: '54%', display: 'flex', overflowX: 'auto' }}>
+                                    <span className="p-1 custom-horizontal-scrollbar scrollbar-primary" style={{ maxWidth: '54%', display: 'flex', overflowX: 'auto', background: darkMode ? 'transparent' : '' }}>
                                         {Array.from(Array(pages).keys()).map((number, i) => (
                                             <div
                                                 key={i}

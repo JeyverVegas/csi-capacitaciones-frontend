@@ -10,18 +10,20 @@ import UserAccountInfo from "../UserAccountInfo";
 import sun from "../../images/sun.png";
 import moon from "../../images/moon.png";
 import SystemInfo from "../../util/SystemInfo";
+import { Modal } from "react-bootstrap";
+import InstructionsModal from "../InstructionsModal";
 
 const Header = ({ onNote }) => {
 
-    const { changeBackground } = useTheme();
+    const { changeBackground, darkMode, setDarkMode } = useTheme();
 
     const location = useLocation();
 
     const [searchParams] = useSearchParams();
 
-    const [darkMode, setDarkMode] = useState(false);
-
     const [nameForUpdate, setNameForUpdate] = useState('');
+
+    const [showInstructionsModal, setShowInstructionsModal] = useState(false);
 
     useEffect(() => {
         const dark = localStorage.getItem(`${SystemInfo?.systemCode}-DARKMODE`) === 'true' ? true : false;
@@ -51,7 +53,7 @@ const Header = ({ onNote }) => {
     }, [darkMode]);
 
     return (
-        <div className="header" style={{ paddingLeft: 0 }}>
+        <div className="header" style={{ paddingLeft: 0, background: darkMode ? '#171622' : '' }}>
             <div className="header-content">
                 <nav className="navbar navbar-expand">
                     <div className="collapse navbar-collapse justify-content-between">
@@ -67,17 +69,12 @@ const Header = ({ onNote }) => {
                         </div>
                         <ul className="navbar-nav header-right main-notification" style={{ alignItems: "center" }}>
                             <li className="nav-item" style={{ margin: '0 10px' }}>
-                                <div className="input-group search-area">
-                                    <input type="text" className="form-control" placeholder="Buscar" />
-                                    <span className="input-group-text">
-                                        <Link to={"#"}>
-                                            <i className="flaticon-381-search-2"></i>
-                                        </Link>
-                                    </span>
-                                </div>
+                                <button className="text-primary btn" onClick={() => setShowInstructionsModal(true)}>
+                                    Instrucciones del sistema
+                                </button>
                             </li>
                             <NotificationsComponent />
-                            <div style={{ margin: '0 30px', display: 'flex', alignItems: 'center' }}>
+                            {/* <div style={{ margin: '0 30px', display: 'flex', alignItems: 'center' }}>
                                 {
                                     !darkMode ?
                                         <img className="d-none d-sm-block" style={{ maxWidth: '40px', marginRight: 10 }} src={sun} alt="" />
@@ -91,12 +88,16 @@ const Header = ({ onNote }) => {
                                         :
                                         null
                                 }
-                            </div>
+                            </div> */}
                             <UserAccountInfo />
                         </ul>
                     </div>
                 </nav>
             </div>
+            <InstructionsModal
+                show={showInstructionsModal}
+                onClose={() => setShowInstructionsModal(false)}
+            />
         </div>
     );
 };

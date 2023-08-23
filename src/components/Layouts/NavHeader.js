@@ -6,12 +6,12 @@ import SystemInfo from "../../util/SystemInfo";
 
 
 const NavHeader = () => {
-    const { navigationHader, openMenuToggle, menuToggle, background } = useTheme();
+    const { navigationHader, openMenuToggle, menuToggle, background, darkMode } = useTheme();
 
     return (
-        <div className="nav-header" style={{ zIndex: 4 }}>
+        <div className="nav-header" style={{ zIndex: 4, background: darkMode ? '#171622' : '' }}>
             <Link to="/dashboard" className="brand-logo">
-                {background.value === "dark" || navigationHader !== "color_1" ?
+                {darkMode ?
                     <img src={SystemInfo?.logoBlanco} style={{ maxWidth: '60%' }} alt="" />
                     :
                     <img src={SystemInfo?.logo} style={{ maxWidth: '60%' }} alt="" />

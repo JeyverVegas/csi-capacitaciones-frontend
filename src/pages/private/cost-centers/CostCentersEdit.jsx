@@ -8,6 +8,7 @@ import CostCenterPlansHistory from "../../../components/CostCenter/CostCenterPla
 import AddUfResponsiblesModal from "../../../components/CostCenter/AddUfResponsiblesModal";
 import { Image } from "react-bootstrap";
 import StaffForm from "../../../components/CostCenter/StaffForm";
+import AddGeneralResponsibleModal from "../../../components/CostCenter/AddGeneralResponsibleModal";
 
 
 const CostCentersEdit = () => {
@@ -30,6 +31,7 @@ const CostCentersEdit = () => {
 
     const [showUfResponsiblesModal, setShowUfResponsiblesModal] = useState(false);
 
+    const [showModalForGeneralResponsible, setShowModalForGeneralResponsible] = useState(false);
 
     const { setLoading, setCustomAlert } = useFeedBack();
 
@@ -66,6 +68,20 @@ const CostCentersEdit = () => {
             getUfResponsibles();
         }
     }
+
+    const handleCloseGeneralResponsibleModal = (e) => {
+        setShowModalForGeneralResponsible(false);
+        if (e) {
+            setData(oldData => {
+                return {
+                    ...oldData,
+                    generalResponsible: e
+                }
+            })
+        }
+    }
+
+
 
     const handleRemoveUfResponsible = async (responsibleId) => {
         try {
@@ -124,7 +140,38 @@ const CostCentersEdit = () => {
                         </ul>
                     </div>
                 </div>
+
                 <div className="col-md-6">
+                    <div className="card p-4">
+                        <h3>Responsable general</h3>
+                        <small>Persona encargada de aprobar la planificación del centro de costo.</small>
+                        {
+                            data?.generalResponsible ?
+                                <div className="text-center">
+                                    <Image style={{ height: 150, width: 150 }} src={data?.generalResponsible} roundedCircle />
+                                    <br />
+                                    <br />
+                                    <h3>
+                                        {data?.generalResponsible?.name}
+                                    </h3>
+                                    <h4>
+                                        {data?.generalResponsible?.documentNumber}
+                                    </h4>
+                                    <button className="btn btn-primary" onClick={(e) => setShowModalForGeneralResponsible(true)}>
+                                        Cambiar Responsable
+                                    </button>
+                                </div>
+                                :
+                                <div className="text-center" style={{ marginTop: 'auto', marginBottom: 'auto' }}>
+                                    <h1>Aun no se ha asignado un responsable.</h1>
+                                    <button className="btn btn-primary" onClick={(e) => setShowModalForGeneralResponsible(true)}>
+                                        Assignar Responsable
+                                    </button>
+                                </div>
+                        }
+                    </div>
+                </div>
+                <div className="col-md-12">
                     <CostCenterPlansHistory
                         costCenterId={id}
                     />
@@ -192,7 +239,6 @@ const CostCentersEdit = () => {
                         </ul>
                     </div>
                 </div>
-
                 <div className="col-md-6">
                     <div className="card p-3">
                         <div className="d-flex align-items-center justify-content-between">
@@ -206,6 +252,16 @@ const CostCentersEdit = () => {
                     </div>
                 </div>
             </div>
+
+
+
+            <AddGeneralResponsibleModal
+                costCenterId={id}
+                responsibleId={data?.generalResponsible?.id}
+                show={showModalForGeneralResponsible}
+                onClose={handleCloseGeneralResponsibleModal}
+            />
+
             <AddUfResponsiblesModal
                 costCenterId={id}
                 show={showUfResponsiblesModal}

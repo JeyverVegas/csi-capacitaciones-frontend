@@ -5,7 +5,7 @@ import useDeepCompareEffect from './useDeepCompareEffect';
 const usePaginatedResourceWithAppend = (url, { options, params, ...axiosConfig } = { params: {} }) => {
     const [page, setPage] = useState(1);
 
-    const [filters, setFilters] = useState({ ...params });
+    const [filters, setFilters] = useState({});
 
     const [localResults, setLocalResults] = useState([]);
 
@@ -66,6 +66,7 @@ const usePaginatedResourceWithAppend = (url, { options, params, ...axiosConfig }
         filters,
         setFilters,
         total,
+        getResources,
     }
 }
 
