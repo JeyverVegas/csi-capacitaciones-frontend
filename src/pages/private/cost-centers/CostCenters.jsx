@@ -19,7 +19,8 @@ const CostCenters = () => {
 
     const [filters, setFilters] = useState({
         page: 1,
-        name: ''
+        name: '',
+        search: ''
     });
 
     const [selectedValues, setSelectedValues] = useState([]);
@@ -97,6 +98,16 @@ const CostCenters = () => {
         }
     }
 
+    const handleChangeFilters = (e) => {
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                [e.target.name]: e.target.value,
+                page: 1
+            }
+        });
+    }
+
     const handleDeleteSelected = () => {
         deleteRecord({ url: `${entity.url}/multiple`, data: { ids: selectedValues } }).then((data) => {
             setCustomAlert({
@@ -126,6 +137,20 @@ const CostCenters = () => {
                         </Link>
                     </>
                 }
+            </div>
+            <br />
+            <div className="card p-4">
+                <label htmlFor="" className="text-primary">
+                    Buscar Por:
+                </label>
+                <input
+                    type="text"
+                    className="form-control"
+                    value={filters?.search}
+                    name="search"
+                    onChange={handleChangeFilters}
+                    placeholder="Id, Nombre, Responsable General..."
+                />
             </div>
             <br />
             <CustomTable

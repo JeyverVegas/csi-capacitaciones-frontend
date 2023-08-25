@@ -4,12 +4,22 @@ import { TbCalendarStats } from "react-icons/tb";
 import swal from "sweetalert";
 import DateFormatter from "../DateFormatter";
 import { dateFine } from "../../util/Utilities";
+import { AiFillExclamationCircle } from "react-icons/ai";
+import clsx from "clsx";
 
 const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear, pathForUpdatePlanAccount }) => {
 
+    const [hasError, setHasError] = useState(false);
+
     const [currentPlanAccount, setCurrentPlanAccount] = useState(null);
 
-    const [{ data: updatePlanAccountData, loading: loadingUpdatePlanAccount }, updatePlanAccount] = useAxios({ url: `${pathForUpdatePlanAccount}/${planAccount?.id}`, method: 'PUT' }, { useCache: false, manual: true });
+    const [{ data: updatePlanAccountData, loading: loadingUpdatePlanAccount, error }, updatePlanAccount] = useAxios({ url: `${pathForUpdatePlanAccount}/${planAccount?.id}`, method: 'PUT' }, { useCache: false, manual: true });
+
+    useEffect(() => {
+        if (error) {
+            setHasError(true);
+        }
+    }, [error])
 
     useEffect(() => {
         if (planAccount) {
@@ -18,31 +28,29 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear, p
     }, [planAccount])
 
     const handleChange = async (e) => {
+        setHasError(false);
+        try {
+            if (!forYear) {
+                setCurrentPlanAccount((oldValues) => {
+                    return {
+                        ...oldValues,
+                        [e.target.name]: e.target.value
+                    }
+                });
 
-        if (!currentPlanAccount?.userCanUpdate) return alert('No tienes permisos para editar esta cuenta.');
-
-        if (currentPlanAccount?.userCanUpdate && !forYear) {
-            setCurrentPlanAccount((oldValues) => {
-                return {
-                    ...oldValues,
-                    [e.target.name]: e.target.value
-                }
-            });
-
-            updatePlanAccount({
-                data: {
-                    amount: Number(e.target.value),
-                    applyForAllMonths: 'no'
-                }
-            });
+                updatePlanAccount({
+                    data: {
+                        amount: Number(e.target.value),
+                        applyForAllMonths: 'no'
+                    }
+                });
+            }
+        } catch (error) {
         }
     }
 
     const handleApply = () => {
-
-        if (!currentPlanAccount?.userCanUpdate) return alert('No tienes permisos para editar esta cuenta.');
-
-        if (currentPlanAccount?.userCanUpdate && !forYear) {
+        if (!forYear) {
             swal({
                 title: "¿Estas Seguro(a)?",
                 text: "Esto sobreescribira los valores de los demas meses.",
@@ -85,14 +93,16 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear, p
                 <div className="d-flex align-items-center">
                     <input
                         type="number"
-                        className="form-control"
+                        className={clsx(["form-control"], {
+                            'border border-danger': hasError
+                        })}
                         name="amount"
                         placeholder="Por favor ingrese el monto..."
                         value={forYear ? currentPlanAccount?.total : currentPlanAccount?.amount || ''}
                         onChange={handleChange}
                         step=".01"
-                        readOnly={!currentPlanAccount?.userCanUpdate && forYear}
-                        disabled={!currentPlanAccount?.userCanUpdate && forYear}
+                        readOnly={forYear}
+                        disabled={forYear}
                     />
                     {
                         loadingUpdatePlanAccount &&
@@ -101,8 +111,16 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear, p
                             <div className="double-bounce2 bg-primary"></div>
                         </div>
                     }
+
                     {
-                        currentPlanAccount?.userCanUpdate && !forYear ?
+                        !loadingUpdatePlanAccount && hasError ?
+                            <AiFillExclamationCircle className="text-danger" style={{ marginLeft: 10, fontSize: 15 }} />
+                            :
+                            null
+                    }
+
+                    {
+                        !forYear ?
                             <button onClick={handleApply} title="Aplicar valor a todos los meses" style={{ marginLeft: 10 }} className="btn btn-outline-primary btn-xs">
                                 <TbCalendarStats />
                             </button>

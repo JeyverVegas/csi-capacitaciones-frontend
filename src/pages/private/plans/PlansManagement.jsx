@@ -76,7 +76,7 @@ const PlansManagement = () => {
                             <b>Fecha de inicio:</b> <DateFormatter value={dateFine(planResponse?.data?.planningProcess?.start)} dateFormat="dd/MM/yyyy" />
                         </p>
                         <p>
-                            <b>Fecha de culmino:</b> <DateFormatter value={dateFine(planResponse?.data?.planningProcess?.end)} dateFormat="dd/MM/yyyy" />
+                            <b>Fecha de finalización:</b> <DateFormatter value={dateFine(planResponse?.data?.planningProcess?.end)} dateFormat="dd/MM/yyyy" />
                         </p>
                         <p>
                             <b>Estatus del proceso:</b> <span className={clsx({

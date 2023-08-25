@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 const InstructionsModal = ({ show, onClose }) => {
 
-    const [{ data: instructionsData, loading: loadingInstructions }, getInstructions] = useAxios({ url: `/instructions` }, { useCache: false });
+    const [{ data: instructionsData, loading: loadingInstructions }, getInstructions] = useAxios({ url: `/instructions` }, { manual: true, useCache: false });
 
     useEffect(() => {
         if (show) getInstructions();

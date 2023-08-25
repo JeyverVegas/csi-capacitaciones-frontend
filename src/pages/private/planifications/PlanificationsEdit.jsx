@@ -309,7 +309,7 @@ const PlanificationsEdit = () => {
                                 </div>
                             </div>
                         </div>
-                        <ul>
+                        <ul className="container" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
                             {
                                 plans?.map((plan, i) => {
                                     return (
