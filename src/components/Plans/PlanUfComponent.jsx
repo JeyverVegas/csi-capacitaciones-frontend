@@ -80,7 +80,7 @@ const PlanUfComponent = ({ uf, month, userCanUpdate, pathForUfAccounts }) => {
                 </div>
                 <input
                     type="text"
-                    value={currentUf?.amount}
+                    value={!userCanUpdate || !uf?.ufId ? Number(currentUf?.amount).toLocaleString() : currentUf?.amount}
                     className="form-control"
                     readOnly={!userCanUpdate || !uf?.ufId}
                     onChange={handleChange}
@@ -97,7 +97,7 @@ const PlanUfComponent = ({ uf, month, userCanUpdate, pathForUfAccounts }) => {
                     <input
                         readOnly
                         type="text"
-                        value={currentUf?.rate}
+                        value={Number(currentUf?.rate).toLocaleString()}
                         className="form-control"
                     />
                 </div>
@@ -110,7 +110,7 @@ const PlanUfComponent = ({ uf, month, userCanUpdate, pathForUfAccounts }) => {
                 <input
                     readOnly
                     type="text"
-                    value={currentUf?.total}
+                    value={Number(currentUf?.total).toLocaleString()}
                     className="form-control"
                 />
             </div>

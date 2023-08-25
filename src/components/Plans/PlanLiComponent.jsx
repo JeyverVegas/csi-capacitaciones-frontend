@@ -65,7 +65,7 @@ const PlanLiComponent = ({ plan: defaultPlan, planDetailPath }) => {
                     Ingresos:
                 </small>
                 <br />
-                <p className="m-0">{plan?.totalIncome}$</p>
+                <p className="m-0">{Number(plan?.totalIncome).toLocaleString()}$</p>
             </div>
             <div>
                 <small className="text-danger">
@@ -73,7 +73,7 @@ const PlanLiComponent = ({ plan: defaultPlan, planDetailPath }) => {
                     Gastos:
                 </small>
                 <br />
-                <p className="m-0">{plan?.totalSpent}$</p>
+                <p className="m-0">{Number(plan?.totalSpent).toLocaleString()}$</p>
             </div>
             <div>
                 <small className={clsx({
@@ -96,7 +96,7 @@ const PlanLiComponent = ({ plan: defaultPlan, planDetailPath }) => {
                     Total:
                 </small>
                 <br />
-                <p className="m-0">{plan?.total}$</p>
+                <p className="m-0">{Number(plan?.total).toLocaleString()}$</p>
             </div>
             <div>
                 <small>

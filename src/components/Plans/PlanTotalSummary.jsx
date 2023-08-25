@@ -34,21 +34,21 @@ const PlanTotalSummary = ({ month, pathForUfAccounts, pathForSummary }) => {
                     <label className="text-primary">
                         Ingresos:
                     </label>
-                    <input type="text" value={data?.totals?.totalIncome} className="form-control" />
+                    <input type="text" value={Number(data?.totals?.totalIncome).toLocaleString()} className="form-control" />
                 </div>
 
                 <div className="form-group mb-3">
                     <label className="text-primary">
                         Gastos:
                     </label>
-                    <input type="text" value={data?.totals?.totalSpent} className="form-control" />
+                    <input type="text" value={Number(data?.totals?.totalSpent).toLocaleString()} className="form-control" />
                 </div>
 
                 <div className="form-group mb-3">
                     <label className="text-primary">
                         Resultado:
                     </label>
-                    <input type="text" value={data?.totals?.total} className="form-control" />
+                    <input type="text" value={Number(data?.totals?.total).toLocaleString()} className="form-control" />
                 </div>
             </div>
             <div className="col-md-12 text-center">

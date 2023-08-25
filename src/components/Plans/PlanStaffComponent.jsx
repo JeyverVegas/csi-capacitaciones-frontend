@@ -66,7 +66,7 @@ const PlanStaffComponent = ({ staff, userCanUpdate }) => {
                 <label className="text-primary">
                     Asignada:
                 </label>
-                <input readOnly type="text" value={currentStaff?.assigned} className="form-control" />
+                <input readOnly type="text" value={Number(currentStaff?.assigned).toLocaleString()} className="form-control" />
             </div>
 
             <div className="form-group mb-3">
@@ -85,7 +85,8 @@ const PlanStaffComponent = ({ staff, userCanUpdate }) => {
                 </div>
                 <input
                     type="number"
-                    value={currentStaff?.total}
+                    placeholder="solicitada"
+                    value={!userCanUpdate || !staff?.staffId ? Number(currentStaff?.total).toLocaleString() : currentStaff?.total}
                     className="form-control"
                     name="total"
                     readOnly={!userCanUpdate || !staff?.staffId}

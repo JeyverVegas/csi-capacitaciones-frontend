@@ -235,7 +235,7 @@ const PlansManagement = () => {
                     planId={id}
                     additionalFilters={filters}
                     forYear
-                    pathForAccounts="/plans/accounts"
+                    pathForAccounts={`/plans/${id}/accounts`}
                     pathForSummary={`plans/${id}/summary`}
                 />
             </TabPanel>

@@ -527,6 +527,7 @@ const PlanificationsEdit = () => {
                                                     month={monthNumber}
                                                     pathForAccounts={`/${entity?.url}/${id}/accounts`}
                                                     pathForSummary={`/${entity?.url}/${id}/summary`}
+                                                    disabledAccounts
                                                 />
                                             </TabPanel>
                                         )
@@ -538,6 +539,7 @@ const PlanificationsEdit = () => {
                                         additionalFilters={filters}
                                         pathForAccounts={`/${entity?.url}/${id}/accounts`}
                                         pathForSummary={`/${entity?.url}/${id}/summary`}
+                                        disabledAccounts
                                     />
                                 </TabPanel>
                             </>

@@ -15,7 +15,8 @@ const PlanAccountsForm = ({
     forYear,
     additionalFilters,
     pathForSummary,
-    pathForUpdatePlanAccount
+    pathForUpdatePlanAccount,
+    disabledAccounts
 }) => {
 
     const [filters, setFilters] = useState({
@@ -89,6 +90,7 @@ const PlanAccountsForm = ({
                                                 planAccountClassificationName={planAccount?.accountClassification?.name || planAccount?.accountClassificationName || '--'}
                                                 planAccount={planAccount}
                                                 key={i}
+                                                disabledAccounts={disabledAccounts}
                                             />
                                         )
                                     })

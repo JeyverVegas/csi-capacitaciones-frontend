@@ -7,7 +7,7 @@ import { dateFine } from "../../util/Utilities";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import clsx from "clsx";
 
-const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear, pathForUpdatePlanAccount }) => {
+const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear, pathForUpdatePlanAccount, disabledAccounts }) => {
 
     const [hasError, setHasError] = useState(false);
 
@@ -92,17 +92,17 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear, p
                 }
                 <div className="d-flex align-items-center">
                     <input
-                        type="number"
+                        type={forYear || disabledAccounts ? "text" : "number"}
                         className={clsx(["form-control"], {
                             'border border-danger': hasError
                         })}
                         name="amount"
                         placeholder="Por favor ingrese el monto..."
-                        value={forYear ? currentPlanAccount?.total : currentPlanAccount?.amount || ''}
+                        value={forYear || disabledAccounts ? Number(currentPlanAccount?.total).toLocaleString() : currentPlanAccount?.amount || ''}
                         onChange={handleChange}
                         step=".01"
-                        readOnly={forYear}
-                        disabled={forYear}
+                        readOnly={forYear || disabledAccounts}
+                        disabled={forYear || disabledAccounts}
                     />
                     {
                         loadingUpdatePlanAccount &&
@@ -120,7 +120,7 @@ const PlanAccountRow = ({ planAccount, planAccountClassificationName, forYear, p
                     }
 
                     {
-                        !forYear ?
+                        !forYear && !disabledAccounts ?
                             <button onClick={handleApply} title="Aplicar valor a todos los meses" style={{ marginLeft: 10 }} className="btn btn-outline-primary btn-xs">
                                 <TbCalendarStats />
                             </button>
