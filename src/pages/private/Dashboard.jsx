@@ -71,7 +71,7 @@ const Dashboard = () => {
                 <div className="col-md-6">
                     <div className="card p-4">
                         <h3 className="my-3">
-                            Historial de planificaciones donde has participado:
+                            Historial de planificaciones
                         </h3>
                         <ul>
                             {

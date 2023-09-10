@@ -1,35 +1,67 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import usePaginatedResourceWithAppend from "../../../hooks/usePaginatedResourceWithAppend";
 import UpdateYearCostCenterStaffComponent from "../../../components/CostCenter/UpdateYearCostCenterStaffComponent";
+import useCostCenters from "../../../hooks/useCostCenters";
 
 const AddCostCentersStaff = () => {
 
-    const { loadMore, results: costCenters, loading: loadingCostCenters, canLoadMore, reset, filters, setFilters } = usePaginatedResourceWithAppend(`/cost-centers`, {
-        params: {
-            name: ''
-        }
-    });
+    const [filters, setFilters] = useState({
+        name: '',
+        code: '',
+        page: 1
+    })
+
+    const [{ costCenters, total, numberOfPages, size, error, loading }, getCostCenters] = useCostCenters({ params: { ...filters }, options: { useCache: false } });
+
+    const [currentCostCenters, setCurrentCostCenters] = useState([]);
+
+    useEffect(() => {
+        setCurrentCostCenters((old) => {
+            return [...old, ...costCenters];
+        })
+    }, [costCenters])
+
+    const handleChange = (e) => {
+        setFilters((oldFilters) => {
+            return {
+                ...oldFilters,
+                [e.target.name]: e.target.value,
+                page: 1
+            }
+        });
+        setCurrentCostCenters([]);
+    }
 
     return (
         <div>
             <div className="card p-4">
-                <input
-                    type="text"
-                    className="form-control"
-                    value={filters?.name}
-                    onChange={(e) => setFilters((old) => {
-                        return {
-                            ...old,
-                            name: e.target.value
-                        }
-                    })}
-                    placeholder="Buscar por nombre"
-                />
+                <div className="row">
+                    <div className="col-md-6">
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="name"
+                            value={filters?.name}
+                            onChange={handleChange}
+                            placeholder="Nombre"
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="code"
+                            value={filters?.code}
+                            onChange={handleChange}
+                            placeholder="Codigo"
+                        />
+                    </div>
+                </div>
                 <br />
                 <br />
                 <ul className="custom-scrollbar scrollbar-primary px-2" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
                     {
-                        costCenters?.length === 0 && !loadingCostCenters ?
+                        currentCostCenters?.length === 0 && !loading ?
                             <li className="text-center">
                                 No se encontrarón resultados.
                             </li>
@@ -37,7 +69,7 @@ const AddCostCentersStaff = () => {
                             null
                     }
                     {
-                        costCenters?.map((costCenter, i) => {
+                        currentCostCenters?.map((costCenter, i) => {
                             return (
                                 <UpdateYearCostCenterStaffComponent
                                     key={i}
@@ -47,7 +79,7 @@ const AddCostCentersStaff = () => {
                         })
                     }
                     {
-                        loadingCostCenters &&
+                        loading &&
                         <li>
                             <div className="spinner">
                                 <div className="double-bounce1 bg-primary"></div>
@@ -57,10 +89,10 @@ const AddCostCentersStaff = () => {
                     }
 
                     {
-                        canLoadMore && !loadingCostCenters ?
+                        filters?.page < numberOfPages && !loading ?
                             <li className="text-center">
                                 <button
-                                    onClick={(e) => loadMore()}
+                                    onClick={() => setFilters(oldFilters => ({ ...oldFilters, page: oldFilters?.page + 1 }))}
                                     type="button"
                                     className="btn btn-primary btn-xs"
                                 >

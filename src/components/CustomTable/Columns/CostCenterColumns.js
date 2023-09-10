@@ -14,6 +14,10 @@ const CostCenterColumns = [
         accessor: 'id'
     },
     {
+        Label: () => 'Codigo',
+        Component: ({ value }) => value?.code || '--'
+    },
+    {
         Label: () => 'Nombre',
         accessor: 'name'
     },

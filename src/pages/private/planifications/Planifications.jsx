@@ -133,7 +133,7 @@ const Planifications = () => {
                 title={entity?.name}
                 entity={entity.url}
                 updatePath={entity.frontendUrl}
-                updateOptionString={'Editar'}
+                updateOptionString={'Detalles'}
                 onDelete={handleDelete}
                 selectedValues={selectedValues}
                 pages={numberOfPages}

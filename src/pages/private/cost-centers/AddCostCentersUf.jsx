@@ -8,7 +8,8 @@ const AddCostCentersUf = () => {
     const [filters, setFilters] = useState({
         planningProcessId: '',
         page: '',
-        costCenterName: ''
+        costCenterName: '',
+        costCenterCode: ''
     });
 
     const [currentPlans, setCurrentPlans] = useState([]);
@@ -33,7 +34,6 @@ const AddCostCentersUf = () => {
     }, [filters])
 
     const handleChange = (e) => {
-        if (!e.target.value) return;
 
         setFilters((oldFilters) => {
             return {
@@ -41,11 +41,12 @@ const AddCostCentersUf = () => {
                 [e.target.name]: e.target.value,
                 page: 1
             }
-        })
+        });
+
+        setCurrentPlans([]);
     }
 
     const handleLoadMore = () => {
-        setCurrentPlans([]);
         setFilters((oldFilters) => {
             return {
                 ...oldFilters,
@@ -57,14 +58,24 @@ const AddCostCentersUf = () => {
     return (
         <div>
             <div className="card p-4">
+                <h3>Cargar ingresos UF</h3>
                 <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-12 mb-3">
                         <label htmlFor="">Seleccione el año de planificación</label>
                         <select
                             name="planningProcessId"
                             className="form-control"
                             value={filters?.planningProcessId}
-                            onChange={handleChange}
+                            onChange={(e) => {
+                                if (!e.target.value) return alert('Debe seleccionar un año.');
+                                setFilters((oldFilters) => {
+                                    return {
+                                        ...oldFilters,
+                                        [e.target.name]: e.target.value,
+                                        page: 1
+                                    }
+                                })
+                            }}
                         >
                             <option value="">Seleccione una opcion</option>
                             {
@@ -78,14 +89,25 @@ const AddCostCentersUf = () => {
                             }
                         </select>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 mb-3">
                         <label htmlFor="">Nombre del centro de costo</label>
                         <input
                             type="text"
                             placeholder="Nombre"
-                            value={filters?.name}
+                            value={filters?.costCenterName}
                             onChange={handleChange}
-                            name="name"
+                            name="costCenterName"
+                            className="form-control"
+                        />
+                    </div>
+                    <div className="col-md-6 mb-3">
+                        <label htmlFor="">Codigo</label>
+                        <input
+                            type="text"
+                            placeholder="Codigo"
+                            value={filters?.costCenterCode}
+                            onChange={handleChange}
+                            name="costCenterCode"
                             className="form-control"
                         />
                     </div>

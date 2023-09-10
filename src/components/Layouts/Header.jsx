@@ -70,7 +70,7 @@ const Header = ({ onNote }) => {
                         <ul className="navbar-nav header-right main-notification" style={{ alignItems: "center" }}>
                             <li className="nav-item" style={{ margin: '0 10px' }}>
                                 <button className="text-primary btn" onClick={() => setShowInstructionsModal(true)}>
-                                    Instrucciones del sistema
+                                    Consideraciones
                                 </button>
                             </li>
                             <NotificationsComponent />

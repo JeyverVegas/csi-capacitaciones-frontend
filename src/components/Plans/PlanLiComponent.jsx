@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { AiFillCloseCircle, AiFillEye, AiFillCheckCircle, AiFillFileExcel, AiOutlineMinus, AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
+import { AiFillCloseCircle, AiFillEye, AiFillCheckCircle, AiFillFileExcel, AiOutlineMinus, AiOutlineArrowUp, AiOutlineArrowDown, AiFillEdit } from "react-icons/ai";
 import DateFormatter from "../DateFormatter";
 import { dateFine } from "../../util/Utilities";
 import { Link } from "react-router-dom";
@@ -65,7 +65,7 @@ const PlanLiComponent = ({ plan: defaultPlan, planDetailPath }) => {
                     Ingresos:
                 </small>
                 <br />
-                <p className="m-0">{Number(plan?.totalIncome).toLocaleString()}$</p>
+                <p className="m-0">$ {Number(plan?.totalIncome).toLocaleString()}</p>
             </div>
             <div>
                 <small className="text-danger">
@@ -73,7 +73,7 @@ const PlanLiComponent = ({ plan: defaultPlan, planDetailPath }) => {
                     Gastos:
                 </small>
                 <br />
-                <p className="m-0">{Number(plan?.totalSpent).toLocaleString()}$</p>
+                <p className="m-0">$ {Number(plan?.totalSpent).toLocaleString()}</p>
             </div>
             <div>
                 <small className={clsx({
@@ -96,7 +96,7 @@ const PlanLiComponent = ({ plan: defaultPlan, planDetailPath }) => {
                     Total:
                 </small>
                 <br />
-                <p className="m-0">{Number(plan?.total).toLocaleString()}$</p>
+                <p className="m-0">$ {Number(plan?.total).toLocaleString()}</p>
             </div>
             <div>
                 <small>
@@ -119,7 +119,9 @@ const PlanLiComponent = ({ plan: defaultPlan, planDetailPath }) => {
             {
                 plan?.closedAt ?
                     <span className="btn btn-success btn-xs">
-                        Cerrado el: <span style={{ textTransform: 'capitalize' }}><DateFormatter value={`${plan?.closedAt} 12:00:00`} dateFormat="dd LLLL" /></span>
+                        Cerrado el: <span style={{ textTransform: 'capitalize' }}>
+                            <DateFormatter value={dateFine(plan?.closedAt)} dateFormat="dd LLLL" />
+                        </span>
                     </span>
                     :
                     <span className="btn btn-danger btn-xs">
@@ -129,7 +131,9 @@ const PlanLiComponent = ({ plan: defaultPlan, planDetailPath }) => {
             {
                 plan?.approvedAt ?
                     <span className="btn btn-success btn-xs">
-                        Revisado el: <span style={{ textTransform: 'capitalize' }}><DateFormatter value={dateFine(plan?.approvedAt)} dateFormat="dd LLLL" /></span>
+                        Revisado el: <span style={{ textTransform: 'capitalize' }}>
+                            <DateFormatter value={dateFine(plan?.approvedAt)} dateFormat="dd LLLL" />
+                        </span>
                     </span>
                     :
                     <span className="btn btn-danger btn-xs">
@@ -144,8 +148,8 @@ const PlanLiComponent = ({ plan: defaultPlan, planDetailPath }) => {
 
                     <Dropdown.Menu>
                         <Dropdown.Item href={planDetailPath}>
-                            <AiFillEye style={{ fontSize: 15 }} />
-                            Detalles
+                            <AiFillEdit style={{ fontSize: 15 }} />
+                            Ingresar Datos
                         </Dropdown.Item>
                         <Dropdown.Item as='button' onClick={handleExport} title="Exportar a excel" disabled={loadingExport}>
                             {

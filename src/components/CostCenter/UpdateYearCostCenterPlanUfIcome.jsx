@@ -19,10 +19,13 @@ const UpdateYearCostCenterPlanUfIcome = ({ plan }) => {
     return (
         <li className="mb-3">
             <div className="d-flex align-tems-center">
-                <div className="col-6">
+                <div className="col-2">
+                    {plan?.costCenter?.code}
+                </div>
+                <div className="col-2">
                     {plan?.costCenter?.name}
                 </div>
-                <div className="col-6">
+                <div className="col-8">
                     <div className="d-flex align-items-center">
                         <div style={{ width: '100%' }}>
                             <input

@@ -37,7 +37,7 @@ const Instructions = () => {
         <div>
             <div className="card p-4">
                 <h3>
-                    Instrucciones del sistema
+                    Consideraciones
                 </h3>
                 <CKEditor
                     editor={Editor}

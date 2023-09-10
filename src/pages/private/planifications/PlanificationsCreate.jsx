@@ -33,6 +33,8 @@ const PlanificationsCreate = () => {
 
     const [{ data: createData, loading }, createRecord] = useAxios({ url: `/${entity?.url}`, method: 'POST' }, { manual: true, useCache: false });
 
+    const [showForm, setShowForm] = useState(false);
+
     useEffect(() => {
 
         var year = new Date().getFullYear();
@@ -53,7 +55,8 @@ const PlanificationsCreate = () => {
     useEffect(() => {
         setLoading({
             show: loading,
-            message: 'Iniciando el proceso de planificación'
+            message: 'Iniciando el proceso de planificación',
+            secondMessage: 'Este proceso tardará alrededor de 1hr. Por favor no cierre la pestaña ni apague la pc.'
         })
     }, [loading]);
 
@@ -111,116 +114,153 @@ const PlanificationsCreate = () => {
                 }
             </div>
 
-            <form className="card p-4" onSubmit={handleSubmit}>
-                <div className="row">
-                    <div className="col-md-6 mb-3">
-                        <div className="form-group">
-                            <label className="text-primary">
-                                Inicia <small className="text-danger">*</small>
-                            </label>
-                            <input
-                                type="date"
-                                className="form-control"
-                                onChange={handleChange}
-                                name="start"
-                                value={data?.start}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <div className="form-group">
-                            <label className="text-primary">
-                                Finaliza <small className="text-danger">*</small>
-                            </label>
-                            <input
-                                type="date"
-                                className="form-control"
-                                onChange={handleChange}
-                                name="end"
-                                value={data?.end}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-md-12 mb-3">
-                        <div className="form-group">
-                            <label className="text-primary">
-                                Planificación del año: <small className="text-danger">*</small>
-                            </label>
-                            <select
-                                value={data?.forYear}
-                                className="form-control"
-                                name="forYear"
-                                onChange={handleChange}
-                            >
-                                <option value="" disabled>Seleccione una opción</option>
-                                {
-                                    yearsOptions.map((year, i) => {
-                                        return (
-                                            <option value={year} key={i}>{year}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-md-12 mb-2">
-                        <h3>
-                            Valores UF por mes
-                        </h3>
-                        <small>Por favor ingrese el valor uf para cada mes.</small>
-                    </div>
-                    {
-                        data?.ufs?.map((monthNumber, i) => {
-                            return (
-                                <div className="col-md-3 mb-3" key={i}>
-                                    <div className="form-group">
-                                        <label className="text-primary" style={{ textTransform: 'capitalize' }}>
-                                            <DateFormatter value={`2023-${i + 1}-15 12:00:00`} dateFormat='LLLL' />
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={monthNumber}
-                                            onChange={(e) => handleUpdateUfValue(e, i)}
-                                            step=".01"
-                                        />
-                                    </div>
+            {
+                showForm ?
+                    <form className="card p-4 animate__animated animate__fadeInUp" onSubmit={handleSubmit}>
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <div className="form-group">
+                                    <label className="text-primary">
+                                        Inicia <small className="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        type="date"
+                                        className="form-control"
+                                        onChange={handleChange}
+                                        name="start"
+                                        value={data?.start}
+                                    />
                                 </div>
-                            )
-                        })
-                    }
-                </div>
-                <br />
-                <div>
-                    <div>
-                        <h5 className="text-danger">
-                            Importante:
-                        </h5>
-                        <p>Antes de continuar asegurece de haber realizado las siguientes configuraciones:</p>
-                        <ul className="text-start">
-                            <li>
-                                - Haber <b>asignado la dotación por contrato</b> correspondiente a cada centro de costo. <a target="_blank" href="/centros-de-costos/agregar-dotacion" title="agregar dotación a los centros de costo"><BiLinkExternal /></a>
-                            </li>
-                            <li>
-                                - Haber asignado los <b>responsables de ingresar los valores a las cuentas</b> de cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="Asignar responsables"><BiLinkExternal /></a>
-                            </li>
-                            <li>
-                                - Haber asignado un <b>responsable general</b> a cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="asignar responsable general"><BiLinkExternal /></a>
-                            </li>
-                            <li>
-                                - Haber asignado los <b>responsables de agregar los montos uf</b> a cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="Agregar responsables de montos uf"><BiLinkExternal /></a>
-                            </li>
-                            <li>
-                                - Haber actualizado las <b>instrucciones del sistema</b>. <a target="_blank" href="/instrucciones" title="Editar instrucciones"><BiLinkExternal /></a>
-                            </li>
-                        </ul>
+                            </div>
+                            <div className="col-md-6 mb-3">
+                                <div className="form-group">
+                                    <label className="text-primary">
+                                        Finaliza <small className="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        type="date"
+                                        className="form-control"
+                                        onChange={handleChange}
+                                        name="end"
+                                        value={data?.end}
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-md-12 mb-3">
+                                <div className="form-group">
+                                    <label className="text-primary">
+                                        Planificación del año: <small className="text-danger">*</small>
+                                    </label>
+                                    <select
+                                        value={data?.forYear}
+                                        className="form-control"
+                                        name="forYear"
+                                        onChange={handleChange}
+                                    >
+                                        <option value="" disabled>Seleccione una opción</option>
+                                        {
+                                            yearsOptions.map((year, i) => {
+                                                return (
+                                                    <option value={year} key={i}>{year}</option>
+                                                )
+                                            })
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="col-md-12 mb-2">
+                                <h3>
+                                    Valores UF por mes
+                                </h3>
+                                <small>Por favor ingrese el valor uf para cada mes.</small>
+                            </div>
+                            {
+                                data?.ufs?.map((monthNumber, i) => {
+                                    return (
+                                        <div className="col-md-3 mb-3" key={i}>
+                                            <div className="form-group">
+                                                <label className="text-primary" style={{ textTransform: 'capitalize' }}>
+                                                    <DateFormatter value={`2023-${i + 1}-15 12:00:00`} dateFormat='LLLL' />
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    value={monthNumber}
+                                                    onChange={(e) => handleUpdateUfValue(e, i)}
+                                                    step=".01"
+                                                />
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                        <br />
+                        <div>
+                            <div>
+                                <h5 className="text-danger">
+                                    Importante:
+                                </h5>
+                                <p>Antes de continuar asegurece de haber realizado las siguientes configuraciones:</p>
+                                <ul className="text-start">
+                                    <li>
+                                        - Haber <b>asignado la dotación por contrato</b> correspondiente a cada centro de costo. <a target="_blank" href="/centros-de-costos/agregar-dotacion" title="agregar dotación a los centros de costo"><BiLinkExternal /></a>
+                                    </li>
+                                    <li>
+                                        - Haber asignado los <b>responsables de ingresar los valores a las cuentas</b> de cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="Asignar responsables"><BiLinkExternal /></a>
+                                    </li>
+                                    <li>
+                                        - Haber asignado un <b>responsable general</b> a cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="asignar responsable general"><BiLinkExternal /></a>
+                                    </li>
+                                    <li>
+                                        - Haber asignado los <b>responsables de agregar los montos uf</b> a cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="Agregar responsables de montos uf"><BiLinkExternal /></a>
+                                    </li>
+                                    <li>
+                                        - Haber actualizado las <b>Consideraciones</b>. <a target="_blank" href="/instrucciones" title="Editar Consideraciones"><BiLinkExternal /></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <br /><br />
+                            <button className="btn btn-block btn-primary">
+                                Iniciar
+                            </button>
+                        </div>
+                    </form>
+                    :
+                    <div className="card p-4">
+                        <div className="text-center">
+                            <h2 className="text-danger text-center animate__animated animate__pulse animate__infinite">
+                                Importante:
+                            </h2>
+                            <p>Antes de continuar asegurece de haber realizado las siguientes configuraciones:</p>
+                            <br />
+                            <ul className="text-start">
+                                <li>
+                                    1) Haber <b>asignado la dotación por contrato</b> correspondiente a cada centro de costo. <a target="_blank" href="/centros-de-costos/agregar-dotacion" title="agregar dotación a los centros de costo"><BiLinkExternal /></a>
+                                </li>
+                                <li>
+                                    2) Haber asignado los <b>responsables de ingresar los valores a las cuentas</b> de cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="Asignar responsables"><BiLinkExternal /></a>
+                                </li>
+                                <li>
+                                    3) Haber asignado un <b>responsable general</b> a cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="asignar responsable general"><BiLinkExternal /></a>
+                                </li>
+                                <li>
+                                    4) Haber asignado los <b>responsables de agregar los montos uf</b> a cada centro de costo. <a target="_blank" href="/centros-de-costos/listar" title="Agregar responsables de montos uf"><BiLinkExternal /></a>
+                                </li>
+                                <li>
+                                    5) Haber actualizado las <b>Consideraciones</b>. <a target="_blank" href="/instrucciones" title="Editar Consideraciones"><BiLinkExternal /></a>
+                                </li>
+                            </ul>
+                            <br />
+                            <p>
+                                Si ya ha realizado todas las configuraciones pertinentes pulse el siguiente botón para continuar con la creación.
+                            </p>
+                            <button className="btn btn-primary" onClick={() => setShowForm(true)}>
+                                Continuar
+                            </button>
+                        </div>
                     </div>
-                    <br /><br />
-                    <button className="btn btn-block btn-primary">
-                        Iniciar
-                    </button>
-                </div>
-            </form>
+            }
         </div >
     )
 }

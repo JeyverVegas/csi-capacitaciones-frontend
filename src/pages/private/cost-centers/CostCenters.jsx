@@ -5,6 +5,7 @@ import CustomTable from "../../../components/CustomTable/CustomTable";
 import { useFeedBack } from "../../../context/FeedBackContext";
 import useAxios from "../../../hooks/useAxios";
 import useCostCenters from "../../../hooks/useCostCenters";
+import { Dropdown } from "react-bootstrap";
 
 const CostCenters = () => {
 
@@ -126,15 +127,41 @@ const CostCenters = () => {
             <div className="my-4 justify-content-end d-flex">
                 {
                     <>
-                        <Link to={`${entity.frontendUrl}/cargar-remuneraciones`} className="btn btn-primary mx-3">
-                            Cargar remuneraciones de un plan
-                        </Link>
-                        <Link to={`${entity.frontendUrl}/agregar-ingresos-us`} className="btn btn-primary mx-3">
-                            Cargar ingresos uf de un plan
-                        </Link>
-                        <Link to={`${entity.frontendUrl}/agregar-dotacion`} className="btn btn-primary mx-3">
-                            Asignar dotación a los {entity.name}
-                        </Link>
+                        <Dropdown className="mx-2">
+                            <Dropdown.Toggle variant="success">
+                                Importar
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item href={`${entity.frontendUrl}/importar-responsables`}>
+                                    Importar responsables
+                                </Dropdown.Item>
+                                <Dropdown.Item href={`${entity.frontendUrl}/importar-montos-de-cuentas`}>
+                                    Importar montos de cuentas
+                                </Dropdown.Item>
+                                <Dropdown.Item href={`${entity.frontendUrl}/importar-dotacion`}>
+                                    Importar dotación por contrato
+                                </Dropdown.Item>
+                                <Dropdown.Item href={`${entity.frontendUrl}/importar-ingresos-uf`}>
+                                    Importar ingresos UF
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <Dropdown>
+                            <Dropdown.Toggle variant="primary">
+                                Opciones
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item href={`${entity.frontendUrl}/cargar-remuneraciones`}>
+                                    Ingresar montos por clasificación de cuentas
+                                </Dropdown.Item>
+                                <Dropdown.Item href={`${entity.frontendUrl}/agregar-ingresos-us`}>
+                                    Ingresar montos UF
+                                </Dropdown.Item>
+                                <Dropdown.Item href={`${entity.frontendUrl}/agregar-dotacion`}>
+                                    Asignar dotación a los {entity.name}
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </>
                 }
             </div>

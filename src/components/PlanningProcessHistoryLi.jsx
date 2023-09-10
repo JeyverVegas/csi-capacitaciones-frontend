@@ -33,13 +33,13 @@ const PlanningProcessHistoryLi = ({ planningProcess }) => {
     }
 
     return (
-        <li>
+        <li className="mb-3">
             <div className="d-flex align-items-center justify-content-between">
                 <div>
                     {planningProcess?.for_year}
                 </div>
                 <div>
-                    <button disabled={loadingPlanKpiExport} onClick={handleExportKpi} className="btn btn-success btn-xs">
+                    <button disabled={loadingPlanKpiExport} onClick={handleExportKpi} className="btn btn-success btn-xs mx-2">
                         {
                             loadingPlanKpiExport ?
                                 'Cargando...'
@@ -47,7 +47,7 @@ const PlanningProcessHistoryLi = ({ planningProcess }) => {
                                 'Descargar KPI'
                         }
                     </button>
-                    <button disabled={loadingPlanExport} onClick={handleExport} className="btn btn-success btn-xs">
+                    <button disabled={loadingPlanExport} onClick={handleExport} className="btn btn-success btn-xs mx-2">
                         {
                             loadingPlanExport ?
                                 'Cargando...'

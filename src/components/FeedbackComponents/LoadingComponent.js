@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const LoadingComponent = ({ message, show }) => {
+const LoadingComponent = ({ message, show, secondMessage = '' }) => {
 
     const [dots, setDots] = useState("");
 
@@ -26,7 +26,13 @@ const LoadingComponent = ({ message, show }) => {
                         <div className="double-bounce1 bg-primary"></div>
                         <div className="double-bounce2 bg-primary"></div>
                     </div>
-                    <h1 className="text-muted text-2xl">{message}{dots}</h1>
+                    <h1 className="text-center text-muted text-2xl">{message}{dots}</h1>
+                    {
+                        secondMessage &&
+                        <p className="text-center" style={{ fontSize: '16px' }}>
+                            {secondMessage}
+                        </p>
+                    }
                 </div>
             </div>
             :

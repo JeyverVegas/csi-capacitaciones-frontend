@@ -102,8 +102,11 @@ const AddCostCentersAccountValues = () => {
                                 {
                                     accounts?.data?.map((account, i) => {
                                         return (
-                                            <th key={i}>
-                                                {account?.code}
+                                            <th key={i} title={`${account?.code} - ${account?.name}`}>
+                                                <p style={{ margin: 0 }}>
+                                                    {account?.code}
+                                                </p>
+                                                <small style={{ fontSize: 10 }}>{account?.name}</small>
                                             </th>
                                         )
                                     })

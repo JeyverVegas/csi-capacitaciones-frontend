@@ -13,7 +13,7 @@ const InstructionsModal = ({ show, onClose }) => {
     return (
         <Modal size="xl" show={show} onHide={onClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Instrucciones del sistema</Modal.Title>
+                <Modal.Title>Consideraciones</Modal.Title>
             </Modal.Header>
             <Modal.Body >
                 <div dangerouslySetInnerHTML={{ __html: instructionsData?.data?.description }}>

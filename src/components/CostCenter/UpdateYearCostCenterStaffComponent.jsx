@@ -19,10 +19,16 @@ const UpdateYearCostCenterStaffComponent = ({ costCenter }) => {
     return (
         <li className="mb-3">
             <div className="d-flex align-tems-center">
-                <div className="col-6">
+                <div className="col-1">
+                    {costCenter?.id}
+                </div>
+                <div className="col-2">
+                    {costCenter?.code}
+                </div>
+                <div className="col-2">
                     {costCenter?.name}
                 </div>
-                <div className="col-6">
+                <div className="col-7">
                     <div className="d-flex align-items-center">
                         <div style={{ width: '100%' }}>
                             <input

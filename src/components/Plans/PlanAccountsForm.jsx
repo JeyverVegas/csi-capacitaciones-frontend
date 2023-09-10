@@ -76,7 +76,7 @@ const PlanAccountsForm = ({
                                 <tr>
                                     <th>Estructura Costos CSI</th>
                                     <th>Lib. Mayor</th>
-                                    <th>Nombre</th>
+                                    <th>Nombre Cuenta</th>
                                     <th>Monto $</th>
                                 </tr>
                             </thead>

@@ -18,6 +18,10 @@ const AccountClassificationColumns = [
         accessor: 'name'
     },
     {
+        Label: () => 'Nro. de cuentas',
+        accessor: 'accountsCount'
+    },
+    {
         Label: () => 'Fecha de Creación',
         Component: ({ value }) => <DateFormatter value={dateFine(value?.createdAt)} dateFormat="dd/MM/yyyy hh:mm:ss" />
     },

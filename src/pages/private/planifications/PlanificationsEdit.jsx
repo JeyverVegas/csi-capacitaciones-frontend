@@ -64,7 +64,7 @@ const PlanificationsEdit = () => {
 
     const [{ loading: loadingPlanKpiExport }, exportPlanKpiExcel] = useAxios({ url: `/${entity?.url}/${id}/kpi/excel`, responseType: 'blob' }, { useCache: false, manual: true })
 
-    const { loadMore, results: plans, loading: loadingPlans, canLoadMore } = usePaginatedResourceWithAppend(`/planning-processes/${id}/plans`);
+    const { loadMore, results: plans, loading: loadingPlans, canLoadMore, filters: planFilters, setFilters: setPlanFilters } = usePaginatedResourceWithAppend(`/planning-processes/${id}/plans`);
 
     const { loadMore: loadMoreAccountsClassifications, results: accountClassifications } = usePaginatedResourceWithAppend(`/account-classifications`);
 
@@ -170,6 +170,16 @@ const PlanificationsEdit = () => {
         } catch (error) {
             alert('Ha ocurrido un error al descargar el excel.');
         }
+    }
+
+    const handleChangePLansFilter = (e) => {
+        setPlanFilters((oldValue) => {
+            return {
+                ...oldValue,
+                [e.target.name]: e.target.value,
+                page: 1
+            }
+        });
     }
 
     return (
@@ -309,37 +319,61 @@ const PlanificationsEdit = () => {
                                 </div>
                             </div>
                         </div>
-                        <ul className="container" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+                        <input
+                            type="text"
+                            className="form-control mb-4"
+                            placeholder="Buscar..."
+                            value={planFilters?.costCenterName}
+                            name="costCenterName"
+                            onChange={handleChangePLansFilter}
+                        />
+                        <ul className="container custom-scrollbar scrollbar-primary" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
                             {
                                 plans?.map((plan, i) => {
                                     return (
                                         <li className="row" key={i}>
-                                            <div className="col-4">
+                                            <div className="col-3">
                                                 <Link to={`/centros-de-costos/plans/${plan?.id}`}>
                                                     <b>
                                                         {plan?.costCenter?.name}
                                                     </b>
                                                 </Link>
                                             </div>
-                                            <div className="col-4">
+                                            <div className="col-3">
                                                 <p className={clsx({
                                                     'text-success': plan?.totalSpent < plan?.totalIncome,
                                                     'text-danger': plan?.totalSpent > plan?.totalIncome,
                                                 })}>
                                                     <b>Resultado:</b>
                                                     <br />
-                                                    {plan?.total}$
+                                                    $ {Number(plan?.total).toLocaleString()}
                                                 </p>
                                             </div>
-                                            <div className="col-4 text-end">
+                                            <div className="col-3 text-end">
                                                 {
                                                     plan?.closedAt ?
                                                         <span className="btn btn-success btn-xs">
-                                                            Finalizado el: <span style={{ textTransform: 'capitalize' }}><DateFormatter value={`${plan?.closedAt} 12:00:00`} dateFormat="dd LLLL" /></span>
+                                                            Finalizado el: <span style={{ textTransform: 'capitalize' }}>
+                                                                <DateFormatter value={`${plan?.closedAt} 12:00:00`} dateFormat="dd LLLL" />
+                                                            </span>
                                                         </span>
                                                         :
                                                         <span className="btn btn-danger btn-xs">
                                                             Gestionando
+                                                        </span>
+                                                }
+                                            </div>
+                                            <div className="col-3 text-end">
+                                                {
+                                                    plan?.approvedAt ?
+                                                        <span className="btn btn-success btn-xs">
+                                                            Revisado el: <span style={{ textTransform: 'capitalize' }}>
+                                                                <DateFormatter value={`${dateFine(plan?.approvedAt)}`} dateFormat="dd LLLL" />
+                                                            </span>
+                                                        </span>
+                                                        :
+                                                        <span className="btn btn-danger btn-xs">
+                                                            No ha sido revisado
                                                         </span>
                                                 }
                                             </div>
@@ -564,7 +598,7 @@ const PlanificationsEdit = () => {
                                         data: accountClassificationsAmount?.data?.map(value => value?.amount ? Number(value?.amount) : 0)
                                     }
                                 ]}
-                                labelEndAdornment="$"
+                                labelStartAdornment="$"
                             />
                         }
                     </div>

@@ -98,7 +98,7 @@ const CostCentersEdit = () => {
         <div>
             <div className="my-4 align-items-center justify-content-between d-flex">
                 <h3>
-                    {dataToUpdate?.data?.name}
+                    {dataToUpdate?.data?.code} - {dataToUpdate?.data?.name}
                 </h3>
                 {
                     <>
@@ -147,8 +147,8 @@ const CostCentersEdit = () => {
                         <small>Persona encargada de aprobar la planificación del centro de costo.</small>
                         {
                             data?.generalResponsible ?
-                                <div className="text-center">
-                                    <Image style={{ height: 150, width: 150 }} src={data?.generalResponsible} roundedCircle />
+                                <div className="text-center mt-5">
+                                    <Image style={{ height: 150, width: 150 }} src={data?.generalResponsible?.imagePath} roundedCircle />
                                     <br />
                                     <br />
                                     <h3>
@@ -165,7 +165,7 @@ const CostCentersEdit = () => {
                                 <div className="text-center" style={{ marginTop: 'auto', marginBottom: 'auto' }}>
                                     <h1>Aun no se ha asignado un responsable.</h1>
                                     <button className="btn btn-primary" onClick={(e) => setShowModalForGeneralResponsible(true)}>
-                                        Assignar Responsable
+                                        Asignar Responsable
                                     </button>
                                 </div>
                         }

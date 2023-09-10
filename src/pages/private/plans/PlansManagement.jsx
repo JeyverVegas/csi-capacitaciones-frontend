@@ -9,6 +9,7 @@ import PlanAccountsForm from "../../../components/Plans/PlanAccountsForm";
 import Toggle from "react-toggle";
 import { BsFilter } from "react-icons/bs";
 import useAccountClassifications from "../../../hooks/useAccountClassifications";
+import { Image } from "react-bootstrap";
 
 const PlansManagement = () => {
 
@@ -67,7 +68,7 @@ const PlansManagement = () => {
                 <div className="d-flex align-items-center justify-content-between">
                     <div>
                         <h1>
-                            {planResponse?.data?.costCenter?.name}
+                            {planResponse?.data?.costCenter?.code} - {planResponse?.data?.costCenter?.name}
                         </h1>
                         <p>
                             Planificación de gastos del año {planResponse?.data?.planningProcess?.forYear}
@@ -86,6 +87,15 @@ const PlansManagement = () => {
                         </p>
                     </div>
                     <div>
+                        {
+                            planResponse?.data?.costCenter?.generalResponsible &&
+                            <div>
+                                <h3>Responsable General</h3>
+                                <p className="d-flex align-items-center">
+                                    <Image style={{ height: 35, width: 35 }} src={planResponse?.data?.costCenter?.generalResponsible?.imagePath} roundedCircle /> {planResponse?.data?.costCenter?.generalResponsible?.name}
+                                </p>
+                            </div>
+                        }
                         {
                             !planResponse?.data?.planningProcess?.isClose ?
                                 <div>

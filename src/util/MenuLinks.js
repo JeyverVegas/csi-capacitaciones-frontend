@@ -24,6 +24,14 @@ import AddCostCentersStaff from "../pages/private/cost-centers/AddCostCentersSta
 import AddCostCentersUf from "../pages/private/cost-centers/AddCostCentersUf";
 import Instructions from "../pages/private/instructions/Instructions";
 import AddCostCentersAccountValues from "../pages/private/cost-centers/AddCostCentersAccountValues";
+import ImportCostCentersResponsibles from "../pages/private/cost-centers/ImportCostCentersResponsibles";
+
+import ImportCostCentersAccountValues from "../pages/private/cost-centers/ImportCostCentersAccountValues";
+import ImportCostCentersStaff from "../pages/private/cost-centers/ImportCostCentersStaff";
+import ImportCostCentersUf from "../pages/private/cost-centers/ImportCostCentersUf";
+
+
+
 
 const createLink = (
     title,
@@ -40,45 +48,51 @@ const { systemCode } = SystemInfo;
 export const mainPermissions = {
     accountClassifications: [`${systemCode}-view-account-classifications`, `${systemCode}-create-account-classifications`, `${systemCode}-update-account-classifications`, `${systemCode}-delete-account-classifications`],
     accounts: [`${systemCode}-view-accounts`, `${systemCode}-create-accounts`, `${systemCode}-update-accounts`, `${systemCode}-delete-accounts`],
-    costCenters: [`${systemCode}-view-cost-centers`, `${systemCode}-update-cost-centers`, `${systemCode}-delete-cost-centers`],
+    costCenters: [`${systemCode}-view-cost-centers`, `${systemCode}-update-cost-centers`],
     planningProcesses: [`${systemCode}-view-planning-processes`, `${systemCode}-create-planning-processes`, `${systemCode}-update-planning-processes`, `${systemCode}-delete-planning-processes`],
-    plans: [`${systemCode}-view-planning-processes`],
-    planAccounts: [`${systemCode}-view-plan-accounts`, `${systemCode}-create-plan-accounts`, `${systemCode}-update-plan-accounts`, `${systemCode}-delete-plan-accounts`]
+    instructions: [`${systemCode}-view-instructions`, `${systemCode}-update-instructions`]
 }
 
 const MenuLinks = [
     createLink('Resumen', null, <Dashboard />, AiOutlineDashboard, '/dashboard', null),
+    createLink('Detalle del plan', true, <PlansDetail />, null, '/centros-de-costos/plans/:id', null),
+    createLink('Gestionar Plan', true, <PlansManagement />, null, '/gestionar-centro-de-costo/:costCenterId/plans/:id', null),
 
     createLink('Gestionar centro de costo', true, <CostCenterManagement />, AiOutlineDashboard, '/gestionar-centro-de-costo/:id', null),
 
-    createLink('Clasificación de cuentas', null, null, MdAccountTree, '/clasificacion-de-cuentas', null, [
-        createLink('Listar', null, <AccountClassifications />, null, '/clasificacion-de-cuentas/listar', null),
-        createLink('Editar', true, <AccountClassificationsEdit />, null, '/clasificacion-de-cuentas/:id', null),
-        createLink('Crear', null, <AccountClassificationsCreate />, null, '/clasificacion-de-cuentas/crear', null),
+    createLink('Clasificación de cuentas', null, null, MdAccountTree, '/clasificacion-de-cuentas', mainPermissions?.accountClassifications, [
+        createLink('Listar', null, <AccountClassifications />, null, '/clasificacion-de-cuentas/listar', mainPermissions?.accountClassifications?.[0]),
+        createLink('Editar', true, <AccountClassificationsEdit />, null, '/clasificacion-de-cuentas/:id', mainPermissions?.accountClassifications?.[0]),
+        createLink('Crear', null, <AccountClassificationsCreate />, null, '/clasificacion-de-cuentas/crear', mainPermissions?.accountClassifications?.[1]),
     ]),
 
-    createLink('Planificación de gastos', null, null, MdAccountTree, '/planificacion-de-gastos', null, [
-        createLink('Listar', null, <Planifications />, null, '/planificacion-de-gastos/listar', null),
-        createLink('Editar', true, <PlanificationsEdit />, null, '/planificacion-de-gastos/:id', null),
-        createLink('Iniciar Proceso', null, <PlanificationsCreate />, null, '/planificacion-de-gastos/crear', null),
+    createLink('Planificación de gastos', null, null, MdAccountTree, '/planificacion-de-gastos', mainPermissions?.planningProcesses, [
+        createLink('Listar', null, <Planifications />, null, '/planificacion-de-gastos/listar', mainPermissions?.planningProcesses?.[0]),
+        createLink('Editar', true, <PlanificationsEdit />, null, '/planificacion-de-gastos/:id', mainPermissions?.planningProcesses?.[0]),
+        createLink('Iniciar Proceso', null, <PlanificationsCreate />, null, '/planificacion-de-gastos/crear', mainPermissions?.planningProcesses?.[1]),
     ]),
 
-    createLink('Cuentas', null, null, FaWpforms, '/cuentas', null, [
-        createLink('Listar', null, <Accounts />, null, '/cuentas/listar', null),
-        createLink('Editar', true, <AccountsEdit />, null, '/cuentas/:id', null),
-        createLink('Crear', null, <AccountsCreate />, null, '/cuentas/crear', null),
+    createLink('Cuentas', null, null, FaWpforms, '/cuentas', mainPermissions?.accounts, [
+        createLink('Listar', null, <Accounts />, null, '/cuentas/listar', mainPermissions?.accounts?.[0]),
+        createLink('Editar', true, <AccountsEdit />, null, '/cuentas/:id', mainPermissions?.accounts?.[0]),
+        createLink('Crear', null, <AccountsCreate />, null, '/cuentas/crear', mainPermissions?.accounts?.[1]),
     ]),
 
-    createLink('Centros de costos', null, <CostCenters />, FaWpforms, '/centros-de-costos/listar', null),
-    createLink('Agregar ingresos uf', true, <AddCostCentersUf />, null, '/centros-de-costos/agregar-ingresos-us', null),
-    createLink('Agregar dotación', true, <AddCostCentersStaff />, null, '/centros-de-costos/agregar-dotacion', null),
-    createLink('Cargar Remuneraciones', true, <AddCostCentersAccountValues />, null, '/centros-de-costos/cargar-remuneraciones', null),
-    createLink('Editar', true, <CostCentersEdit />, null, '/centros-de-costos/:id', null),
+    createLink('Centros de costos', null, <CostCenters />, FaWpforms, '/centros-de-costos/listar', mainPermissions?.costCenters?.[0]),
+    createLink('Agregar ingresos uf', true, <AddCostCentersUf />, null, '/centros-de-costos/agregar-ingresos-us', mainPermissions?.costCenters?.[1]),
+    createLink('Agregar dotación', true, <AddCostCentersStaff />, null, '/centros-de-costos/agregar-dotacion', mainPermissions?.costCenters?.[1]),
+    createLink('Cargar Remuneraciones', true, <AddCostCentersAccountValues />, null, '/centros-de-costos/cargar-remuneraciones', mainPermissions?.costCenters?.[1]),
 
 
-    createLink('Instrucciones del sistema', null, <Instructions />, FaWpforms, '/instrucciones', null),
-    createLink('Detalle del plan', true, <PlansDetail />, null, '/centros-de-costos/plans/:id', null),
-    createLink('Gestionar Plan', true, <PlansManagement />, null, '/gestionar-centro-de-costo/:costCenterId/plans/:id', null),
+    createLink('Importar responsables', true, <ImportCostCentersResponsibles />, null, '/centros-de-costos/importar-responsables', mainPermissions?.costCenters?.[1]),
+    createLink('Importar montos de cuentas', true, <ImportCostCentersAccountValues />, null, '/centros-de-costos/importar-montos-de-cuentas', mainPermissions?.costCenters?.[1]),
+    createLink('Importar dotación por contrato', true, <ImportCostCentersStaff />, null, '/centros-de-costos/importar-dotacion', mainPermissions?.costCenters?.[1]),
+    createLink('Importar ingresos UF', true, <ImportCostCentersUf />, null, '/centros-de-costos/importar-ingresos-uf', mainPermissions?.costCenters?.[1]),
+
+    createLink('Editar', true, <CostCentersEdit />, null, '/centros-de-costos/:id', mainPermissions?.costCenters?.[1]),
+
+
+    createLink('Consideraciones', null, <Instructions />, FaWpforms, '/instrucciones', mainPermissions?.instructions?.[0]),
 ];
 
 export default MenuLinks;

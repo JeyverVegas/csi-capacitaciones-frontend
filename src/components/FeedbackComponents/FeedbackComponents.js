@@ -55,7 +55,7 @@ const FeedbackComponents = () => {
 
     return (
         <>
-            <LoadingComponent message={customLoading?.message} show={customLoading?.show} />
+            <LoadingComponent message={customLoading?.message} secondMessage={customLoading?.secondMessage} show={customLoading?.show} />
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
