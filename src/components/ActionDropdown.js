@@ -48,13 +48,8 @@ const ActionDropdown = ({
             </Dropdown.Toggle>
             <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
                 {
-                    showDelete ?
-                        UserHavePermission(`${SystemInfo?.systemCode}-delete-${entity}`) ?
-                            <Dropdown.Item onClick={handleDelete}>Eliminar</Dropdown.Item>
-                            :
-                            null
-                        :
-                        null
+                    showDelete &&
+                    <Dropdown.Item onClick={handleDelete}>Eliminar</Dropdown.Item>
                 }
                 {
                     !withOutUpdate ?

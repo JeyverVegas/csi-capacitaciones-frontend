@@ -19,3 +19,8 @@ export const generateArray = (numberOfItems = 1, startAt = 0) => {
 
     return arrayOfNumbers.slice(startAt);
 }
+
+export const addDays = (date, days) => {
+    date.setDate(date.getDate() + days);
+    return date;
+  }

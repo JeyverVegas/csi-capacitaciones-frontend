@@ -2,7 +2,7 @@ import { Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import SystemInfo from "../util/SystemInfo";
-import profile from '../images/profile.png';
+import profile from '../assets/images/profile.png';
 import { useTheme } from "../context/ThemeContext";
 
 const UserAccountInfo = () => {

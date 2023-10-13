@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import SystemInfo from "../../util/SystemInfo";
-import loginbg from "../../images/pic1.png";
+import loginbg from "../../assets/images/pic1.png";
 import useAxios from "../../hooks/useAxios";
 import { useFeedBack } from "../../context/FeedBackContext";
 import { useAuth } from "../../context/AuthContext";

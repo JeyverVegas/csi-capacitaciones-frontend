@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { Link, useLocation, useSearchParams } from "react-router-dom";
-import Toggle from "react-toggle";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 
 import NotificationsComponent from "../Notifications/NotificationsComponent";
 import UserAccountInfo from "../UserAccountInfo";
 
-import sun from "../../images/sun.png";
-import moon from "../../images/moon.png";
 import SystemInfo from "../../util/SystemInfo";
-import { Modal } from "react-bootstrap";
-import InstructionsModal from "../InstructionsModal";
 
 const Header = ({ onNote }) => {
 
@@ -22,8 +17,6 @@ const Header = ({ onNote }) => {
     const [searchParams] = useSearchParams();
 
     const [nameForUpdate, setNameForUpdate] = useState('');
-
-    const [showInstructionsModal, setShowInstructionsModal] = useState(false);
 
     useEffect(() => {
         const dark = localStorage.getItem(`${SystemInfo?.systemCode}-DARKMODE`) === 'true' ? true : false;
@@ -68,11 +61,6 @@ const Header = ({ onNote }) => {
                             </div>
                         </div>
                         <ul className="navbar-nav header-right main-notification" style={{ alignItems: "center" }}>
-                            <li className="nav-item" style={{ margin: '0 10px' }}>
-                                <button className="text-primary btn" onClick={() => setShowInstructionsModal(true)}>
-                                    Consideraciones
-                                </button>
-                            </li>
                             <NotificationsComponent />
                             {/* <div style={{ margin: '0 30px', display: 'flex', alignItems: 'center' }}>
                                 {
@@ -94,10 +82,6 @@ const Header = ({ onNote }) => {
                     </div>
                 </nav>
             </div>
-            <InstructionsModal
-                show={showInstructionsModal}
-                onClose={() => setShowInstructionsModal(false)}
-            />
         </div>
     );
 };
