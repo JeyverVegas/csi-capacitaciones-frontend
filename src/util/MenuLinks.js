@@ -6,6 +6,7 @@ import { MdAccountTree } from "react-icons/md";
 import Powerbis from "../pages/private/power-bis/Powerbis";
 import PowerbisCreate from "../pages/private/power-bis/PowerbisCreate";
 import PowerbisEdit from "../pages/private/power-bis/PowerbisEdit";
+import PowerBiDetail from "../pages/private/power-bis/PowerBiDetail";
 
 const createLink = (
     title,
@@ -31,6 +32,7 @@ const MenuLinks = [
         createLink('Listar', null, <Powerbis />, null, '/power-bi/listar', null),
         createLink('Editar', true, <PowerbisEdit />, null, '/power-bi/:id', null),
         createLink('Crear', null, <PowerbisCreate />, null, '/power-bi/crear', null),
+        createLink('Detalle', true, <PowerBiDetail />, null, '/powerbi/detalle/:id', null),
     ])
 ];
 

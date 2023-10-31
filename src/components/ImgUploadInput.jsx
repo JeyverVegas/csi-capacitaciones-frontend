@@ -5,9 +5,7 @@ import PropTypes from "prop-types";
 import clsx from "clsx";
 
 
-const ImgUploadInput = (options) => {
-
-  const { multiple, value, style, accept, icon, button, className, description, change, name, previewImage, deleteButton } = options;
+const ImgUploadInput = ({ multiple, value, style, accept, icon, button, className, description, change, name, previewImage, deleteButton, imageStyle }) => {
 
   const [files, setFiles] = useState([]);
 
@@ -82,7 +80,7 @@ const ImgUploadInput = (options) => {
         })}>
           {
             preview ?
-              <img className="w-100 h-100 position-absolute left-0 top-0" src={preview} alt="preview-image" />
+              <img style={{ width: '100%', height: '100%', position: 'absolute', left: 0, top: 0, ...imageStyle }} src={preview} alt="preview-image" />
               :
               <div className="text-center m-auto px-6">
                 <div className={clsx({

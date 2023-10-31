@@ -17,12 +17,24 @@ const PowerBiColumns = [
         accessor: 'id'
     },
     {
+        Label: () => 'Imagen',
+        Component: ({ value }) => <img src={value?.imagePath} style={{ width: 200, maxHeight: 150, borderRadius: 10 }} />
+    },
+    {
         Label: () => 'Titulo',
         Component: ({ value }) => value?.title || '--'
     },
     {
+        Label: () => 'Zona',
+        Component: ({ value }) => value?.zone?.name || '--'
+    },
+    {
         Label: () => 'URL',
         Component: ({ value }) => value?.url ? <a href={value?.url} target="_blank" title={value?.url}>{cutString(value?.url, 50, null, '...')}</a> : '--'
+    },
+    {
+        Label: () => 'Usuarios',
+        Component: ({ value }) => value?.userIds?.length || '--'
     },
     {
         Label: () => 'Fecha de Creación',

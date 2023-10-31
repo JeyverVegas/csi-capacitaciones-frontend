@@ -5062,9 +5062,6 @@ fieldset:disabled .btn {
 }
 
 .card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
   background-color: #fff;
@@ -32630,14 +32627,11 @@ button:focus {
 }
 
 .card {
-  margin-bottom: 1.875rem;
   background-color: #fff;
   transition: all .5s ease-in-out;
-  position: relative;
   border: 0rem solid transparent;
   border-radius: 1.375rem;
   box-shadow: 0rem 0.3125rem 0.3125rem 0rem rgba(82, 63, 105, 0.05);
-  height: calc(100% - 1.875rem);
 }
 
 @media only screen and (max-width: 35.9375rem) {
