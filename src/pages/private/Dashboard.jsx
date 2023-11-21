@@ -2,16 +2,23 @@ import { useEffect, useState } from "react";
 import useAxios from "../../hooks/useAxios";
 import DateFormatter from "../../components/DateFormatter";
 import { generateArray } from "../../util/Utilities";
+import AsyncSelect from 'react-select/async';
+import useZones from "../../hooks/useZones";
+import mapValues from "../../util/mapValues";
+import handleLoadSelectOptions from "../../util/handleLoadSelectOptions";
 
 
 
 const Dashboard = () => {
 
     const [filters, setFilters] = useState({
-        search: ''
+        search: '',
+        zoneId: ''
     });
 
     const [{ data, loading }, getDashboard] = useAxios({ url: `/dashboard`, params: filters }, { useCache: false });
+
+    const [{ zones, loading: zonesLoading }, getZones] = useZones({ params: { perPage: 50 } }, { useCache: false });
 
     const [currentPowerBis, setCurrentPowerBis] = useState([]);
 
@@ -22,6 +29,7 @@ const Dashboard = () => {
     }, [data])
 
     const handleChange = (e) => {
+        console.log(e);
         setCurrentPowerBis([]);
         setFilters((oldFilters) => {
             return {
@@ -34,25 +42,38 @@ const Dashboard = () => {
     return (
         <div className="px-3">
 
-            <div className="text-end">
-                <input
-                    value={filters?.search}
-                    placeholder="Buscar..."
-                    name="search"
-                    type="text"
-                    className="form-control"
-                    style={{ marginLeft: 'auto', width: "30%" }}
-                    onChange={handleChange}
-                />
-                <p className="text-primary">
+            <div className="row align-items-center justify-content-end">
+                <div className="col-md-3 form-group mb-3">
+                    <select value={filters?.zoneId} onChange={handleChange} name="zoneId" className="form-control">
+                        <option value="">Seleccione una opción...</option>
+                        {
+                            zones?.map((zone, i) => {
+                                return (
+                                    <option value={zone?.id} key={i}>{zone?.name}</option>
+                                )
+                            })
+                        }
+                    </select>
+                </div>
+                <div className="col-md-3 form-group mb-3">
+                    <input
+                        value={filters?.search}
+                        placeholder="Buscar..."
+                        name="search"
+                        type="text"
+                        className="form-control mb-0 border border-primary"
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="col-md-2 mb-3 text-end text-primary">
                     Resultados: {currentPowerBis?.length}
-                </p>
+                </div>
             </div>
 
             <div className="row">
                 {
                     currentPowerBis?.length === 0 && !loading ?
-                        <div className="col-md-12">
+                        <div className="col-md-12 mt-5">
                             <h3 className="text-center">
                                 No se encontrarón resultados.
                             </h3>
@@ -79,6 +100,12 @@ const Dashboard = () => {
                                         <small className="text-primary">
                                             {powerBi?.zone?.name}
                                         </small>
+                                        <div className="text-center mt-2">
+                                            <a href={`/powerbi/detalle/${powerBi?.id}`} className="btn btn-xs btn-block btn-primary">
+                                                Ver detalles
+                                            </a>
+                                        </div>
+
                                     </div>
                                 </div>
                             )
