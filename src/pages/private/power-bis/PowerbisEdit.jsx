@@ -12,6 +12,7 @@ import { Image } from "react-bootstrap";
 import profileImg from "../../../assets/images/profile.png";
 import { AiFillCheckCircle } from "react-icons/ai";
 import useCostCenters from "../../../hooks/useCostCenters";
+import useStatuses from "../../../hooks/useStatuses";
 
 
 const PowerbisEdit = () => {
@@ -30,7 +31,8 @@ const PowerbisEdit = () => {
     const [data, setData] = useState({
         title: '',
         url: '',
-        zone: ''
+        zone: '',
+        status: ''
     });
 
     const [filters, setFilters] = useState({
@@ -49,6 +51,8 @@ const PowerbisEdit = () => {
 
     const [{ zones, loading: zonesLoading }, getZones] = useZones({ params: { perPage: 50 } }, { useCache: false });
 
+    const [{ statuses, loading: statusesLoading }, getStatuses] = useStatuses({ params: { perPage: 50 } }, { useCache: false });
+
     const [{ users, total, numberOfPages, loading: loadingUsers }, getUsers] = useUsers({ params: { ...filters }, options: { useCache: false } });
 
     const [{ costCenters, loading: costCentersLoading }, getCostCenters] = useCostCenters({ params: { perPage: 50, orderBy: 'name ASC' } }, { useCache: false });
@@ -66,13 +70,14 @@ const PowerbisEdit = () => {
     useEffect(() => {
         if (dataToUpdate) {
 
-            const { createdAt, imagePath, zone, id, ...rest } = dataToUpdate?.data;
+            const { createdAt, imagePath, zone, status, id, ...rest } = dataToUpdate?.data;
 
             setData((oldData) => {
                 return {
                     ...oldData,
                     ...rest,
-                    zone: { label: zone?.name, value: zone?.id }
+                    zone: { label: zone?.name, value: zone?.id },
+                    status: { label: status?.name, value: status?.id }
                 }
             });
         }
@@ -160,6 +165,11 @@ const PowerbisEdit = () => {
             if (data[key]) {
                 if (key === 'zone' && data[key]?.value) {
                     formData.append('zoneId', data[key]?.value);
+                    return;
+                }
+
+                if (key === 'status' && data[key]?.value) {
+                    formData.append('statusId', data[key]?.value);
                     return;
                 }
 
@@ -255,6 +265,20 @@ const PowerbisEdit = () => {
                                 loadOptions={(e) => handleLoadSelectOptions(e, getZones)}
                                 placeholder='Escriba el nombre para buscar...'
                                 onChange={(e) => { handleChange({ target: { value: e, name: 'zone' } }) }}
+                            />
+                        </div>
+                        <div className="form-group mb-3">
+                            <label>Estado<span className="text-danger">*</span></label>
+                            <AsyncSelect
+                                isClearable
+                                onFocus={() => { getStatuses() }}
+                                value={data?.status}
+                                isLoading={statusesLoading}
+                                defaultOptions={mapValues(statuses)}
+                                name="status"
+                                loadOptions={(e) => handleLoadSelectOptions(e, getStatuses)}
+                                placeholder='Escriba el nombre para buscar...'
+                                onChange={(e) => { handleChange({ target: { value: e, name: 'status' } }) }}
                             />
                         </div>
                     </div>

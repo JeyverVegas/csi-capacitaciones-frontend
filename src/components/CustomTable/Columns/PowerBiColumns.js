@@ -37,6 +37,10 @@ const PowerBiColumns = [
         Component: ({ value }) => value?.userIds?.length || '--'
     },
     {
+        Label: () => 'Estado',
+        Component: ({ value }) => <p className={`btn btn-xs btn-${value?.status?.variantColor}`}>{value?.status?.name || '--'}</p>
+    },
+    {
         Label: () => 'Fecha de Creación',
         Component: ({ value }) => <DateFormatter value={dateFine(value?.createdAt)} dateFormat="dd/MM/yyyy hh:mm:ss" />
     },

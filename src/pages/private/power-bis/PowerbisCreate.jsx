@@ -12,6 +12,7 @@ import { AiFillCheckCircle } from "react-icons/ai";
 import useUsers from "../../../hooks/useUsers";
 import profileImg from "../../../assets/images/profile.png";
 import useCostCenters from "../../../hooks/useCostCenters";
+import useStatuses from "../../../hooks/useStatuses";
 
 
 
@@ -30,8 +31,9 @@ const PowerbisCreate = () => {
         title: '',
         url: '',
         zone: '',
+        status: '',
         image: '',
-        userIds: []
+        userIds: [],
     });
 
     const [filters, setFilters] = useState({
@@ -47,6 +49,8 @@ const PowerbisCreate = () => {
     const [{ data: createData, loading }, createRecord] = useAxios({ url: `/${entity?.url}`, method: 'POST' }, { manual: true, useCache: false });
 
     const [{ zones, loading: zonesLoading }, getZones] = useZones({ params: { perPage: 50 } }, { useCache: false });
+
+    const [{ statuses, loading: statusesLoading }, getStatuses] = useStatuses({ params: { perPage: 50 } }, { useCache: false });
 
     const [{ users, total, numberOfPages, loading: loadingUsers }, getUsers] = useUsers({ params: { ...filters }, options: { useCache: false } });
 
@@ -134,10 +138,18 @@ const PowerbisCreate = () => {
 
         const formData = new FormData();
 
+        console.log(data);
+
         Object.keys(data).map((key, i) => {
             if (data[key]) {
                 if (key === 'zone' && data[key]?.value) {
                     formData.append('zoneId', data[key]?.value);
+                    return;
+                }
+
+                if (key === 'status' && data[key]?.value) {
+
+                    formData.append('statusId', data[key]?.value);
                     return;
                 }
 
@@ -230,6 +242,20 @@ const PowerbisCreate = () => {
                                     loadOptions={(e) => handleLoadSelectOptions(e, getZones)}
                                     placeholder='Escriba el nombre para buscar...'
                                     onChange={(e) => { handleChange({ target: { value: e, name: 'zone' } }) }}
+                                />
+                            </div>
+                            <div className="form-group mb-3">
+                                <label>Estado<span className="text-danger">*</span></label>
+                                <AsyncSelect
+                                    isClearable
+                                    onFocus={() => { getStatuses() }}
+                                    value={data?.status}
+                                    isLoading={statusesLoading}
+                                    defaultOptions={mapValues(statuses)}
+                                    name="status"
+                                    loadOptions={(e) => handleLoadSelectOptions(e, getStatuses)}
+                                    placeholder='Escriba el nombre para buscar...'
+                                    onChange={(e) => { handleChange({ target: { value: e, name: 'status' } }) }}
                                 />
                             </div>
                         </div>

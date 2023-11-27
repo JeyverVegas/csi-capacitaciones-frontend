@@ -9,7 +9,7 @@ const PowerBiDetail = () => {
 
     const [title, setTitle] = useState("");
 
-    const [{ data: data, loading: loading }, getPowerBi] = useAxios({ url: `/power-bi/${id}` }, { useCache: false });
+    const [{ data: data, loading: loading }, getPowerBi] = useAxios({ url: `/power-bi/${id}/detail` }, { useCache: false });
 
     useEffect(() => {
 
