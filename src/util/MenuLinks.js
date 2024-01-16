@@ -28,10 +28,10 @@ export const mainPermissions = {
 const MenuLinks = [
     createLink('Dashboard', null, <Dashboard />, AiOutlineDashboard, '/dashboard', null),
 
-    createLink('Power Bi', null, null, MdAccountTree, '/power-bi', null, [
-        createLink('Listar', null, <Powerbis />, null, '/power-bi/listar', null),
-        createLink('Editar', true, <PowerbisEdit />, null, '/power-bi/:id', null),
-        createLink('Crear', null, <PowerbisCreate />, null, '/power-bi/crear', null),
+    createLink('Power Bi', null, null, MdAccountTree, '/power-bi', mainPermissions?.powerBi, [
+        createLink('Listar', null, <Powerbis />, null, '/power-bi/listar', mainPermissions?.powerBi?.[0]),
+        createLink('Editar', true, <PowerbisEdit />, null, '/power-bi/:id', mainPermissions?.powerBi?.[0]),
+        createLink('Crear', null, <PowerbisCreate />, null, '/power-bi/crear', mainPermissions?.powerBi?.[1]),
         createLink('Detalle', true, <PowerBiDetail />, null, '/powerbi/detalle/:id', null),
     ])
 ];

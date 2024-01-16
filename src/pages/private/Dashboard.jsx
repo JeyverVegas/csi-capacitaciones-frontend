@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import useAxios from "../../hooks/useAxios";
 import DateFormatter from "../../components/DateFormatter";
 import { generateArray } from "../../util/Utilities";
-import AsyncSelect from 'react-select/async';
 import useZones from "../../hooks/useZones";
-import mapValues from "../../util/mapValues";
-import handleLoadSelectOptions from "../../util/handleLoadSelectOptions";
+import PowerBiCard from "../../components/Powerbi/PowerBiCard";
+import { MdGridOn } from "react-icons/md";
+import { FaList } from "react-icons/fa";
+
+
+
 
 
 
@@ -15,6 +18,8 @@ const Dashboard = () => {
         search: '',
         zoneId: ''
     });
+
+    const [show, setShow] = useState('list');
 
     const [{ data, loading }, getDashboard] = useAxios({ url: `/dashboard`, params: filters }, { useCache: false });
 
@@ -65,93 +70,136 @@ const Dashboard = () => {
                         onChange={handleChange}
                     />
                 </div>
-                <div className="col-md-2 mb-3 text-end text-primary">
-                    Resultados: {currentPowerBis?.length}
+                <div className="col-md-2 mb-3 text-end text-primary d-flex justify-content-between align-items-center">
+                    <button type="button" title="Cambiar vista" className="btn btn-primary mr-5" onClick={(e) => {
+                        setShow((prevValue) => {
+                            return prevValue === 'list' ? 'grid' : 'list'
+                        })
+                    }}>
+                        {
+                            show === 'list' ?
+                                <MdGridOn />
+                                :
+                                <FaList />
+                        }
+                    </button>
+                    <span>
+                        Resultados: {currentPowerBis?.length}
+                    </span>
                 </div>
             </div>
 
-            <div className="row">
-                {
-                    currentPowerBis?.length === 0 && !loading ?
-                        <div className="col-md-12 mt-5">
-                            <h3 className="text-center">
-                                No se encontrarón resultados.
-                            </h3>
-                        </div>
-                        :
+            {
+                currentPowerBis?.length === 0 && !loading ?
+                    <div className="col-md-12 mt-5">
+                        <h3 className="text-center">
+                            No se encontrarón resultados.
+                        </h3>
+                    </div>
+                    :
+                    null
+            }
+            {
+                show === 'grid' &&
+                <div className="row">
+                    {
                         currentPowerBis?.map((powerBi, i) => {
+                            return <PowerBiCard key={i} powerBi={powerBi} />
+                        })
+                    }
+                    {
+                        loading &&
+                        generateArray(12, 1).map((item, i) => {
                             return (
-                                <div className="col-sm-6 col-md-4 col-lg-3 p-3" key={i}>
-                                    <div className="card animate__animated animate__fadeIn p-3 m-0 position-relative">
-                                        <p
-                                            className={`btn btn-xs btn-${powerBi?.status?.variant_color}`}
-                                            style={{ position: 'absolute', right: 25, top: 25 }}
-                                        >
-                                            {powerBi?.status?.name}
-                                        </p>
-                                        {
-                                            powerBi?.status?.id === 3 ?
-                                                <img style={{ width: '100%', height: 200, borderRadius: 20 }} src={powerBi?.image_path} alt={powerBi?.title} />
-                                                :
-                                                <a target="_blank" href={`/powerbi/detalle/${powerBi?.id}`}>
-                                                    <img style={{ width: '100%', height: 200, borderRadius: 20 }} src={powerBi?.image_path} alt={powerBi?.title} />
-                                                </a>
-                                        }
-                                        <h4 className="mt-3">
-                                            {
-                                                powerBi?.status?.id === 3 ?
-                                                    <span>
-                                                        {powerBi?.title}
-                                                    </span>
-                                                    :
-                                                    <a target="_blank" href={`/powerbi/detalle/${powerBi?.id}`}>
-                                                        {powerBi?.title}
-                                                    </a>
-                                            }
-                                        </h4>
-                                        <div>
-                                            Fecha de creación:
-                                            <b style={{ marginLeft: 5 }}>
-                                                <DateFormatter value={powerBi?.created_at} dateFormat="d/M/yyyy" />
-                                            </b>
-                                        </div>
-                                        <small className="text-primary">
-                                            {powerBi?.zone?.name}
-                                        </small>
-                                        <div className="text-center mt-2">
-                                            {
-                                                powerBi?.status?.id === 3 ?
-                                                    <button type="button" disabled className="btn btn-xs btn-block btn-primary">
-                                                        No disponible
-                                                    </button>
-                                                    :
-                                                    <a href={`/powerbi/detalle/${powerBi?.id}`} className="btn btn-xs btn-block btn-primary">
-                                                        Ver detalles
-                                                    </a>
-                                            }
-
-                                        </div>
-
+                                <div className="col-sm-6 col-md-4 col-lg-3 p-3">
+                                    <div className="animate__animated animate__fadeIn  card m-0 p-3">
+                                        <div className="skeletor" style={{ height: 200, borderRadius: 20 }}></div>
+                                        <h4 className="skeletor mt-3" style={{ height: 19, borderRadius: 20 }}></h4>
+                                        <div className="skeletor" style={{ height: 22 }}></div>
                                     </div>
                                 </div>
                             )
                         })
-                }
-                {
-                    loading &&
-                    generateArray(12, 1).map((item, i) => {
-                        return (
-                            <div className="col-sm-6 col-md-4 col-lg-3 p-3">
-                                <div className="animate__animated animate__fadeIn  card m-0 p-3">
-                                    <div className="skeletor" style={{ height: 200, borderRadius: 20 }}></div>
-                                    <h4 className="skeletor mt-3" style={{ height: 19, borderRadius: 20 }}></h4>
-                                    <div className="skeletor" style={{ height: 22 }}></div>
-                                </div>
-                            </div>
-                        )
-                    })
-                }
-            </div>
+                    }
+                </div>
+            }
+
+
+            {
+                show === 'list' &&
+                <div style={{ overflowX: 'auto' }} className="table-responsible">
+                    <table className="table" cellSpacing={100}>
+                        <tbody>
+                            {
+                                currentPowerBis?.map((powerBi, i) => {
+                                    return (
+                                        <tr className="card animate__animated  animate__fadeInLeft mb-3" key={i}>
+                                            <td>
+                                                <img style={{ width: 80, borderRadius: '10px' }} src={powerBi?.image_path} alt="" />
+                                            </td>
+                                            <td>
+                                                <label className="text-primary">
+                                                    Nombre:
+                                                </label>
+                                                <p className="m-0">
+                                                    {powerBi?.title}
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <label className="text-primary">
+                                                    Zona:
+                                                </label>
+                                                <p className="m-0">
+                                                    {powerBi?.zone?.name}
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <p className={`btn btn-xs btn-${powerBi?.status?.variant_color}`}>{powerBi?.status?.name}</p>
+                                            </td>
+                                            <td>
+                                                <label className="text-primary d-block">
+                                                    Fecha de creación:
+                                                </label>
+                                                <b style={{ marginLeft: 5 }}>
+                                                    <DateFormatter value={powerBi?.created_at} dateFormat="dd/M/yyyy hh:mm:ss aaaa" />
+                                                </b>
+                                            </td>
+                                            <td>
+                                                <label className="text-primary">
+                                                    Acciones
+                                                </label>
+                                                {
+                                                    powerBi?.status?.id === 3 ?
+                                                        <button type="button" disabled className="btn btn-xs btn-block btn-primary">
+                                                            No disponible
+                                                        </button>
+                                                        :
+                                                        <a href={`/powerbi/detalle/${powerBi?.id}`} className="btn btn-xs btn-block btn-primary">
+                                                            Ver detalles
+                                                        </a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                            {
+                                loading &&
+                                generateArray(12, 1).map((item, i) => {
+                                    return (
+                                        <tr>
+                                            <div className="animate__animated animate__fadeIn card m-0 p-3">
+                                                <div className="skeletor" style={{ height: 80, borderRadius: 20 }}></div>
+                                            </div>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            }
 
 
         </div>

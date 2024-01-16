@@ -4,6 +4,8 @@ const UserHavePermission = (menuPermissions) => {
 
     const { permissions, isSuperAdmin } = useAuth();
 
+    console.log(isSuperAdmin)
+
     if (isSuperAdmin) return true;
 
     return menuPermissions?.some?.(r => permissions?.indexOf(r) >= 0) ||
