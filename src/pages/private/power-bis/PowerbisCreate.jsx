@@ -13,6 +13,7 @@ import useUsers from "../../../hooks/useUsers";
 import profileImg from "../../../assets/images/profile.png";
 import useCostCenters from "../../../hooks/useCostCenters";
 import useStatuses from "../../../hooks/useStatuses";
+import useAreas from "../../../hooks/useAreas";
 
 
 
@@ -49,6 +50,8 @@ const PowerbisCreate = () => {
     const [{ data: createData, loading }, createRecord] = useAxios({ url: `/${entity?.url}`, method: 'POST' }, { manual: true, useCache: false });
 
     const [{ zones, loading: zonesLoading }, getZones] = useZones({ params: { perPage: 50 } }, { useCache: false });
+
+    const [{ areas, loading: areasLoading }, getAreas] = useAreas({ params: { perPage: 50 } }, { useCache: false });
 
     const [{ statuses, loading: statusesLoading }, getStatuses] = useStatuses({ params: { perPage: 50 } }, { useCache: false });
 
@@ -147,6 +150,11 @@ const PowerbisCreate = () => {
                     return;
                 }
 
+                if (key === 'area' && data[key]?.value) {
+                    formData.append('areaId', data[key]?.value);
+                    return;
+                }
+
                 if (key === 'status' && data[key]?.value) {
 
                     formData.append('statusId', data[key]?.value);
@@ -229,6 +237,20 @@ const PowerbisCreate = () => {
                                         placeholder="url"
                                     />
                                 </div>
+                            </div>
+                            <div className="form-group mb-3">
+                                <label>Area</label>
+                                <AsyncSelect
+                                    isClearable
+                                    onFocus={() => { getAreas() }}
+                                    value={data?.area}
+                                    isLoading={areasLoading}
+                                    defaultOptions={mapValues(areas)}
+                                    name="area"
+                                    loadOptions={(e) => handleLoadSelectOptions(e, getAreas)}
+                                    placeholder='Escriba el nombre para buscar...'
+                                    onChange={(e) => { handleChange({ target: { value: e, name: 'area' } }) }}
+                                />
                             </div>
                             <div className="form-group mb-3">
                                 <label>Zona<span className="text-danger">*</span></label>

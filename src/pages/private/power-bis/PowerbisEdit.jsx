@@ -5,6 +5,7 @@ import { useFeedBack } from "../../../context/FeedBackContext";
 import handleLoadSelectOptions from "../../../util/handleLoadSelectOptions";
 import mapValues from "../../../util/mapValues";
 import useZones from "../../../hooks/useZones";
+import useAreas from "../../../hooks/useAreas";
 import ImgUploadInput from "../../../components/ImgUploadInput";
 import AsyncSelect from 'react-select/async';
 import useUsers from "../../../hooks/useUsers";
@@ -51,6 +52,8 @@ const PowerbisEdit = () => {
 
     const [{ zones, loading: zonesLoading }, getZones] = useZones({ params: { perPage: 50 } }, { useCache: false });
 
+    const [{ areas, loading: areasLoading }, getAreas] = useAreas({ params: { perPage: 50 } }, { useCache: false });
+
     const [{ statuses, loading: statusesLoading }, getStatuses] = useStatuses({ params: { perPage: 50 } }, { useCache: false });
 
     const [{ users, total, numberOfPages, loading: loadingUsers }, getUsers] = useUsers({ params: { ...filters }, options: { useCache: false } });
@@ -70,13 +73,14 @@ const PowerbisEdit = () => {
     useEffect(() => {
         if (dataToUpdate) {
 
-            const { createdAt, imagePath, zone, status, id, ...rest } = dataToUpdate?.data;
+            const { createdAt, imagePath, zone, status, id, area, ...rest } = dataToUpdate?.data;
 
             setData((oldData) => {
                 return {
                     ...oldData,
                     ...rest,
-                    zone: { label: zone?.name, value: zone?.id },
+                    zone: zone ? { label: zone?.name, value: zone?.id } : null,
+                    area: area ? { label: area?.name, value: area?.id } : null,
                     status: { label: status?.name, value: status?.id }
                 }
             });
@@ -168,6 +172,11 @@ const PowerbisEdit = () => {
                     return;
                 }
 
+                if (key === 'area' && data[key]?.value) {
+                    formData.append('areaId', data[key]?.value);
+                    return;
+                }
+
                 if (key === 'status' && data[key]?.value) {
                     formData.append('statusId', data[key]?.value);
                     return;
@@ -254,6 +263,20 @@ const PowerbisEdit = () => {
                             </div>
                         </div>
                         <div className="form-group mb-3">
+                            <label>Area<span className="text-danger">*</span></label>
+                            <AsyncSelect
+                                isClearable
+                                onFocus={() => { getAreas() }}
+                                value={data?.area}
+                                isLoading={areasLoading}
+                                defaultOptions={mapValues(areas)}
+                                name="area"
+                                loadOptions={(e) => handleLoadSelectOptions(e, getAreas)}
+                                placeholder='Escriba el nombre para buscar...'
+                                onChange={(e) => { handleChange({ target: { value: e, name: 'area' } }) }}
+                            />
+                        </div>
+                        <div className="form-group mb-3">
                             <label>Zona<span className="text-danger">*</span></label>
                             <AsyncSelect
                                 isClearable
@@ -292,7 +315,7 @@ const PowerbisEdit = () => {
                         <br />
                         <br />
                         <div className="row align-items-center">
-                            <div className="col-md-8">
+                            <div className="col-md-9">
                                 <div className="row align-items-center">
                                     <div className="col-3 mb-4">
                                         <input
@@ -318,7 +341,7 @@ const PowerbisEdit = () => {
                                             }}
                                         />
                                     </div>
-                                    <div className="col-6 mb-4">
+                                    <div className="col-3 mb-4">
                                         <div className="d-flex align-items-center">
                                             <span className="d-none d-md-block" style={{ marginRight: 10 }}>Mostrar:</span>
                                             <select
@@ -338,9 +361,72 @@ const PowerbisEdit = () => {
                                             <span style={{ marginLeft: 5 }}>Registros por pagina</span>
                                         </div>
                                     </div>
+                                    <div className="col-1 mb-4">
+                                        <label className="text-center">
+                                            activos
+                                            <br />
+                                            <input
+                                                checked={filters?.hasPowerBis?.includes(id)}
+                                                onChange={() => {
+                                                    setCurrentUsers([]);
+                                                    setFilters((oldFilters) => {
+                                                        return {
+                                                            ...oldFilters,
+                                                            page: 1,
+                                                            hasPowerBis: oldFilters?.hasPowerBis ? null : [id],
+                                                            hasNotPowerBis: null
+                                                        }
+                                                    })
+                                                }}
+                                                type="checkbox"
+                                            />
+                                        </label>
+                                    </div>
+                                    <div className="col-1 mb-4">
+                                        <label className="text-center">
+                                            inactivos
+                                            <br />
+                                            <input
+                                                checked={filters?.hasNotPowerBis?.includes(id)}
+                                                onChange={() => {
+                                                    setCurrentUsers([]);
+                                                    setFilters((oldFilters) => {
+                                                        return {
+                                                            ...oldFilters,
+                                                            page: 1,
+                                                            hasNotPowerBis: oldFilters?.hasNotPowerBis ? null : [id],
+                                                            hasPowerBis: null
+                                                        }
+                                                    })
+                                                }}
+                                                type="checkbox"
+                                            />
+                                        </label>
+                                    </div>
+                                    <div className="col-1 mb-4">
+                                        <label className="text-center">
+                                            Todos
+                                            <br />
+                                            <input
+                                                checked={!filters?.hasNotPowerBis && !filters?.hasPowerBis}
+                                                onChange={() => {
+                                                    setCurrentUsers([]);
+                                                    setFilters((oldFilters) => {
+                                                        return {
+                                                            ...oldFilters,
+                                                            page: 1,
+                                                            hasNotPowerBis: null,
+                                                            hasPowerBis: null
+                                                        }
+                                                    })
+                                                }}
+                                                type="checkbox"
+                                            />
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="col-md-4 text-end mb-4">
+                            <div className="col-md-3 text-end mb-4">
                                 <button className="btn btn-primary btn-xs" type="button" onClick={() => {
                                     setData((oldData) => {
                                         return {

@@ -25,6 +25,10 @@ const PowerBiColumns = [
         Component: ({ value }) => value?.title || '--'
     },
     {
+        Label: () => 'Area',
+        Component: ({ value }) => value?.area?.name || '--'
+    },
+    {
         Label: () => 'Zona',
         Component: ({ value }) => value?.zone?.name || '--'
     },

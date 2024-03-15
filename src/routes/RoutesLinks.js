@@ -38,10 +38,18 @@ const RoutesLinks = () => {
                         } else {
                             return menuLink
                         }
-                    }).flat().map((menuLink, i) => {
+                    }).flat().map(({ Component, ...menuLink }, i) => {
                         return (
-                            menuLink?.component ?
-                                <Route key={i} path={menuLink?.path} element={<RequireAuth screenPermission={menuLink?.permissions}>{menuLink?.component}</RequireAuth>} />
+                            Component ?
+                                <Route
+                                    key={i}
+                                    path={menuLink?.path}
+                                    element={
+                                        <RequireAuth screenPermission={menuLink?.permissions}>
+                                            <Component {...menuLink} />
+                                        </RequireAuth>
+                                    }
+                                />
                                 :
                                 null
                         )

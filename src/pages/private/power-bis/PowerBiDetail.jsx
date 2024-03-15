@@ -11,6 +11,8 @@ const PowerBiDetail = () => {
 
     const [{ data: data, loading: loading }, getPowerBi] = useAxios({ url: `/power-bi/${id}/detail` }, { useCache: false });
 
+    const [{ }, storePowerBiView] = useAxios({ url: `/power-bi-views`, data: { powerbiId: id }, method: 'POST' }, { useCache: false });
+
     useEffect(() => {
 
         if (data) {
