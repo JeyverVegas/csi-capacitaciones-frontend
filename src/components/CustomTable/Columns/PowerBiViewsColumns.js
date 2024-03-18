@@ -25,7 +25,7 @@ const PowerBiViewsColumns = [
         Component: ({ value }) => value?.powerbi?.title || '--'
     },
     {
-        Label: () => 'Fecha de Creación',
+        Label: () => 'Ultima Visita',
         Component: ({ value }) => value?.createdAt || '--'
     },
     {
