@@ -6,6 +6,7 @@ import useZones from "../../hooks/useZones";
 import PowerBiCard from "../../components/Powerbi/PowerBiCard";
 import { MdGridOn } from "react-icons/md";
 import { FaList } from "react-icons/fa";
+import useAreas from "../../hooks/useAreas";
 
 
 
@@ -16,7 +17,8 @@ const Dashboard = () => {
 
     const [filters, setFilters] = useState({
         search: '',
-        zoneId: ''
+        zoneId: '',
+        areaId: ''
     });
 
     const [show, setShow] = useState('list');
@@ -24,6 +26,8 @@ const Dashboard = () => {
     const [{ data, loading }, getDashboard] = useAxios({ url: `/dashboard`, params: filters }, { useCache: false });
 
     const [{ zones, loading: zonesLoading }, getZones] = useZones({ params: { perPage: 50 } }, { useCache: false });
+
+    const [{ areas, loading: areasLoading }, getAreas] = useAreas({ params: { perPage: 50 } }, { useCache: false });
 
     const [currentPowerBis, setCurrentPowerBis] = useState([]);
 
@@ -49,8 +53,20 @@ const Dashboard = () => {
 
             <div className="row align-items-center justify-content-end">
                 <div className="col-md-3 form-group mb-3">
+                    <select value={filters?.areaId} onChange={handleChange} name="areaId" className="form-control">
+                        <option value="">Seleccione una area...</option>
+                        {
+                            areas?.map((area, i) => {
+                                return (
+                                    <option value={area?.id} key={i}>{area?.name}</option>
+                                )
+                            })
+                        }
+                    </select>
+                </div>
+                <div className="col-md-3 form-group mb-3">
                     <select value={filters?.zoneId} onChange={handleChange} name="zoneId" className="form-control">
-                        <option value="">Seleccione una opción...</option>
+                        <option value="">Seleccione una zona...</option>
                         {
                             zones?.map((zone, i) => {
                                 return (
